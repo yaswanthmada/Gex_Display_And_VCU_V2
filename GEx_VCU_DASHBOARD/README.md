@@ -1,7 +1,7 @@
 # GEX_VCU_Dashboard
 
 ## Project Overview
-```markdown
+```
 **GEX_VCU_Dashboard** is an embedded firmware project developed using the **STM32F103CBT6** microcontroller and a **DWIN HMI Display**. The Vehicle Control Unit (VCU) acts as the central controller responsible for collecting, processing, and displaying vehicle information.
 
 The VCU receives real-time data over the **CAN bus** from multiple vehicle subsystems, including:
@@ -35,7 +35,7 @@ The firmware is designed with a modular architecture, making it easier to mainta
 - Scalable software design
 ## System Architecture
 
-```text
+```
                      +----------------------+
                      |  Battery Management  |
                      |      System (BMS)    |
@@ -70,7 +70,7 @@ The firmware is designed with a modular architecture, making it easier to mainta
                                           +---------------------------+
 ```
 ## Repository Structure
-```text
+```
 GEX_VCU_Dashboard/
 │
 ├── STM32/                 # STM32 firmware source code
