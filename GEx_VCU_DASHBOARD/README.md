@@ -1,7 +1,7 @@
 # GEX_VCU_Dashboard
 
 ## Project Overview
-```
+
 **GEX_VCU_Dashboard** is an embedded firmware project developed using the **STM32F103CBT6** microcontroller and a **DWIN HMI Display**. The Vehicle Control Unit (VCU) acts as the central controller responsible for collecting, processing, and displaying vehicle information.
 
 The VCU receives real-time data over the **CAN bus** from multiple vehicle subsystems, including:
@@ -15,7 +15,7 @@ In addition to CAN communication, the VCU monitors the vehicle's digital and ana
 After processing the received data and executing the required vehicle logic, the VCU transmits the processed information to the **DWIN HMI Display** through the **UART** interface, providing the driver with real-time vehicle status, warnings, and operational information.
 
 The firmware is designed with a modular architecture, making it easier to maintain, extend, and integrate additional vehicle features in the future.
-```
+
 
 ## Features
 - CAN communication with multiple vehicle subsystems
@@ -34,7 +34,6 @@ The firmware is designed with a modular architecture, making it easier to mainta
 - Easy integration of additional vehicle subsystems
 - Scalable software design
 ## System Architecture
-
 ```
                      +----------------------+
                      |  Battery Management  |
@@ -75,7 +74,7 @@ GEX_VCU_Dashboard/
 │
 ├── STM32/                 # STM32 firmware source code
 ├── DWIN/                  # DWIN HMI project and display resources
-├── Documentation/                  # Project documentation
+├── Documentation/         # Project documentation
 ├── datasheets/            # Component and hardware datasheets
 ├── images/                # Architecture diagrams and screenshots
 ├── README.md              # Project overview
@@ -87,7 +86,6 @@ GEX_VCU_Dashboard/
 ### Prerequisites
 
 - STM32CubeIDE
-- STM32CubeMX
 - ST-Link Programmer
 - DWIN DGUS Tool
 - Git
