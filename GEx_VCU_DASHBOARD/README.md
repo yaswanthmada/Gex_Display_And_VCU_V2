@@ -7,7 +7,7 @@
 The VCU receives real-time data over the **CAN bus** from multiple vehicle subsystems, including:
 
 - Battery Management System (BMS)
-- Motor Controller
+- Motor Controller Unit
 - MPPT (Maximum Power Point Tracking) Controller
 
 In addition to CAN communication, the VCU monitors the vehicle's digital and analog I/O signals to support various control and monitoring functions.
