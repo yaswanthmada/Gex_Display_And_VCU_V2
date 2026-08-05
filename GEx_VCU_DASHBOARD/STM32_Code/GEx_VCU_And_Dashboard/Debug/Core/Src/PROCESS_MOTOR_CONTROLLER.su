@@ -1,0 +1,5 @@
+../Core/Src/PROCESS_MOTOR_CONTROLLER.c:13:17:Extract_Raw_signal_Intel	80	static
+../Core/Src/PROCESS_MOTOR_CONTROLLER.c:37:6:Decode_MCU_0x011	16	static
+../Core/Src/PROCESS_MOTOR_CONTROLLER.c:51:6:Decode_MCU_0x012	16	static
+../Core/Src/PROCESS_MOTOR_CONTROLLER.c:66:6:Decode_MCU_0x013	16	static
+../Core/Src/PROCESS_MOTOR_CONTROLLER.c:76:6:Decode_MCU_0x014	16	static
