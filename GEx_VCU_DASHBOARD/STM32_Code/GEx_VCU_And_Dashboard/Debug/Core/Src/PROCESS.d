@@ -23,7 +23,8 @@ Core/Src/PROCESS.o: ../Core/Src/PROCESS.c ../Core/Inc/PROCESS.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Core/Inc/MCP2515_DEF.h ../Core/Inc/PROCESS_MOTOR_CONTROLLER.h \
- ../Core/Inc/CONFIGURATION_FILES.h ../Core/Inc/DECODE_MOTOR_CONTROLLER.h
+ ../Core/Inc/CONFIGURATION_FILES.h ../Core/Inc/DECODE_MOTOR_CONTROLLER.h \
+ ../Core/Inc/SYSTICK.h
 ../Core/Inc/PROCESS.h:
 ../Core/Inc/MCP2515.h:
 ../Core/Inc/main.h:
@@ -53,3 +54,4 @@ Core/Src/PROCESS.o: ../Core/Src/PROCESS.c ../Core/Inc/PROCESS.h \
 ../Core/Inc/PROCESS_MOTOR_CONTROLLER.h:
 ../Core/Inc/CONFIGURATION_FILES.h:
 ../Core/Inc/DECODE_MOTOR_CONTROLLER.h:
+../Core/Inc/SYSTICK.h:

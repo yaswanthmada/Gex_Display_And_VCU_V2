@@ -51,6 +51,7 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+volatile uint32_t Get_Ms_Ticks = 0;
 
 /* USER CODE END 0 */
 
@@ -187,7 +188,7 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-
+  Get_Ms_Ticks++;
   /* USER CODE END SysTick_IRQn 1 */
 }
 

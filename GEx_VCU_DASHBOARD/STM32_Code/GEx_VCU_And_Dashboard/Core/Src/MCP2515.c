@@ -8,10 +8,6 @@
 #include"MCP2515.h"
 #include"MCP2515_REG.h"
 #include"SPI.h"
-/* ========================================================================= */
-/*                          A - Z FUNCTION DEFINITIONS                       */
-/* ========================================================================= */
-
 /*******************************************************************************
  * Function Name : MCP2515_Get_Mode
  * Description   : Reads the CANSTAT status register and extracts the current
@@ -36,10 +32,10 @@ bool MCP2515_AbortTransmission(MCP2515_TxBuffer_t txBufferMask)
 void MCP2515_BitModify(uint8_t regAddr, uint8_t mask, uint8_t value)
 {
     SPI2_Chip_Select(1);
-    SPI2_TransmitReceiveByte(MCP_CMD_BITMOD);
-    SPI2_TransmitReceiveByte(regAddr);
-    SPI2_TransmitReceiveByte(mask);
-    SPI2_TransmitReceiveByte(value);
+    SPI2_Transmit_Receive_Byte(MCP_CMD_BITMOD);
+    SPI2_Transmit_Receive_Byte(regAddr);
+    SPI2_Transmit_Receive_Byte(mask);
+    SPI2_Transmit_Receive_Byte(value);
     SPI2_Chip_Select(0);
 }
 
@@ -173,9 +169,9 @@ uint8_t MCP2515_PollStatus(void)
 uint8_t MCP2515_ReadRegister(uint8_t regAddr)
 {
     SPI2_Chip_Select(1);
-    SPI2_TransmitReceiveByte(MCP_CMD_READ);
-    SPI2_TransmitReceiveByte(regAddr);
-    uint8_t val = SPI2_TransmitReceiveByte(MCP_SPI_DUMMY);
+    SPI2_Transmit_Receive_Byte(MCP_CMD_READ);
+    SPI2_Transmit_Receive_Byte(regAddr);
+    uint8_t val = SPI2_Transmit_Receive_Byte(MCP_SPI_DUMMY);
     SPI2_Chip_Select(0);
     return val;
 }
@@ -183,11 +179,11 @@ uint8_t MCP2515_ReadRegister(uint8_t regAddr)
 void MCP2515_ReadRegisters(uint8_t startAddr, uint8_t *pData, uint8_t len)
 {
     SPI2_Chip_Select(1);
-    SPI2_TransmitReceiveByte(MCP_CMD_READ);
-    SPI2_TransmitReceiveByte(startAddr);
+    SPI2_Transmit_Receive_Byte(MCP_CMD_READ);
+    SPI2_Transmit_Receive_Byte(startAddr);
     for (uint8_t i = 0; i < len; i++)
     {
-        pData[i] = SPI2_TransmitReceiveByte(MCP_SPI_DUMMY);
+        pData[i] = SPI2_Transmit_Receive_Byte(MCP_SPI_DUMMY);
     }
     SPI2_Chip_Select(0);
 }
@@ -195,13 +191,13 @@ void MCP2515_ReadRegisters(uint8_t startAddr, uint8_t *pData, uint8_t len)
 bool MCP2515_ReadRxBuffer(uint8_t rxBufferCommand, CAN_Message_t *msg)
 {
     SPI2_Chip_Select(1);
-    SPI2_TransmitReceiveByte(rxBufferCommand);
+    SPI2_Transmit_Receive_Byte(rxBufferCommand);
 
-    uint8_t sidh = SPI2_TransmitReceiveByte(MCP_SPI_DUMMY);
-    uint8_t sidl = SPI2_TransmitReceiveByte(MCP_SPI_DUMMY);
-    uint8_t eid8 = SPI2_TransmitReceiveByte(MCP_SPI_DUMMY);
-    uint8_t eid0 = SPI2_TransmitReceiveByte(MCP_SPI_DUMMY);
-    uint8_t dlc  = SPI2_TransmitReceiveByte(MCP_SPI_DUMMY);
+    uint8_t sidh = SPI2_Transmit_Receive_Byte(MCP_SPI_DUMMY);
+    uint8_t sidl = SPI2_Transmit_Receive_Byte(MCP_SPI_DUMMY);
+    uint8_t eid8 = SPI2_Transmit_Receive_Byte(MCP_SPI_DUMMY);
+    uint8_t eid0 = SPI2_Transmit_Receive_Byte(MCP_SPI_DUMMY);
+    uint8_t dlc  = SPI2_Transmit_Receive_Byte(MCP_SPI_DUMMY);
 
     msg->isExtended = (sidl & MCP_BIT_EXIDE) != 0;
     if (msg->isExtended)
@@ -219,7 +215,7 @@ bool MCP2515_ReadRxBuffer(uint8_t rxBufferCommand, CAN_Message_t *msg)
 
     for (uint8_t i = 0; i < msg->dlc; i++)
     {
-        msg->data[i] = SPI2_TransmitReceiveByte(MCP_SPI_DUMMY);
+        msg->data[i] = SPI2_Transmit_Receive_Byte(MCP_SPI_DUMMY);
     }
 
     SPI2_Chip_Select(0);
@@ -229,8 +225,8 @@ bool MCP2515_ReadRxBuffer(uint8_t rxBufferCommand, CAN_Message_t *msg)
 uint8_t MCP2515_ReadStatus(void)
 {
     SPI2_Chip_Select(1);
-    SPI2_TransmitReceiveByte(MCP_CMD_READ_STATUS);
-    uint8_t status = SPI2_TransmitReceiveByte(MCP_SPI_DUMMY);
+    SPI2_Transmit_Receive_Byte(MCP_CMD_READ_STATUS);
+    uint8_t status = SPI2_Transmit_Receive_Byte(MCP_SPI_DUMMY);
     SPI2_Chip_Select(0);
     return status;
 }
@@ -258,7 +254,7 @@ bool MCP2515_ReceiveMessage(CAN_Message_t *msg)
 void MCP2515_RequestToSend(MCP2515_TxBuffer_t txBufferMask)
 {
     SPI2_Chip_Select(1);
-    SPI2_TransmitReceiveByte(MCP_CMD_RTS | (txBufferMask & MCP_TXB_ALL));
+    SPI2_Transmit_Receive_Byte(MCP_CMD_RTS | (txBufferMask & MCP_TXB_ALL));
     SPI2_Chip_Select(0);
 }
 
@@ -430,9 +426,9 @@ bool MCP2515_WakeUp(void)
 void MCP2515_Write_Register(uint8_t regAddr, uint8_t value)
 {
     SPI2_Chip_Select(1);
-    SPI2_TransmitReceiveByte(MCP_CMD_WRITE);
-    SPI2_TransmitReceiveByte(regAddr);
-    SPI2_TransmitReceiveByte(value);
+    SPI2_Transmit_Receive_Byte(MCP_CMD_WRITE);
+    SPI2_Transmit_Receive_Byte(regAddr);
+    SPI2_Transmit_Receive_Byte(value);
     SPI2_Chip_Select(0);
 }
 /*******************************************************************************
@@ -447,11 +443,11 @@ void MCP2515_Write_Register(uint8_t regAddr, uint8_t value)
 void MCP2515_Write_Registers(uint8_t startAddr, const uint8_t *pData, uint8_t len)
 {
     SPI2_Chip_Select(1);
-    SPI2_TransmitReceiveByte(MCP_CMD_WRITE);
-    SPI2_TransmitReceiveByte(startAddr);
+    SPI2_Transmit_Receive_Byte(MCP_CMD_WRITE);
+    SPI2_Transmit_Receive_Byte(startAddr);
     for (uint8_t i = 0; i < len; i++)
     {
-        SPI2_TransmitReceiveByte(pData[i]);
+        SPI2_Transmit_Receive_Byte(pData[i]);
     }
     SPI2_Chip_Select(0);
 }
@@ -481,7 +477,7 @@ bool MCP2515_EchoMessage(CAN_Message_t *rxMsg)
 static void MCP2515_Reset(void)
 {
     SPI2_Chip_Select(1);
-    SPI2_TransmitReceiveByte(MCP_CMD_RESET);
+    SPI2_Transmit_Receive_Byte(MCP_CMD_RESET);
     SPI2_Chip_Select(0);
     for (volatile int i = 0; i < 5000; i++);
 }

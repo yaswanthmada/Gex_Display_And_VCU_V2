@@ -10,10 +10,9 @@
 extern void Uart_Printf(const char *format, ...);
 #ifdef MCU_NANJING_QUARK
 extern Mcu_Msgs_t Mcu_Msgs;
-
 void Print_MCU_Msg_0x011(const MCU_Msg_0x011_t* msg)
 {
-	uint32_t Elapsed_Time= HAL_GetTick() - msg->last_rx_time;
+	uint32_t Elapsed_Time= Get_Tick_Ms() - msg->last_rx_time;
     Uart_Printf("\r\n=================== MCU MSG 0x011 ===================\r\n");
     Uart_Printf("  Last Rx Time           : %lu ms\r\n", msg->last_rx_time);
     Uart_Printf("  Elapsed Time           : %lu ms\r\n", Elapsed_Time);
@@ -31,7 +30,7 @@ void Print_MCU_Msg_0x011(const MCU_Msg_0x011_t* msg)
 
 void Print_MCU_Msg_0x012(const MCU_Msg_0x012_t* msg)
 {
-	uint32_t Elapsed_Time= HAL_GetTick() - msg->last_rx_time;
+	uint32_t Elapsed_Time= Get_Tick_Ms() - msg->last_rx_time;
     Uart_Printf("\r\n=================== MCU MSG 0x012 ===================\r\n");
     Uart_Printf("  Last Rx Time           : %lu ms\r\n", msg->last_rx_time);
     Uart_Printf("  Elapsed Time           : %lu ms\r\n", Elapsed_Time);
@@ -48,7 +47,7 @@ void Print_MCU_Msg_0x012(const MCU_Msg_0x012_t* msg)
 
 void Print_MCU_Msg_0x013(const MCU_Msg_0x013_t* msg)
 {
-	uint32_t Elapsed_Time= HAL_GetTick() - msg->last_rx_time;
+	uint32_t Elapsed_Time= Get_Tick_Ms() - msg->last_rx_time;
     Uart_Printf("\r\n=================== MCU MSG 0x013 ===================\r\n");
     Uart_Printf("  Last Rx Time           : %lu ms\r\n", msg->last_rx_time);
     Uart_Printf("  Elapsed Time           : %lu ms\r\n", Elapsed_Time);
@@ -62,14 +61,14 @@ void Print_MCU_Msg_0x013(const MCU_Msg_0x013_t* msg)
 
 void Print_MCU_Msg_0x014(const MCU_Msg_0x014_t* msg)
 {
-	uint32_t Elapsed_Time= HAL_GetTick() - msg->last_rx_time;
+	uint32_t Elapsed_Time= Get_Tick_Ms() - msg->last_rx_time;
     Uart_Printf("\r\n=================== MCU MSG 0x014 ===================\r\n");
     Uart_Printf("  Last Rx Time           : %lu ms\r\n", msg->last_rx_time);
     Uart_Printf("  Elapsed Time           : %lu ms\r\n", Elapsed_Time);
     Uart_Printf("  MCU Code               : 0x%02X\r\n", msg->Mcu_Code);
     Uart_Printf("  Hardware Version       : v%u\r\n", msg->Mcu_Hardware_Version);
     Uart_Printf("  Software Version       : v%u\r\n", msg->Mcu_Software_Version);
-    Uart_Printf("  Small Version          : v%u\r\n", msg->Mcuc_Small_Version);
+    Uart_Printf("  Small Version          : v%u\r\n", msg->Mcu_Small_Version);
     Uart_Printf("=====================================================\r\n");
 }
 #endif

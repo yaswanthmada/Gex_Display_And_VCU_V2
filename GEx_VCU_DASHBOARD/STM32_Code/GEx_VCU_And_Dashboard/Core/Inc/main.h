@@ -55,6 +55,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+extern volatile uint32_t Get_Ms_Ticks;
 
 /* USER CODE END EFP */
 

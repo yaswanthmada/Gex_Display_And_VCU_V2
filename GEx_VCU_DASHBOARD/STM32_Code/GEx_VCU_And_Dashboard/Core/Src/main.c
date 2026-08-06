@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include"PRINT_MOTOR_CONTROLLER.h"
 #include"UART.h"
+#include"CAN.h"
+#include"SYSTICK.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -87,7 +89,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  Stm32f103_System_Clock_Init();
+     Stm32f103_System_Clock_Init();
     if(!Serial_Peripheral_Interface_Init())
     {
     	//SPI Inititialization Fails
@@ -99,27 +101,46 @@ int main(void)
     }
     if(!Universal_Asyn_Rx_Tx_1_Init())
     {
-
+    	//uart1 Inititialization Fails
     }
     if(!Universal_Asyn_Rx_Tx_3_Init())
     {
-
+    	//uart3 Inititialization Fails
     }
-
+    if(!Core_Timer_Init())
+    {
+    	//systick Inititialization Fails
+    }
+    if(!Controller_Area_Network_Init())
+    {
+    	//CAN Inititialization Fails
+    }
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   /* USER CODE BEGIN 2 */
-
+    CAN_Message_t Rx_Frame;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  Process_Can_Messages();
-	  Print_Motor_Messages();
-	  HAL_Delay(10);
+    if(Can_Collect_Frame(&Rx_Frame))
+    {
+        if(Can_Send_Frame(&Rx_Frame))
+        {
+        	Uart_Printf("Send\r\n");
+        }
+        else
+        {
+        	Uart_Printf("Not Send\r\n");
+        }
+    }
+    else
+    {
+    	Uart_Printf("Not received\r\n");
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

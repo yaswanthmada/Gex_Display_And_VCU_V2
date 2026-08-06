@@ -10,5 +10,6 @@
 
 bool Universal_Asyn_Rx_Tx_1_Init();
 bool Universal_Asyn_Rx_Tx_3_Init();
+void Uart_Printf(const char *format, ...);
 
 #endif /* INC_UART_H_ */

@@ -24,7 +24,7 @@ Core/Src/PRINT_MOTOR_CONTROLLER.o: ../Core/Src/PRINT_MOTOR_CONTROLLER.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
- ../Core/Inc/MCP2515_DEF.h
+ ../Core/Inc/MCP2515_DEF.h ../Core/Inc/SYSTICK.h
 ../Core/Inc/CONFIGURATION_FILES.h:
 ../Core/Inc/PROCESS_MOTOR_CONTROLLER.h:
 ../Core/Inc/CONFIGURATION_FILES.h:
@@ -54,3 +54,4 @@ Core/Src/PRINT_MOTOR_CONTROLLER.o: ../Core/Src/PRINT_MOTOR_CONTROLLER.c \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 ../Core/Inc/MCP2515_DEF.h:
+../Core/Inc/SYSTICK.h:

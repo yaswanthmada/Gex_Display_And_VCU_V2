@@ -74,19 +74,26 @@ void SPI2_Chip_Select(uint8_t enable)
         GPIOB->BSRR = GPIO_BSRR_BS12;
     }
 }
-uint8_t SPI2_TransmitReceiveByte(uint8_t txByte)
+uint8_t SPI2_Transmit_Receive_Byte(const uint8_t Tx_Byte)
 {
-    uint32_t timeout = 100000;
+    uint32_t Start_Time =  Get_Ms_Ticks;
+
     while (!(SPI2->SR & SPI_SR_TXE))
     {
-        if (--timeout == 0) return 0xFF;
+        if (( Get_Ms_Ticks - Start_Time) >= 10)
+            return 0xFF;
     }
-    SPI2->DR = txByte;
-    timeout = 100000;
+
+    SPI2->DR = Tx_Byte;
+
+    Start_Time =  Get_Ms_Ticks;
+
     while (!(SPI2->SR & SPI_SR_RXNE))
     {
-        if (--timeout == 0) return 0xFF;
+        if ((Get_Ms_Ticks - Start_Time) >= 10)
+            return 0xFF;
     }
+
     return (uint8_t)SPI2->DR;
 }
 
@@ -96,7 +103,7 @@ uint8_t SPI2_Tx_Buffer(const uint8_t *pBuffer, uint16_t length)
 
     for (uint16_t i = 0; i < length; i++)
     {
-        SPI2_TransmitReceiveByte(pBuffer[i]);
+    	SPI2_Transmit_Receive_Byte(pBuffer[i]);
     }
     return 1;
 }
@@ -107,7 +114,7 @@ uint8_t SPI2_RxBuffer(uint8_t *pBuffer, uint16_t length)
 
     for (uint16_t i = 0; i < length; i++)
     {
-        pBuffer[i] = SPI2_TransmitReceiveByte(0xFF); /* Send dummy byte to clock out data */
+        pBuffer[i] = SPI2_Transmit_Receive_Byte(0xFF); /* Send dummy byte to clock out data */
     }
     return 1;
 }

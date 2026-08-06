@@ -25,7 +25,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/MCP2515.h ../Core/Inc/MCP2515_DEF.h ../Core/Inc/PROCESS.h \
  ../Core/Inc/MCP2515.h ../Core/Inc/PRINT_MOTOR_CONTROLLER.h \
  ../Core/Inc/DECODE_MOTOR_CONTROLLER.h ../Core/Inc/CONFIGURATION_FILES.h \
- ../Core/Inc/UART.h
+ ../Core/Inc/UART.h ../Core/Inc/CAN.h ../Core/Inc/SYSTICK.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -60,3 +60,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/DECODE_MOTOR_CONTROLLER.h:
 ../Core/Inc/CONFIGURATION_FILES.h:
 ../Core/Inc/UART.h:
+../Core/Inc/CAN.h:
+../Core/Inc/SYSTICK.h:

@@ -31,12 +31,10 @@ return value;
 
 }
 
-
-
 #ifdef MCU_NANJING_QUARK
 void Decode_MCU_0x011(const uint8_t* Data, MCU_Msg_0x011_t* Message)
 {
-   Message->last_rx_time         = HAL_GetTick();
+   Message->last_rx_time         = Get_Tick_Ms();
    Message->Gear_Position   = (uint8_t) Extract_Raw_signal_Intel(Data, 0, 2);
    Message->High_Or_Low     = (uint8_t) Extract_Raw_signal_Intel(Data, 2, 2);
    Message->Ready           = (uint8_t) Extract_Raw_signal_Intel(Data, 4, 1);
@@ -50,7 +48,7 @@ void Decode_MCU_0x011(const uint8_t* Data, MCU_Msg_0x011_t* Message)
 
 void Decode_MCU_0x012(const uint8_t* Data, MCU_Msg_0x012_t* Message)
 {
-	Message->last_rx_time         = HAL_GetTick();
+	Message->last_rx_time         = Get_Tick_Ms();
     Message->Dc_Voltage               = (float)   Extract_Raw_signal_Intel(Data, 0, 16) * 0.1f;
     Message->Dc_Current               = (float)   Extract_Raw_signal_Intel(Data, 16, 16) * 0.1f;
     Message->Drive_Motor_State        = (uint8_t) Extract_Raw_signal_Intel(Data, 32, 4);
@@ -65,7 +63,7 @@ void Decode_MCU_0x012(const uint8_t* Data, MCU_Msg_0x012_t* Message)
 
 void Decode_MCU_0x013(const uint8_t* Data, MCU_Msg_0x013_t* Message)
 {
-	Message->last_rx_time         = HAL_GetTick();
+	Message->last_rx_time         = Get_Tick_Ms();
     Message->Motor_Temp         = (int16_t) ((int8_t) Extract_Raw_signal_Intel(Data, 0, 8) - 40);
     Message->Controller_Temp    = (int16_t) ((int8_t) Extract_Raw_signal_Intel(Data, 8, 8) - 40);
     Message->Torque_Request     = ((float)  Extract_Raw_signal_Intel(Data, 16, 16) * 0.25f) - 511.0f;
@@ -75,10 +73,10 @@ void Decode_MCU_0x013(const uint8_t* Data, MCU_Msg_0x013_t* Message)
 
 void Decode_MCU_0x014(const uint8_t* Data, MCU_Msg_0x014_t* Message)
 {
-	Message->last_rx_time         = HAL_GetTick();
+	Message->last_rx_time         = Get_Tick_Ms();
     Message->Mcu_Code             = (uint8_t)Extract_Raw_signal_Intel(Data, 0, 8);
     Message->Mcu_Hardware_Version = (uint8_t)Extract_Raw_signal_Intel(Data, 8, 8);
     Message->Mcu_Software_Version = (uint8_t)Extract_Raw_signal_Intel(Data, 16, 8);
-    Message->Mcuc_Small_Version   = (uint8_t)Extract_Raw_signal_Intel(Data, 32, 8);
+    Message->Mcu_Small_Version   = (uint8_t)Extract_Raw_signal_Intel(Data, 32, 8);
 }
 #endif

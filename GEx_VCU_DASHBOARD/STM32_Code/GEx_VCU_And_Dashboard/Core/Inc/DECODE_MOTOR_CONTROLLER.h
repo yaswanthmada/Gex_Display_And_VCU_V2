@@ -58,7 +58,7 @@ typedef struct {
     uint8_t  Mcu_Code;
     uint8_t  Mcu_Hardware_Version;
     uint8_t  Mcu_Software_Version;
-    uint8_t  Mcuc_Small_Version;
+    uint8_t  Mcu_Small_Version;
     uint32_t last_rx_time;
 } MCU_Msg_0x014_t;
 

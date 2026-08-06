@@ -11,6 +11,9 @@
 
 #include"main.h"
 
+#define CLOCK_8MHZ   8000000U
+#define CLOCK_36MHZ  36000000U
+
 void Stm32f103_System_Clock_Init(void);
 uint32_t Get_SYSCLK_freq(void);
 uint32_t Get_AHB_freq(void) ;
