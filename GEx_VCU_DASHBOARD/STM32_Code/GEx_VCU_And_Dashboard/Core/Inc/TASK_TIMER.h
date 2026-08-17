@@ -120,6 +120,6 @@ void Task_Timer_Delete(int task_id);
  ******************************************************************************/
 uint32_t Task_Timer_Get_Tick(void);
 
-
+bool Enable_Task_Timer_Init();
 
 #endif /* INC_TASK_TIMER_H_ */

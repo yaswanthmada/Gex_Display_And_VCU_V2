@@ -1,1 +1,2 @@
-../Core/Src/PROCESS.c:11:6:Process_Can_Messages	2
+../Core/Src/PROCESS.c:14:6:Process_Can_Messages	3
+../Core/Src/PROCESS.c:26:6:Request_Bms_Messages	2

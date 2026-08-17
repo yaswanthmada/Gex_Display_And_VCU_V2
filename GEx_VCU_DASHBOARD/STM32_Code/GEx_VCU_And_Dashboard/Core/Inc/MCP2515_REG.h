@@ -75,7 +75,6 @@
 /*                          REGISTER BIT DEFINITIONS                         */
 /* ========================================================================= */
 
-/* Mode Masking & Features (CANCTRL / CANSTAT) */
 #define MCP_MASK_MODE           0xE0
 #define MCP_BIT_OSM             0x08
 
@@ -89,7 +88,6 @@
 #define MCP_BIT_WAKIF           0x40
 #define MCP_MASK_RXIF           (MCP_BIT_RX0IF | MCP_BIT_RX1IF)
 
-/* Transmit Control (TXBnCTRL) */
 #define MCP_BIT_TXREQ           0x08
 #define MCP_MASK_TXPRI          0x03
 

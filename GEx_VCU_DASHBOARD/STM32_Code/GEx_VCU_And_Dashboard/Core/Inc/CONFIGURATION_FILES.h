@@ -11,5 +11,5 @@
 #include<stdbool.h>
 
 #define MCU_NANJING_QUARK
-
+#define JBD_BMS
 #endif /* INC_CONFIGURATION_FILES_H_ */

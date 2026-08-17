@@ -5,8 +5,7 @@
  *      Author: MadaYaswanth
  */
 
-#include"main.h"
-#include"RCC.h"
+
 #include"CAN.h"
 /*******************************************************************************
  * Function Name : CAN_Filter_Init
@@ -194,17 +193,20 @@ static void CAN1_Tx_Frame(const CAN_Message_t *frame,uint8_t mail_box )
 	CAN1->sTxMailBox[mail_box].TDTR |= (frame->dlc<<0);
 	CAN1->sTxMailBox[mail_box].TDLR = 0x00000000;
 	CAN1->sTxMailBox[mail_box].TDHR = 0x00000000;
-	 for(uint8_t i=0;i<frame->dlc;i++)
-	 {
-		 if(i<4)
+	if(!frame->isRTR)
+	{
+		 for(uint8_t i=0;i<frame->dlc;i++)
 		 {
-			 CAN1->sTxMailBox[mail_box].TDLR|=(frame->data[i]<<(i*8));
+			 if(i<4)
+			 {
+				 CAN1->sTxMailBox[mail_box].TDLR|=(frame->data[i]<<(i*8));
+			 }
+			 else
+			 {
+				 CAN1->sTxMailBox[mail_box].TDHR|=(frame->data[i]<<((i-4)*8));
+			 }
 		 }
-		 else
-		 {
-			 CAN1->sTxMailBox[mail_box].TDHR|=(frame->data[i]<<((i-4)*8));
-		 }
-	 }
+	}
 	CAN1->sTxMailBox[mail_box].TIR |= (1<<0);
 }
 /*******************************************************************************
@@ -290,6 +292,27 @@ static uint8_t CAN_Message_Pending(void)
     }
     return 3;
 }
+void Configure_Can_filter_Ids()
+{
+	uint16_t Std_Id[]={
+#ifdef JBD_BMS
+			JBD_BMS_ID0 ,
+            JBD_BMS_ID1 ,
+            JBD_BMS_ID2 ,
+            JBD_BMS_ID3 ,
+            JBD_BMS_ID4 ,
+            JBD_BMS_ID5 ,
+            JBD_BMS_ID6 ,
+            JBD_BMS_ID7 ,
+            JBD_BMS_ID8 ,
+            JBD_BMS_ID9 ,
+            JBD_BMS_ID10 ,
+            JBD_BMS_ID11 ,
+            JBD_BMS_ID12 ,
+#endif
+	};
+	CAN_Filter_Init(Std_Id,sizeof(Std_Id)/sizeof(Std_Id[0]),NULL,0);
+}
 bool Can_Send_Frame(CAN_Message_t *Frame)
 {
 	uint8_t Mail_Box=CAN_Get_Free_Tx_Mailbox();
@@ -310,8 +333,6 @@ bool Can_Collect_Frame(CAN_Message_t *Frame)
 	}
 	return false;
 }
-
-
 bool Controller_Area_Network_Init()
 {
 	return CAN1_Init();

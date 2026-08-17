@@ -25,12 +25,17 @@
 #include"SPI.h"
 #include"MCP2515.h"
 #include"PROCESS.h"
+#include"DECODE_BATTERY_MANAGEMENT_SYSTEM.h"
+#include"DECODE_MOTOR_CONTROLLER.h"
 #include<string.h>
 #include <stdio.h>
-#include"PRINT_MOTOR_CONTROLLER.h"
 #include"UART.h"
+#include"DWIN_DISPLAY.h"
 #include"CAN.h"
 #include"SYSTICK.h"
+#include"GPIO.h"
+#include"ADC.h"
+#include"DWIN_DEFINES.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -90,57 +95,135 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
      Stm32f103_System_Clock_Init();
-    if(!Serial_Peripheral_Interface_Init())
-    {
-    	//SPI Inititialization Fails
 
-    }
-    if (!Micro_Chip_Product_2515_Init())
-    {
-    	//MCP2515 Inititialization Fails
-    }
-    if(!Universal_Asyn_Rx_Tx_1_Init())
-    {
-    	//uart1 Inititialization Fails
-    }
-    if(!Universal_Asyn_Rx_Tx_3_Init())
-    {
-    	//uart3 Inititialization Fails
-    }
-    if(!Core_Timer_Init())
-    {
-    	//systick Inititialization Fails
-    }
-    if(!Controller_Area_Network_Init())
-    {
-    	//CAN Inititialization Fails
-    }
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   /* USER CODE BEGIN 2 */
-    CAN_Message_t Rx_Frame;
-  /* USER CODE END 2 */
+     if(!Universal_Asyn_Rx_Tx_1_Init())
+     {
+     	//uart1 Inititialization Fails
+ 	    Error_Handler();
+     }
+     if(!Universal_Asyn_Rx_Tx_3_Init())
+     {
+     	//uart3 Inititialization Fails
+		Uart_Printf("[ERROR] Failed to initialize GPIO\r\n");
+		Error_Handler();
+     }
+     Uart_Printf("[INFO] GPIOs Initialized...\r\n");
+     if(!Serial_Peripheral_Interface_Init())
+     {
+     	//SPI Inititialization Fails
+ 	    Uart_Printf("[ERROR] Failed to initialize SPI\r\n");
+ 	    Error_Handler();
+     }
+    Uart_Printf("[INFO] SPI Initialized...\r\n");
+     if (!Micro_Chip_Product_2515_Init())
+     {
+     	//MCP2515 Inititialization Fails
+  	    Uart_Printf("[ERROR] Failed to initialize MCP2515\r\n");
+  	    Error_Handler();
+      }
+     Uart_Printf("[INFO] MCP2515 Initialized...\r\n");
+     if(!Configure_Mcp2515_Can_Ids())
+     {
+   	    Uart_Printf("[ERROR] Failed to  Configure_Mcp2515_Can_Ids\r\n");
+     }
+     else
+     {
+   	  Uart_Printf("[INFO] Configure_Mcp2515_Can_Ids OK\r\n");
+     }
+     if(!Core_Timer_Init())
+     {
+     	//systick Inititialization Fails
+   	    Uart_Printf("[ERROR] Failed to initialize systick\r\n");
+   	    Error_Handler();
+       }
+      Uart_Printf("[INFO] systick Initialized...\r\n");
+     if(!Controller_Area_Network_Init())
+     {
+     	//CAN Inititialization Fails
+    	 Uart_Printf("[ERROR] Failed to initialize CAN\r\n");
+    	 Error_Handler();
+     }
+     Uart_Printf("[INFO] CAN Started at 500kbps\r\n");
+     Configure_Can_filter_Ids();
+     Uart_Printf("[INFO] Initializing GPIOs...\r\n");
+     if(!General_Purpose_Input_Output_Init())
+     {
+ 	    Uart_Printf("[ERROR] Failed to initialize GPIO\r\n");
+ 	    Error_Handler();
+     }
+     Uart_Printf("[INFO] GPIOs Initialized...\r\n");
+     if(!Analog_To_Digital_Converter_Init())
+     {
+     	//ADC Inititialization  Fails
+		Uart_Printf("[ERROR] Failed to initialize ADCs\r\n");
+		Error_Handler();
+     }
+     Uart_Printf("[INFO] ADCs Initialized...\r\n");
+     if(!Enable_Task_Timer_Init())
+     {
+     	//Task Inititialization Fails
+    	  Uart_Printf("[ERROR]Failed to initialize Task timer\r\n");
+     }
+     else
+     {
+    	  Uart_Printf("[INFO] Task timer initialized\r\n");
+     }
+     if(!Enable_Gpio_Print_Task())
+     {
+         Uart_Printf("[ERROR] Failed to create MCU Control task\r\n");
+     }
+     else
+     {
+         Uart_Printf("[INFO] Enable_Gpio_Print_Task enabled \r\n");
+     }
+     if(!Enable_Adc_Print_Task())
+     {
+         Uart_Printf("[ERROR] Failed to create Enable_Adc_Print_Task\r\n");
+     }
+     else
+     {
+         Uart_Printf("[INFO] Enable_Adc_Print_Task enabled \r\n");
+     }
+     if(!Enable_Mcu_Print_Task())
+     {
+         Uart_Printf("[ERROR] Failed to create Enable_Mcu_Print_Task\r\n");
+     }
+     else
+     {
+         Uart_Printf("[INFO] Enable_Mcu_Print_Task enabled\r\n");
+     }
+     if(!Enable_Bms_Print_Task())
+     {
+         Uart_Printf("[ERROR] Failed to create Enable_Bms_Print_Task\r\n");
+     }
+     else
+     {
+         Uart_Printf("[INFO] Enable_Bms_Print_Task enabled \r\n");
+     }
+     if(!Enable_Display_Print_Task())
+     {
+         Uart_Printf("[ERROR] Failed to create Enable_Display_Print_Task\r\n");
+     }
+     else
+     {
+         Uart_Printf("[INFO] Enable_Display_Print_Task enabled \r\n");
+     }
+    /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if(Can_Collect_Frame(&Rx_Frame))
-    {
-        if(Can_Send_Frame(&Rx_Frame))
-        {
-        	Uart_Printf("Send\r\n");
-        }
-        else
-        {
-        	Uart_Printf("Not Send\r\n");
-        }
-    }
-    else
-    {
-    	Uart_Printf("Not received\r\n");
-    }
+	  Request_Bms_Messages();
+	  Process_Can_Messages();
+	  Update_Gpio();
+	  Update_Adc();
+	  Display_Update_All();
+	  Task_Timer_Run_All();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -185,7 +268,13 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void LED_Init(void)
+{
+    RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
+    GPIOB->CRL &= ~(0xFU << (2U * 4U));
+    GPIOB->CRL |=  (0x2U << (2U * 4U));
+    GPIOB->BSRR = GPIO_BSRR_BR2;
+}
 /* USER CODE END 4 */
 
 /**
@@ -197,8 +286,11 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
+  LED_Init();
+  GPIOB->BSRR = GPIO_BSRR_BS2;
   while (1)
   {
+	  GPIOB->BSRR ^= GPIO_BSRR_BS2;
   }
   /* USER CODE END Error_Handler_Debug */
 }

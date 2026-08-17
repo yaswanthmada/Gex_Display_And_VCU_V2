@@ -1,5 +1,5 @@
-Core/Src/CAN.o: ../Core/Src/CAN.c ../Core/Inc/main.h \
- ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
+Core/Src/CAN.o: ../Core/Src/CAN.c ../Core/Inc/CAN.h ../Core/Inc/MCP2515.h \
+ ../Core/Inc/main.h ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h \
@@ -21,8 +21,12 @@ Core/Src/CAN.o: ../Core/Src/CAN.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
- ../Core/Inc/RCC.h ../Core/Inc/main.h ../Core/Inc/CAN.h \
- ../Core/Inc/MCP2515.h ../Core/Inc/MCP2515_DEF.h
+ ../Core/Inc/CONFIGURATION_FILES.h ../Core/Inc/MCP2515_DEF.h \
+ ../Core/Inc/RCC.h ../Core/Inc/DECODE_BATTERY_MANAGEMENT_SYSTEM.h \
+ ../Core/Inc/SYSTICK.h ../Core/Inc/TASK_TIMER.h ../Core/Inc/UART.h \
+ ../Core/Inc/DWIN_DISPLAY.h ../Core/Inc/DWIN_DEFINES.h
+../Core/Inc/CAN.h:
+../Core/Inc/MCP2515.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -46,8 +50,12 @@ Core/Src/CAN.o: ../Core/Src/CAN.c ../Core/Inc/main.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
-../Core/Inc/RCC.h:
-../Core/Inc/main.h:
-../Core/Inc/CAN.h:
-../Core/Inc/MCP2515.h:
+../Core/Inc/CONFIGURATION_FILES.h:
 ../Core/Inc/MCP2515_DEF.h:
+../Core/Inc/RCC.h:
+../Core/Inc/DECODE_BATTERY_MANAGEMENT_SYSTEM.h:
+../Core/Inc/SYSTICK.h:
+../Core/Inc/TASK_TIMER.h:
+../Core/Inc/UART.h:
+../Core/Inc/DWIN_DISPLAY.h:
+../Core/Inc/DWIN_DEFINES.h:

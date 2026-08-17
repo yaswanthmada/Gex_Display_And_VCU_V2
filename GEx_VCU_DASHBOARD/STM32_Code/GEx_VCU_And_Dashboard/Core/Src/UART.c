@@ -59,7 +59,7 @@ static bool UART3_Init(void)
     USART3->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;
     return ((USART3->CR1 & USART_CR1_UE) && (USART3->BRR == brr_val)) ? true : false;
 }
-bool USART1_Send_Char(char c)
+bool USART1_Send_Char(uint8_t c)
 {
     uint32_t timeout = 100000;
     while (!(USART1->SR & USART_SR_TXE))
@@ -101,6 +101,13 @@ void USART3_Send_String(const char *str)
     	{
     	USART3_Send_Char(*str++);
     	}
+}
+void Send_On_Display_Uart(uint8_t *frame,uint8_t Size)
+{
+	for(uint8_t i=0;i<Size;i++)
+	{
+		USART1_Send_Char(frame[i]);
+	}
 }
 void Uart_Printf(const char *format, ...)
 {

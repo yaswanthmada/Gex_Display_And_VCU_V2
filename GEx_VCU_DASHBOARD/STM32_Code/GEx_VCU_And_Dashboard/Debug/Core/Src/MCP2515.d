@@ -21,7 +21,11 @@ Core/Src/MCP2515.o: ../Core/Src/MCP2515.c ../Core/Inc/MCP2515.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
- ../Core/Inc/MCP2515_DEF.h ../Core/Inc/MCP2515_REG.h ../Core/Inc/SPI.h
+ ../Core/Inc/CONFIGURATION_FILES.h ../Core/Inc/MCP2515_DEF.h \
+ ../Core/Inc/MCP2515_REG.h ../Core/Inc/DECODE_MOTOR_CONTROLLER.h \
+ ../Core/Inc/SYSTICK.h ../Core/Inc/MCP2515.h ../Core/Inc/UART.h \
+ ../Core/Inc/TASK_TIMER.h ../Core/Inc/DWIN_DISPLAY.h \
+ ../Core/Inc/DWIN_DEFINES.h ../Core/Inc/SPI.h
 ../Core/Inc/MCP2515.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -46,6 +50,14 @@ Core/Src/MCP2515.o: ../Core/Src/MCP2515.c ../Core/Inc/MCP2515.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
+../Core/Inc/CONFIGURATION_FILES.h:
 ../Core/Inc/MCP2515_DEF.h:
 ../Core/Inc/MCP2515_REG.h:
+../Core/Inc/DECODE_MOTOR_CONTROLLER.h:
+../Core/Inc/SYSTICK.h:
+../Core/Inc/MCP2515.h:
+../Core/Inc/UART.h:
+../Core/Inc/TASK_TIMER.h:
+../Core/Inc/DWIN_DISPLAY.h:
+../Core/Inc/DWIN_DEFINES.h:
 ../Core/Inc/SPI.h:

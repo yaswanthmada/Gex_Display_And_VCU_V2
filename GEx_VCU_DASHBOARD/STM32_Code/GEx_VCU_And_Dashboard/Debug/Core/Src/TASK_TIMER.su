@@ -8,3 +8,4 @@
 ../Core/Src/TASK_TIMER.c:99:6:Task_Timer_Enable	16	static
 ../Core/Src/TASK_TIMER.c:108:6:Task_Timer_Delete	16	static
 ../Core/Src/TASK_TIMER.c:120:10:Task_Timer_Get_Tick	8	static
+../Core/Src/TASK_TIMER.c:124:6:Enable_Task_Timer_Init	8	static

@@ -9,6 +9,10 @@
 #define INC_CAN_H_
 
 #include"MCP2515.h"
+#include"main.h"
+#include"RCC.h"
+#include"CONFIGURATION_FILES.h"
+#include"DECODE_BATTERY_MANAGEMENT_SYSTEM.h"
 
 #define CAN1_500_BAUD_RATE 500U //in Kb
 #define CAN1_250_BAUD_RATE 250U //in Kb
@@ -43,4 +47,5 @@ bool Can_Collect_Frame(CAN_Message_t *Frame);
  ******************************************************************************/
 bool Can_Send_Frame(CAN_Message_t *Frame);
 
+void Configure_Can_filter_Ids();
 #endif /* INC_CAN_H_ */

@@ -121,3 +121,8 @@ uint32_t Task_Timer_Get_Tick(void)
 {
     return Get_Tick_Ms();
 }
+bool Enable_Task_Timer_Init()
+{
+	Task_Timer_Init();
+	return true;
+	}

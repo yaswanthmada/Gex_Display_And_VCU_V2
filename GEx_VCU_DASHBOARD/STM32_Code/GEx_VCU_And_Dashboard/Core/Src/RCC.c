@@ -6,6 +6,15 @@
  */
 
 #include"main.h"
+/*******************************************************************************
+ * Function Name : system_clock_init_to_72MHZ
+ * Description   : Initializes system clock to 72 MHz using external crystal (HSE)
+ *                 and PLL x9, configures Flash latency to 2 wait states with
+ *                 prefetch buffer enabled, and sets APB1 prescaler to div-by-2.
+ * Scope         : Static (Private to this file)
+ * Parameters    : None
+ * Return Value  : None
+ ******************************************************************************/
 static void system_clock_init_to_72MHZ(){
 	    RCC->CR |= RCC_CR_HSEON;
 	    while (!(RCC->CR & RCC_CR_HSERDY));
