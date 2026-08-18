@@ -345,29 +345,38 @@ void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
     Mcu_Data->Mcu_Pcb_Temp = Mcu_Msgs.MCU_MSG_0x013.Controller_Temp;
     uint32_t trouble_mask = Mcu_Msgs.MCU_MSG_0x011.Trouble_Code;
     if (trouble_mask == 0)
-    {
-        Mcu_Data->Mcu_Fault = false;
-        Mcu_Data->Mcu_Fault_Count = 0;
-        for (uint8_t i = 0; i < MCU_FAULT_COUNT; i++)
         {
-            Mcu_Data->Mcu_Active_Fault[i][0] = '\0';
-        }
-    }
-    else
-    {
-        Mcu_Data->Mcu_Fault = true;
-        Mcu_Data->Mcu_Fault_Count = 0;
-        for (uint8_t bit = 0; bit < 32 && bit < MCU_FAULT_COUNT; bit++)
-        {
-            if (trouble_mask & (1UL << bit))
+            Mcu_Data->Mcu_Fault = false;
+            Mcu_Data->Mcu_Fault_Count = 0;
+            for (uint8_t i = 0; i < MCU_FAULT_COUNT; i++)
             {
-                if (Mcu_Data->Mcu_Fault_Count < MCU_FAULT_COUNT)
+                Mcu_Data->Mcu_Active_Fault[i][0] = '\0';
+            }
+        }
+        else
+        {
+            Mcu_Data->Mcu_Fault = true;
+            Mcu_Data->Mcu_Fault_Count = 0;
+
+            for (uint8_t i = 0; i < MCU_FAULT_COUNT; i++)
+            {
+                Mcu_Data->Mcu_Active_Fault[i][0] = '\0';
+            }
+            uint8_t max_fault_names = sizeof(Mcu_Fault_Names) / sizeof(Mcu_Fault_Names[0]);
+            for (uint8_t bit = 0; bit < 32 && bit < MCU_FAULT_COUNT && bit < max_fault_names; bit++)
+            {
+                if (trouble_mask & (1UL << bit))
                 {
-                    strcpy(Mcu_Data->Mcu_Active_Fault[Mcu_Data->Mcu_Fault_Count++], Mcu_Fault_Names[bit]);
+                    if (Mcu_Data->Mcu_Fault_Count < MCU_FAULT_COUNT)
+                    {
+                        uint8_t dest_size = sizeof(Mcu_Data->Mcu_Active_Fault[0]);
+                        strncpy(Mcu_Data->Mcu_Active_Fault[Mcu_Data->Mcu_Fault_Count], Mcu_Fault_Names[bit], dest_size - 1);
+                        Mcu_Data->Mcu_Active_Fault[Mcu_Data->Mcu_Fault_Count][dest_size - 1] = '\0';
+                        Mcu_Data->Mcu_Fault_Count++;
+                    }
                 }
             }
         }
-    }
     if(Mcu_Msgs.MCU_MSG_0x012.Brake_Pedal_State>0)
     {
         Mcu_Data->Brake_Signal=true;
@@ -376,5 +385,6 @@ void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
     {
         Mcu_Data->Brake_Signal=false;
     }
+    Uart_Printf("mcu in end\n\r");
 #endif
 }

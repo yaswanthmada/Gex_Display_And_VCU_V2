@@ -36,6 +36,7 @@
 #include"GPIO.h"
 #include"ADC.h"
 #include"DWIN_DEFINES.h"
+#include"SYSTICK.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -105,13 +106,14 @@ int main(void)
      	//uart1 Inititialization Fails
  	    Error_Handler();
      }
+     Uart_Printf("[INFO] UART1 Initialized...\r\n");
      if(!Universal_Asyn_Rx_Tx_3_Init())
      {
      	//uart3 Inititialization Fails
 		Uart_Printf("[ERROR] Failed to initialize GPIO\r\n");
 		Error_Handler();
      }
-     Uart_Printf("[INFO] GPIOs Initialized...\r\n");
+     Uart_Printf("[INFO] UART3 Initialized...\r\n");
      if(!Serial_Peripheral_Interface_Init())
      {
      	//SPI Inititialization Fails
@@ -212,18 +214,21 @@ int main(void)
      {
          Uart_Printf("[INFO] Enable_Display_Print_Task enabled \r\n");
      }
+     /*---------------------- WATCH_TIMER_NEED_TO_ADD-------------------*/
     /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  uint32_t Start_time=Get_Tick_Ms();
 	  Request_Bms_Messages();
 	  Process_Can_Messages();
 	  Update_Gpio();
 	  Update_Adc();
 	  Display_Update_All();
 	  Task_Timer_Run_All();
+	  Uart_Printf("Time Taken for While loop Iteration :%d in ms\n",Get_Tick_Ms()-Start_time);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

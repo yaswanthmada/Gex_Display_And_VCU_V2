@@ -648,14 +648,32 @@ void Get_Bms_Data(BMS_Data_t* Bms_Data)
    uint8_t fault_count = 0;
    if(Bms_Frames.JBD_BMS_0x102.Protection_Status>0)
    {
-	    for (uint8_t i = 0; i < BMS_FAULT_COUNT; i++)
-	    {
-	        if (Bms_Frames.JBD_BMS_0x102.Protection_Status & (1U << i))
-	        {
-	            strcpy(Bms_Data->Bms_Active_Fault[i], Bms_Fault_Names[i]);
-	            fault_count++;
-	        }
-	    }
+	      fault_count = 0;
+	      for (uint8_t i = 0; i < BMS_FAULT_COUNT; i++)
+	      {
+	          Bms_Data->Bms_Active_Fault[i][0] = '\0';
+	      }
+	      if (Bms_Frames.JBD_BMS_0x102.Protection_Status > 0)
+	      {
+	          uint8_t max_fault_names = sizeof(Bms_Fault_Names) / sizeof(Bms_Fault_Names[0]);
+
+	          for (uint8_t i = 0; i < 16 && i < BMS_FAULT_COUNT && i < max_fault_names; i++)
+	          {
+	              if (Bms_Frames.JBD_BMS_0x102.Protection_Status & (1U << i))
+	              {
+	                  if (fault_count < BMS_FAULT_COUNT)
+	                  {
+	                      uint8_t dest_size = sizeof(Bms_Data->Bms_Active_Fault[0]);
+	                      strncpy(Bms_Data->Bms_Active_Fault[fault_count], Bms_Fault_Names[i], dest_size - 1);
+	                      Bms_Data->Bms_Active_Fault[fault_count][dest_size - 1] = '\0';
+
+	                      fault_count++;
+	                  }
+	              }
+	          }
+	      }
+	      Bms_Data->Bms_Fault_Count = fault_count;
+	      Bms_Data->Bms_Fault = (fault_count > 0);
    }
 #endif
 }

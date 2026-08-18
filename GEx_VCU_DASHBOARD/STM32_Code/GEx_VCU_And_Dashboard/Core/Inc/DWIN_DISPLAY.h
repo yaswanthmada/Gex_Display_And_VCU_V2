@@ -22,7 +22,7 @@ float Cells[16];
 uint8_t Avg_Temp;
 uint8_t Bms_Fault;
 uint8_t Bms_Fault_Count;
-char (*Bms_Active_Fault)[BMS_FAULT_NAMES_LENGTH];
+char Bms_Active_Fault[16][BMS_FAULT_NAMES_LENGTH];
 }BMS_Data_t;
 typedef struct
 {
@@ -36,7 +36,7 @@ typedef struct
 	uint8_t Mcu_Fault_Count;
 	uint8_t Speed;
 	uint8_t Vehicle_Mode;
-	char (*Mcu_Active_Fault)[MCU_FAULT_NAMES_LENGTH];
+	char Mcu_Active_Fault[22][MCU_FAULT_NAMES_LENGTH];
 	bool Brake_Signal;
 	bool Forward;
 	bool Reverse;

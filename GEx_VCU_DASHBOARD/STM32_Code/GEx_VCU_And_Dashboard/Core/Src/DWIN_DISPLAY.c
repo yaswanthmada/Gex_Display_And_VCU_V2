@@ -126,8 +126,9 @@ static void Update_Display_strucutres()
 	Get_Bms_Data(&GEx_Display.Bms_Data);
 	Get_Mcu_Data(&GEx_Display.Mcu_Data);
 	Get_IO_Data(&GEx_Display.IO_Data);
+	Uart_Printf("ADC start");
 	Get_Adc_Data(&GEx_Display.Adc_Data);
-//	Get_System_Data(&GEx_Display.System_Data); // need to update
+//	Get_System_Data(&GEx_Display.System_Data); // need to update once all code done
 }
 void Display_Update_All()
 {

@@ -2,7 +2,7 @@
 ../Core/Src/DWIN_DISPLAY.c:50:13:DWIN_Write_VP	24	static
 ../Core/Src/DWIN_DISPLAY.c:63:13:Update_Dwin_Display	8	static
 ../Core/Src/DWIN_DISPLAY.c:124:13:Update_Display_strucutres	8	static
-../Core/Src/DWIN_DISPLAY.c:132:6:Display_Update_All	8	static
-../Core/Src/DWIN_DISPLAY.c:144:13:Print_Display_Data	8	static
-../Core/Src/DWIN_DISPLAY.c:196:13:Task_Id_For_Dispaly_Print	8	static
-../Core/Src/DWIN_DISPLAY.c:208:6:Enable_Display_Print_Task	8	static
+../Core/Src/DWIN_DISPLAY.c:133:6:Display_Update_All	8	static
+../Core/Src/DWIN_DISPLAY.c:145:13:Print_Display_Data	8	static
+../Core/Src/DWIN_DISPLAY.c:197:13:Task_Id_For_Dispaly_Print	8	static
+../Core/Src/DWIN_DISPLAY.c:209:6:Enable_Display_Print_Task	8	static
