@@ -36,7 +36,7 @@
 #define JBD_BMS_ID16 0x110
 
 #define BMS_FAULT_NAME_LEN    20
-#define BMS_FAULT_COUNT_JBD_BMS      16
+#define BMS_FAULT_COUNT_JBD_BMS       16
 
 
 typedef struct

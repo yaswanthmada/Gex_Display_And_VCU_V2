@@ -14,7 +14,6 @@
 #include"MCP2515.h"
 #include"SYSTICK.h"
 
-
 void Process_Motor_Controller_Messages(CAN_Message_t *rxMsg);
 
 #endif /* INC_PROCESS_MOTOR_CONTROLLER_H_ */
