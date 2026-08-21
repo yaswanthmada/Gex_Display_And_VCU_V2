@@ -8,7 +8,7 @@
 
 #include"DWIN_DISPLAY.h"
 static int status_print_task_id=-1;
-GEx_Display_t GEx_Display ;
+GEx_Display_t GEx_Display={0} ;
 // static int16_t page_offset  = 0; Now not using , required when want to change from one screen to another
 /*******************************************************************************
  * Function Name : Send_Cmd
@@ -24,7 +24,7 @@ GEx_Display_t GEx_Display ;
 static void Send_Cmd(uint8_t cmd, uint16_t address,
                      const uint8_t *data, uint8_t data_len)
 {
-    uint8_t frame[100];
+    uint8_t frame[20];
     uint8_t idx = 0;
     frame[idx++] = DWIN_HEADER_1;
     frame[idx++] = DWIN_HEADER_2;
@@ -52,6 +52,46 @@ static void DWIN_Write_VP(uint16_t address, uint16_t value)
     uint8_t d[2] = { (uint8_t)(value >> 8), (uint8_t)(value & 0xFFu) };
     Send_Cmd(CMD_WRITE_VP, address, d, 2u);
 }
+static void DWIN_Write_Bool(uint16_t address,
+                            bool value)
+{
+    DWIN_Write_VP(address,
+                  value ? 1u : 0u);
+}
+/*******************************************************************************
+ * Function Name : DWIN_Write_VP32
+ * Description   : Writes a 32-bit integer value to a specified Variable Pointer (VP)
+ *                 address on the DWIN display.
+ * Scope         : Static (Private to this file)
+ * Parameters    : address - Target Variable Pointer address
+ *                 value   - 32-bit unsigned integer value to write
+ * Return Value  : None
+ ******************************************************************************/
+static void DWIN_Write_VP32(uint16_t address, uint32_t value)
+{
+    uint8_t d[4] = {
+        (uint8_t)((value >> 24) & 0xFFu),
+        (uint8_t)((value >> 16) & 0xFFu),
+        (uint8_t)((value >>  8) & 0xFFu),
+        (uint8_t)( value        & 0xFFu)
+    };
+    Send_Cmd(CMD_WRITE_VP, address, d, 4u);
+}
+/*******************************************************************************
+ * Function Name : DWIN_Write_VPFloat
+ * Description   : Writes a single-precision floating-point value to a specified
+ *                 Variable Pointer (VP) address by casting it via a union.
+ * Scope         : Static (Private to this file)
+ * Parameters    : address - Target Variable Pointer address
+ *                 value   - Float value to write
+ * Return Value  : None
+ ******************************************************************************/
+static void DWIN_Write_VPFloat(uint16_t address, float value)
+{
+    union { float f; uint32_t u; } v;
+    v.f = value;
+    DWIN_Write_VP32(address, v.u);
+}
 /*******************************************************************************
  * Function Name : Update_Dwin_Display
  * Description   : Synchronizes all vehicle telemetry, sensor inputs, and state
@@ -60,60 +100,288 @@ static void DWIN_Write_VP(uint16_t address, uint16_t value)
  * Parameters    : None
  * Return Value  : None
  ******************************************************************************/
-static void Update_Dwin_Display()
+
+static void Update_Dwin_Display(void)
 {
-    DWIN_Write_VP(HEAD_LIGHTS,GEx_Display.IO_Data.Head_Light );
-    DWIN_Write_VP(LEFT_INDICATOR,GEx_Display.IO_Data.Right_Ind);
-    DWIN_Write_VP(PEDDAL_BRAKE,GEx_Display.Mcu_Data.Brake_Signal);
-    DWIN_Write_VP(HAND_BRAKE,GEx_Display.Mcu_Data.Brake_Signal);
-    DWIN_Write_VP(BRAKE_FLUID,  GEx_Display.IO_Data.Brake_Fluid);
-    DWIN_Write_VP(BATTERY_FAULT_12V,  GEx_Display.Adc_Data.Battery_Low_12V);
-    DWIN_Write_VP(CHARGER_DETECTION, GEx_Display.IO_Data.Charge_Ack);
-    DWIN_Write_VP(RIGHT_INDICATOR,GEx_Display.IO_Data.Right_Ind);
-    DWIN_Write_VP(VEHICLE_SPEED,GEx_Display.Mcu_Data.Speed);
 
-    DWIN_Write_VP(TRIP,GEx_Display.Mcu_Data.Trip_Value);
-
-    DWIN_Write_VP(MCU_TEMP,GEx_Display.Mcu_Data.Mcu_Pcb_Temp);
-    DWIN_Write_VP(MOTOR_TEMP,GEx_Display.Mcu_Data.Motor_Temp);
-
-    DWIN_Write_VP(SOC,GEx_Display.Bms_Data.Soc);
-
-    DWIN_Write_VP(BATTERY_PACK_VOL,GEx_Display.Bms_Data.Battery_Pack_voltage);
-    DWIN_Write_VP(BATTERY_PACK_CUR,GEx_Display.Bms_Data.Battery_Current);
-
-    DWIN_Write_VP(DRIVE_MODE,GEx_Display.Mcu_Data.Forward);
-    DWIN_Write_VP(REVERSE_MODE,GEx_Display.Mcu_Data.Reverse);
-    DWIN_Write_VP(NEUTRAL_MODE,GEx_Display.Mcu_Data.Neutral);
-    DWIN_Write_VP(ECHO_BOOST,GEx_Display.Mcu_Data.Echo_Boost);
-
-    DWIN_Write_VP(CAN_COMM,GEx_Display.System_Data.Is_Can_Ok);
-    DWIN_Write_VP(BMS_CAN_COMM,GEx_Display.System_Data.Is_Bms_Can_Ok);
-    DWIN_Write_VP(MCU_CAN_COMM,GEx_Display.System_Data.Is_Mcu_Can_Ok);
+    DWIN_Write_Bool(
+        HEAD_LIGHTS,
+        GEx_Display.IO_Data.Head_Light);
 
 
-
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[0]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[1]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[2]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[3]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[4]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[5]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[6]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[7]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[8]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[9]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[10]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[11]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[12]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[13]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[14]);
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Cells[15]);
+    DWIN_Write_Bool(
+        LEFT_INDICATOR,
+        GEx_Display.IO_Data.Left_Ind);
 
 
-    DWIN_Write_VP(TEMP_VAL,GEx_Display.Bms_Data.Avg_Temp);
+    DWIN_Write_Bool(
+        PEDDAL_BRAKE,
+        GEx_Display.Mcu_Data.Brake_Signal);
+
+
+    DWIN_Write_Bool(
+        HAND_BRAKE,
+        GEx_Display.IO_Data.Hand_Brake);
+
+
+    DWIN_Write_Bool(
+        BRAKE_FLUID,
+        GEx_Display.IO_Data.Brake_Fluid);
+
+
+    DWIN_Write_Bool(
+        BATTERY_FAULT_12V,
+        GEx_Display.Adc_Data.Battery_Low_12V);
+
+
+    DWIN_Write_Bool(
+        CHARGER_DETECTION,
+        GEx_Display.IO_Data.Charge_Ack);
+
+
+    DWIN_Write_Bool(
+        RIGHT_INDICATOR,
+        GEx_Display.IO_Data.Right_Ind);
+
+
+    DWIN_Write_Bool(
+        DRIVE_MODE,
+        GEx_Display.Mcu_Data.Forward);
+
+
+    DWIN_Write_Bool(
+        REVERSE_MODE,
+        GEx_Display.Mcu_Data.Reverse);
+
+
+    DWIN_Write_Bool(
+        NEUTRAL_MODE,
+        GEx_Display.Mcu_Data.Neutral);
+
+
+    DWIN_Write_Bool(
+        ECHO_BOOST,
+        GEx_Display.Mcu_Data.Echo_Boost);
+
+    DWIN_Write_Bool(
+    		READY,
+        GEx_Display.Is_Ready);
+
+
+    DWIN_Write_VP(
+        VEHICLE_SPEED,
+        GEx_Display.Mcu_Data.Speed);
+    if(GEx_Display.Mcu_Data.Speed==0)
+    {
+        DWIN_Write_Bool(
+        		CAR_ROAD,
+            0);
+    }
+    else
+    {
+    	static bool state=true;
+        DWIN_Write_Bool(
+        		CAR_ROAD,
+            state);
+        state=!state;
+    }
+
+    DWIN_Write_VP(
+        SOC,
+        GEx_Display.Bms_Data.Soc);
+
+    DWIN_Write_VP32(
+        ODO,
+        GEx_Display.Mcu_Data.Odo_Meter);
+    DWIN_Write_VP32(
+        TRIP,
+        GEx_Display.Mcu_Data.Trip_Value);
+
+    DWIN_Write_VP(
+        MCU_TEMP,
+        GEx_Display.Mcu_Data.Mcu_Pcb_Temp);
+
+
+    DWIN_Write_VP(
+        MOTOR_TEMP,
+        GEx_Display.Mcu_Data.Motor_Temp);
+
+
+
+    DWIN_Write_VP(
+        BAT_PACK_TEMP,
+        GEx_Display.Bms_Data.Avg_Temp);
+
+    DWIN_Write_VPFloat(
+        BATTERY_PACK_VOL,
+        GEx_Display.Bms_Data.Battery_Pack_voltage);
+
+
+    DWIN_Write_VPFloat(
+        BATTERY_PACK_CUR,
+        GEx_Display.Bms_Data.Battery_Current);
+
+    DWIN_Write_VPFloat(
+        BATTERY_12V_VOL,
+        GEx_Display.Adc_Data.Voltage_12v);
+
+    DWIN_Write_VPFloat(
+    		MCU_CUR,
+		GEx_Display.Mcu_Data.Mcu_Current);
+
+    DWIN_Write_VPFloat(
+    		MCU_VOL,
+		GEx_Display.Mcu_Data.Mcu_Pack_voltage);
+
+
+    DWIN_Write_VP(
+        MCU_FAULT_COUNT,
+        GEx_Display.Mcu_Data.Mcu_Fault_Count);
+
+
+    DWIN_Write_VP(
+        BMS_FAULT_COUNT,
+        GEx_Display.Bms_Data.Bms_Fault_Count);
+
+
+
+    DWIN_Write_Bool(
+        IS_BMS_OK,
+        GEx_Display.System_Data.Is_Bms_Can_Ok);
+
+
+    DWIN_Write_Bool(
+        IS_MCU_OK,
+        GEx_Display.System_Data.Is_Mcu_Can_Ok);
+
+
+    DWIN_Write_Bool(
+        IS_CAN_OK,
+        GEx_Display.System_Data.Is_Can_Ok);
+
+
+    DWIN_Write_Bool(
+        IS_WDTR,
+        GEx_Display.System_Data.Is_Watch_Dog_Reset);
+
+
+    DWIN_Write_Bool(
+        IS_HARD_FAULT,
+        GEx_Display.System_Data.Is_System_Hard_Fault);
+
+    DWIN_Write_VPFloat(
+        CELL_1,
+        GEx_Display.Bms_Data.Cells[0]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_2,
+        GEx_Display.Bms_Data.Cells[1]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_3,
+        GEx_Display.Bms_Data.Cells[2]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_4,
+        GEx_Display.Bms_Data.Cells[3]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_5,
+        GEx_Display.Bms_Data.Cells[4]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_6,
+        GEx_Display.Bms_Data.Cells[5]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_7,
+        GEx_Display.Bms_Data.Cells[6]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_8,
+        GEx_Display.Bms_Data.Cells[7]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_9,
+        GEx_Display.Bms_Data.Cells[8]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_10,
+        GEx_Display.Bms_Data.Cells[9]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_11,
+        GEx_Display.Bms_Data.Cells[10]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_12,
+        GEx_Display.Bms_Data.Cells[11]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_13,
+        GEx_Display.Bms_Data.Cells[12]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_14,
+        GEx_Display.Bms_Data.Cells[13]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_15,
+        GEx_Display.Bms_Data.Cells[14]);
+
+
+    DWIN_Write_VPFloat(
+        CELL_16,
+        GEx_Display.Bms_Data.Cells[15]);
+
+    DWIN_Write_VPFloat(
+    		CELL_17,
+        GEx_Display.Bms_Data.Cells[16]);
+
+    DWIN_Write_VPFloat(
+    		CELL_18,
+        GEx_Display.Bms_Data.Cells[17]);
+
+    DWIN_Write_VPFloat(
+    		CELL_19,
+        GEx_Display.Bms_Data.Cells[18]);
+
+    DWIN_Write_VPFloat(
+    		CELL_20,
+        GEx_Display.Bms_Data.Cells[19]);
+
+    DWIN_Write_VPFloat(
+    		CELL_21,
+        GEx_Display.Bms_Data.Cells[20]);
+
+    DWIN_Write_VPFloat(
+    		CELL_22,
+        GEx_Display.Bms_Data.Cells[21]);
+
+    DWIN_Write_VPFloat(
+    		CELL_23,
+        GEx_Display.Bms_Data.Cells[22]);
+
+    DWIN_Write_VPFloat(
+    		CELL_24,
+        GEx_Display.Bms_Data.Cells[23]);
 
 }
+
 /*******************************************************************************
  * Function Name : Update_Display_strucutres
  * Description   : Fetches the latest data structures from BMS, MCU, IO, and ADC subsystems.
@@ -130,9 +398,281 @@ static void Update_Display_strucutres()
 	Get_Adc_Data(&GEx_Display.Adc_Data);
 //	Get_System_Data(&GEx_Display.System_Data); // need to update once all code done
 }
+void DWIN_Display_Test(void)
+{
+//    static uint8_t soc = 0;
+//
+//    static uint8_t speed = 0;
+//
+//    static uint8_t motor_temp = 30;
+//
+//    static uint8_t mcu_temp = 25;
+//
+//    static uint8_t avg_temp = 25;
+//
+//    static float pack_voltage = 48.00f;
+//
+//    static float pack_current = 0.00f;
+//
+//    static float cell_voltage = 3.20f;
+//
+//    static float voltage_12v = 11.50f;
+//
+//    static uint32_t odo = 10000;
+//
+//    static uint32_t trip = 0;
+//
+//    static uint8_t mode = 0;
+//
+//    static bool toggle = false;
+//
+//    uint8_t i;
+//
+//
+//    soc++;
+//
+//    if (soc >100)
+//    {
+//        soc = 0;
+//    }
+//
+//
+//    speed++;
+//
+//    if (speed >= 120)
+//    {
+//        speed = 0;
+//    }
+//
+//    pack_voltage += 0.10f;
+//
+//    if (pack_voltage >= 54.00f)
+//    {
+//        pack_voltage = 48.00f;
+//    }
+//    pack_current += 0.50f;
+//
+//    if (pack_current >= 50.00f)
+//    {
+//        pack_current = 0.00f;
+//    }
+//
+//    voltage_12v += 0.05f;
+//
+//    if (voltage_12v >= 14.00f)
+//    {
+//        voltage_12v = 11.50f;
+//    }
+//
+//    motor_temp++;
+//
+//    if (motor_temp >= 100)
+//    {
+//        motor_temp = 30;
+//    }
+//
+//
+//    mcu_temp++;
+//
+//    if (mcu_temp >= 80)
+//    {
+//        mcu_temp = 25;
+//    }
+//
+//    avg_temp++;
+//
+//    if (avg_temp >= 60)
+//    {
+//        avg_temp = 25;
+//    }
+//
+//
+//    cell_voltage += 0.01f;
+//
+//    if (cell_voltage >= 4.20f)
+//    {
+//        cell_voltage = 3.20f;
+//    }
+//
+//
+//    odo++;
+//
+//    trip++;
+//
+//    if (trip >= 9999)
+//    {
+//        trip = 0;
+//    }
+//
+//    toggle = !toggle;
+//
+//
+//    mode++;
+//
+//    if (mode >= 3)
+//    {
+//        mode = 0;
+//    }
+//
+//
+//    GEx_Display.Bms_Data.Soc =
+//        soc;
+//
+//
+//    GEx_Display.Bms_Data.Battery_Pack_voltage =
+//        pack_voltage;
+//
+//
+//    GEx_Display.Bms_Data.Battery_Current =
+//        pack_current;
+//
+//
+//    GEx_Display.Bms_Data.Avg_Temp =
+//        avg_temp;
+//
+//
+//    GEx_Display.Bms_Data.Bms_Fault =
+//        toggle;
+//
+//
+//    GEx_Display.Bms_Data.Bms_Fault_Count =
+//        toggle ? 1 : 0;
+//
+//    for (i = 0; i < 24; i++)
+//    {
+//        GEx_Display.Bms_Data.Cells[i] =
+//            cell_voltage + ((float)i * 0.01f);
+//    }
+//
+//
+//    GEx_Display.Mcu_Data.Mcu_Pack_voltage =
+//        pack_voltage;
+//
+//
+//    GEx_Display.Mcu_Data.Mcu_Current =
+//        pack_current;
+//
+//
+//    GEx_Display.Mcu_Data.Motor_Temp =
+//        motor_temp;
+//
+//
+//    GEx_Display.Mcu_Data.Mcu_Pcb_Temp =
+//        mcu_temp;
+//
+//
+//    GEx_Display.Mcu_Data.Mcu_Fault =
+//        toggle;
+//
+//
+//    GEx_Display.Mcu_Data.Odo_Meter =
+//        odo;
+//
+//
+//    GEx_Display.Mcu_Data.Trip_Value =
+//        trip;
+//
+//
+//    GEx_Display.Mcu_Data.Mcu_Fault_Count =
+//        toggle ? 1 : 0;
+//
+//
+//    GEx_Display.Mcu_Data.Speed =
+//        speed;
+//
+//
+//    if (mode == 0)
+//    {
+//        GEx_Display.Mcu_Data.Forward = true;
+//
+//        GEx_Display.Mcu_Data.Neutral = false;
+//
+//        GEx_Display.Mcu_Data.Reverse = false;
+//    }
+//    else if (mode == 1)
+//    {
+//        GEx_Display.Mcu_Data.Forward = false;
+//
+//        GEx_Display.Mcu_Data.Neutral = true;
+//
+//        GEx_Display.Mcu_Data.Reverse = false;
+//    }
+//    else
+//    {
+//        GEx_Display.Mcu_Data.Forward = false;
+//
+//        GEx_Display.Mcu_Data.Neutral = false;
+//
+//        GEx_Display.Mcu_Data.Reverse = true;
+//    }
+//
+//
+//    GEx_Display.Mcu_Data.Brake_Signal =
+//        toggle;
+//
+//
+//    GEx_Display.Mcu_Data.Echo_Boost =
+//        toggle;
+//
+//    GEx_Display.Adc_Data.Battery_Low_12V =toggle;
+//
+//
+//
+//    GEx_Display.Adc_Data.Voltage_12v =
+//        voltage_12v;
+//
+//    GEx_Display.IO_Data.Hand_Brake =
+//        toggle;
+//
+//
+//    GEx_Display.IO_Data.Head_Light =
+//        !toggle;
+//
+//
+//    GEx_Display.IO_Data.Charge_Ack =
+//        toggle;
+//
+//
+//    GEx_Display.IO_Data.Brake_Fluid =
+//        !toggle;
+//
+//
+//    GEx_Display.IO_Data.Right_Ind =
+//        toggle;
+//
+//
+//    GEx_Display.IO_Data.Left_Ind =
+//        !toggle;
+//
+//
+//    GEx_Display.IO_Data.Mppt_On_Off =
+//        toggle;
+//
+//    GEx_Display.System_Data.Is_Watch_Dog_Reset =
+//    		!toggle;
+//
+//
+//    GEx_Display.System_Data.Is_System_Hard_Fault =
+//    		!toggle;
+//
+//
+//    GEx_Display.System_Data.Is_Bms_Can_Ok =
+//        !toggle;
+//
+//
+//    GEx_Display.System_Data.Is_Mcu_Can_Ok =
+//    		!toggle;
+//
+//
+//    GEx_Display.System_Data.Is_Can_Ok =
+//        !toggle;
+//    GEx_Display.Is_Ready=!toggle;
+
+}
 void Display_Update_All()
 {
  Update_Display_strucutres();
+//	DWIN_Display_Test();
  Update_Dwin_Display();
 }
 /*******************************************************************************
@@ -142,49 +682,200 @@ void Display_Update_All()
  * Parameters    : None
  * Return Value  : None
  ******************************************************************************/
-static void Print_Display_Data()
+static void Print_Display_Data(void)
 {
-	Uart_Printf("\r\n=================== DISPLAY DATA ===================\r\n");
-	    Uart_Printf("  Head Light             : %s\r\n", GEx_Display.IO_Data.Head_Light ? "On" : "Off");
-	    Uart_Printf("  Left Indicator         : %s\r\n", GEx_Display.IO_Data.Right_Ind ? "On" : "Off");
-	    Uart_Printf("  Pedal Brake            : %s\r\n", GEx_Display.Mcu_Data.Brake_Signal ? "Active" : "Released");
-	    Uart_Printf("  Hand Brake             : %s\r\n", GEx_Display.Mcu_Data.Brake_Signal ? "Active" : "Released");
-	    Uart_Printf("  Brake Fluid            : %s\r\n", GEx_Display.IO_Data.Brake_Fluid ? "OK" : "Low");
-	    Uart_Printf("  12V Battery Fault      : %s\r\n", GEx_Display.Adc_Data.Battery_Low_12V ? "Low" : "OK");
-	    Uart_Printf("  Charger Detection      : %s\r\n", GEx_Display.IO_Data.Charge_Ack ? "Detected" : "Not Detected");
-	    Uart_Printf("  Right Indicator        : %s\r\n", GEx_Display.IO_Data.Right_Ind ? "On" : "Off");
-	    Uart_Printf("  Vehicle Speed          : %u\r\n", GEx_Display.Mcu_Data.Speed);
-	    Uart_Printf("  Trip Value             : %lu\r\n", (unsigned long)GEx_Display.Mcu_Data.Trip_Value);
-	    Uart_Printf("  MCU PCB Temp           : %u C\r\n", GEx_Display.Mcu_Data.Mcu_Pcb_Temp);
-	    Uart_Printf("  Motor Temp             : %u C\r\n", GEx_Display.Mcu_Data.Motor_Temp);
-	    Uart_Printf("  Battery SOC            : %u %%\r\n", GEx_Display.Bms_Data.Soc);
-	    Uart_Printf("  Battery Pack Voltage   : %.2f V\r\n", (float)GEx_Display.Bms_Data.Battery_Pack_voltage);
-	    Uart_Printf("  Battery Current        : %.2f A\r\n", (float)GEx_Display.Bms_Data.Battery_Current);
-	    Uart_Printf("  Forward Mode           : %s\r\n", GEx_Display.Mcu_Data.Forward ? "On" : "Off");
-	    Uart_Printf("  Reverse Mode           : %s\r\n", GEx_Display.Mcu_Data.Reverse ? "On" : "Off");
-	    Uart_Printf("  Neutral Mode           : %s\r\n", GEx_Display.Mcu_Data.Neutral ? "On" : "Off");
-	    Uart_Printf("  Eco/Boost Mode         : %s\r\n", GEx_Display.Mcu_Data.Echo_Boost ? "On" : "Off");
-	    Uart_Printf("  General CAN Status     : %s\r\n", GEx_Display.System_Data.Is_Can_Ok ? "OK" : "Error");
-	    Uart_Printf("  BMS CAN Status         : %s\r\n", GEx_Display.System_Data.Is_Bms_Can_Ok ? "OK" : "Error");
-	    Uart_Printf("  MCU CAN Status         : %s\r\n", GEx_Display.System_Data.Is_Mcu_Can_Ok ? "OK" : "Error");
-	    Uart_Printf("  Cell Temp [0]          : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[0]);
-	    Uart_Printf("  Cell Temp [1]          : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[1]);
-	    Uart_Printf("  Cell Temp [2]          : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[2]);
-	    Uart_Printf("  Cell Temp [3]          : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[3]);
-	    Uart_Printf("  Cell Temp [4]          : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[4]);
-	    Uart_Printf("  Cell Temp [5]          : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[5]);
-	    Uart_Printf("  Cell Temp [6]          : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[6]);
-	    Uart_Printf("  Cell Temp [7]          : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[7]);
-	    Uart_Printf("  Cell Temp [8]          : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[8]);
-	    Uart_Printf("  Cell Temp [9]          : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[9]);
-	    Uart_Printf("  Cell Temp [10]         : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[10]);
-	    Uart_Printf("  Cell Temp [11]         : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[11]);
-	    Uart_Printf("  Cell Temp [12]         : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[12]);
-	    Uart_Printf("  Cell Temp [13]         : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[13]);
-	    Uart_Printf("  Cell Temp [14]         : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[14]);
-	    Uart_Printf("  Cell Temp [15]         : %.2f C\r\n", (float)GEx_Display.Bms_Data.Cells[15]);
-	    Uart_Printf("  Average Battery Temp   : %u C\r\n", GEx_Display.Bms_Data.Avg_Temp);
-	    Uart_Printf("=====================================================\r\n");
+    uint8_t i;
+    uint32_t value;
+
+    Uart_Printf("\r\n");
+    Uart_Printf("=====================================================\r\n");
+    Uart_Printf("                  DISPLAY DATA                       \r\n");
+    Uart_Printf("=====================================================\r\n");
+
+    /* -------------------- IO STATUS -------------------- */
+
+    Uart_Printf("Head Light             : %s\r\n",
+                GEx_Display.IO_Data.Head_Light ? "ON" : "OFF");
+
+    Uart_Printf("Left Indicator         : %s\r\n",
+                GEx_Display.IO_Data.Left_Ind ? "ON" : "OFF");
+
+    Uart_Printf("Right Indicator        : %s\r\n",
+                GEx_Display.IO_Data.Right_Ind ? "ON" : "OFF");
+
+    Uart_Printf("Pedal Brake            : %s\r\n",
+                GEx_Display.Mcu_Data.Brake_Signal ? "ACTIVE" : "RELEASED");
+
+    Uart_Printf("Hand Brake             : %s\r\n",
+                GEx_Display.IO_Data.Hand_Brake ? "ACTIVE" : "RELEASED");
+
+    Uart_Printf("Brake Fluid            : %s\r\n",
+                GEx_Display.IO_Data.Brake_Fluid ? "OK" : "LOW");
+
+    Uart_Printf("Charger Detection      : %s\r\n",
+                GEx_Display.IO_Data.Charge_Ack ? "DETECTED" : "NOT DETECTED");
+
+    Uart_Printf("MPPT                   : %s\r\n",
+                GEx_Display.IO_Data.Mppt_On_Off ? "ON" : "OFF");
+
+
+    /* -------------------- VEHICLE -------------------- */
+
+    Uart_Printf("\r\n---------------- VEHICLE ----------------------------\r\n");
+
+    Uart_Printf("Ready                  : %s\r\n",
+                GEx_Display.Is_Ready ? "YES" : "NO");
+
+    Uart_Printf("Vehicle Speed          : %u km/h\r\n",
+                GEx_Display.Mcu_Data.Speed);
+
+    Uart_Printf("ODO                    : %lu\r\n",
+                (unsigned long)GEx_Display.Mcu_Data.Odo_Meter);
+
+    Uart_Printf("Trip                   : %lu\r\n",
+                (unsigned long)GEx_Display.Mcu_Data.Trip_Value);
+
+    Uart_Printf("Forward                : %s\r\n",
+                GEx_Display.Mcu_Data.Forward ? "ON" : "OFF");
+
+    Uart_Printf("Reverse                : %s\r\n",
+                GEx_Display.Mcu_Data.Reverse ? "ON" : "OFF");
+
+    Uart_Printf("Neutral                : %s\r\n",
+                GEx_Display.Mcu_Data.Neutral ? "ON" : "OFF");
+
+    Uart_Printf("Eco/Boost              : %s\r\n",
+                GEx_Display.Mcu_Data.Echo_Boost ? "ON" : "OFF");
+
+
+    /* -------------------- BMS -------------------- */
+
+    Uart_Printf("\r\n---------------- BMS -------------------------------\r\n");
+
+    Uart_Printf("SOC                    : %u %%\r\n",
+                GEx_Display.Bms_Data.Soc);
+
+    /*
+     * Battery Pack Voltage
+     * Example: 48.52 V
+     */
+    value = (uint32_t)(GEx_Display.Bms_Data.Battery_Pack_voltage * 100.0f);
+
+    Uart_Printf("Pack Voltage           : %lu.%02lu V\r\n",
+                (unsigned long)(value / 100U),
+                (unsigned long)(value % 100U));
+
+    /*
+     * Battery Current
+     * Example: 12.35 A
+     */
+    value = (uint32_t)(GEx_Display.Bms_Data.Battery_Current * 100.0f);
+
+    Uart_Printf("Pack Current           : %lu.%02lu A\r\n",
+                (unsigned long)(value / 100U),
+                (unsigned long)(value % 100U));
+
+    Uart_Printf("Average Battery Temp   : %u C\r\n",
+                GEx_Display.Bms_Data.Avg_Temp);
+
+    Uart_Printf("BMS Fault              : %s\r\n",
+                GEx_Display.Bms_Data.Bms_Fault ? "YES" : "NO");
+
+    Uart_Printf("BMS Fault Count        : %u\r\n",
+                GEx_Display.Bms_Data.Bms_Fault_Count);
+
+
+    /* -------------------- MCU -------------------- */
+
+    Uart_Printf("\r\n---------------- MCU -------------------------------\r\n");
+
+    value = (uint32_t)(GEx_Display.Mcu_Data.Mcu_Pack_voltage * 100.0f);
+
+    Uart_Printf("MCU Pack Voltage       : %lu.%02lu V\r\n",
+                (unsigned long)(value / 100U),
+                (unsigned long)(value % 100U));
+
+    value = (uint32_t)(GEx_Display.Mcu_Data.Mcu_Current * 100.0f);
+
+    Uart_Printf("MCU Current            : %lu.%02lu A\r\n",
+                (unsigned long)(value / 100U),
+                (unsigned long)(value % 100U));
+
+    Uart_Printf("MCU PCB Temp           : %u C\r\n",
+                GEx_Display.Mcu_Data.Mcu_Pcb_Temp);
+
+    Uart_Printf("Motor Temp             : %u C\r\n",
+                GEx_Display.Mcu_Data.Motor_Temp);
+
+    Uart_Printf("MCU Fault              : %s\r\n",
+                GEx_Display.Mcu_Data.Mcu_Fault ? "YES" : "NO");
+
+    Uart_Printf("MCU Fault Count        : %u\r\n",
+                GEx_Display.Mcu_Data.Mcu_Fault_Count);
+
+
+    /* -------------------- 12V SYSTEM -------------------- */
+
+    Uart_Printf("\r\n---------------- 12V SYSTEM ------------------------\r\n");
+
+    value = (uint32_t)(GEx_Display.Adc_Data.Voltage_12v * 100.0f);
+
+    Uart_Printf("12V Voltage            : %lu.%02lu V\r\n",
+                (unsigned long)(value / 100U),
+                (unsigned long)(value % 100U));
+
+    Uart_Printf("12V Battery Status     : %s\r\n",
+                GEx_Display.Adc_Data.Battery_Low_12V ?
+                "LOW" : "OK");
+
+
+    /* -------------------- SYSTEM STATUS -------------------- */
+
+    Uart_Printf("\r\n---------------- SYSTEM STATUS ---------------------\r\n");
+
+    Uart_Printf("BMS CAN                : %s\r\n",
+                GEx_Display.System_Data.Is_Bms_Can_Ok ?
+                "OK" : "ERROR");
+
+    Uart_Printf("MCU CAN                : %s\r\n",
+                GEx_Display.System_Data.Is_Mcu_Can_Ok ?
+                "OK" : "ERROR");
+
+    Uart_Printf("General CAN            : %s\r\n",
+                GEx_Display.System_Data.Is_Can_Ok ?
+                "OK" : "ERROR");
+
+    Uart_Printf("Watchdog Reset         : %s\r\n",
+                GEx_Display.System_Data.Is_Watch_Dog_Reset ?
+                "YES" : "NO");
+
+    Uart_Printf("System Hard Fault      : %s\r\n",
+                GEx_Display.System_Data.Is_System_Hard_Fault ?
+                "YES" : "NO");
+
+
+    /* -------------------- CELL VOLTAGES -------------------- */
+
+    Uart_Printf("\r\n---------------- CELL VOLTAGES --------------------\r\n");
+
+    for (i = 0U; i < 24U; i++)
+    {
+        /*
+         * Example:
+         * 3.425 V -> 3425
+         */
+        value = (uint32_t)(GEx_Display.Bms_Data.Cells[i] * 1000.0f);
+
+        Uart_Printf("Cell %02u               : %lu.%03lu V\r\n",
+                    (unsigned int)(i + 1U),
+                    (unsigned long)(value / 1000U),
+                    (unsigned long)(value % 1000U));
+    }
+
+
+    Uart_Printf("=====================================================\r\n");
+    Uart_Printf("                 END DISPLAY DATA                    \r\n");
+    Uart_Printf("=====================================================\r\n");
 }
 /*******************************************************************************
  * Function Name : Task_Id_For_Dispaly_Print
@@ -213,40 +904,8 @@ bool Enable_Display_Print_Task()
 /*
  Now Not using future we will use
  */
-/*******************************************************************************
- * Function Name : DWIN_Write_VP32
- * Description   : Writes a 32-bit integer value to a specified Variable Pointer (VP)
- *                 address on the DWIN display.
- * Scope         : Static (Private to this file)
- * Parameters    : address - Target Variable Pointer address
- *                 value   - 32-bit unsigned integer value to write
- * Return Value  : None
- ******************************************************************************
-static void DWIN_Write_VP32(uint16_t address, uint32_t value)
-{
-    uint8_t d[4] = {
-        (uint8_t)((value >> 24) & 0xFFu),
-        (uint8_t)((value >> 16) & 0xFFu),
-        (uint8_t)((value >>  8) & 0xFFu),
-        (uint8_t)( value        & 0xFFu)
-    };
-    Send_Cmd(CMD_WRITE_VP, address, d, 4u);
-}*/
-/*******************************************************************************
- * Function Name : DWIN_Write_VPFloat
- * Description   : Writes a single-precision floating-point value to a specified
- *                 Variable Pointer (VP) address by casting it via a union.
- * Scope         : Static (Private to this file)
- * Parameters    : address - Target Variable Pointer address
- *                 value   - Float value to write
- * Return Value  : None
- ******************************************************************************
-static void DWIN_Write_VPFloat(uint16_t address, float value)
-{
-    union { float f; uint32_t u; } v;
-    v.f = value;
-    DWIN_Write_VP32(address, v.u);
-}*/
+
+
 /*******************************************************************************
  * Function Name : DWIN_Set_Text
  * Description   : Writes a text string to a specified Variable Pointer (VP)

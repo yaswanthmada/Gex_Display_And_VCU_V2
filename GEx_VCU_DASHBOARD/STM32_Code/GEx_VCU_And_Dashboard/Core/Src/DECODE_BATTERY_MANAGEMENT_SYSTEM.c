@@ -15,22 +15,22 @@ uint8_t ntc[5];
 uint8_t Avg_Temp=0;
 const char Bms_Fault_Names[BMS_FAULT_COUNT][BMS_FAULT_NAME_LEN] =
 {
-    "Single overvoltage protection",
-    "Single undervoltage protection",
-    "Whole group overvoltage protection",
-    "Whole group undervoltage protection",
-    "Charge over temperature protection",
-    "Charge low temperature protection",
-    "Discharge over temperature protection",
-    "Discharge low temperature protection",
-    "Charge overcurrent protection",
-    "Discharge overcurrent protection",
-    "Short circuit protection",
-    "Front detection IC error",
-    "Software lock MOS",
-    "Reserved",
-    "Reserved",
-    "Reserved"
+	    "Cell Over Volt",
+	    "Cell Under Volt",
+	    "Pack Over Volt",
+	    "Pack Under Volt",
+	    "Charge Over Temp",
+	    "Charge Low Temp",
+	    "Dischg Over Temp",
+	    "Dischg Low Temp",
+	    "Charge Over Curr",
+	    "Dischg Over Curr",
+	    "Short Circuit",
+	    "AFE IC Error",
+	    "MOS Lock",
+	    "Reserved",
+	    "Reserved",
+	    "Reserved"
 };
 /*******************************************************************************
  * Function Name : Decode_CAN_0x100
@@ -649,19 +649,19 @@ void Get_Bms_Data(BMS_Data_t* Bms_Data)
    if(Bms_Frames.JBD_BMS_0x102.Protection_Status>0)
    {
 	      fault_count = 0;
-	      for (uint8_t i = 0; i < BMS_FAULT_COUNT; i++)
+	      for (uint8_t i = 0; i < BMS_FAULT_COUNT_JBD_BMS; i++)
 	      {
 	          Bms_Data->Bms_Active_Fault[i][0] = '\0';
 	      }
 	      if (Bms_Frames.JBD_BMS_0x102.Protection_Status > 0)
 	      {
-	          uint8_t max_fault_names = sizeof(Bms_Fault_Names) / sizeof(Bms_Fault_Names[0]);
+	    	  uint16_t max_fault_names = sizeof(Bms_Fault_Names) / sizeof(Bms_Fault_Names[0]);
 
-	          for (uint8_t i = 0; i < 16 && i < BMS_FAULT_COUNT && i < max_fault_names; i++)
+	          for (uint8_t i = 0; i < 16 && i < BMS_FAULT_COUNT_JBD_BMS && i < max_fault_names; i++)
 	          {
 	              if (Bms_Frames.JBD_BMS_0x102.Protection_Status & (1U << i))
 	              {
-	                  if (fault_count < BMS_FAULT_COUNT)
+	                  if (fault_count < BMS_FAULT_COUNT_JBD_BMS)
 	                  {
 	                      uint8_t dest_size = sizeof(Bms_Data->Bms_Active_Fault[0]);
 	                      strncpy(Bms_Data->Bms_Active_Fault[fault_count], Bms_Fault_Names[i], dest_size - 1);

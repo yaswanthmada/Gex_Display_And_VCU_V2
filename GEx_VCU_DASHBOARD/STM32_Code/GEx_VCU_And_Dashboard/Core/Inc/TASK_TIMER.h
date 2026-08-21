@@ -24,7 +24,7 @@ typedef struct {
 } TaskTimer_t;
 
 /* Max number of tasks that can be registered */
-#define MAX_TASKS 20
+#define MAX_TASKS 10
 
 
 

@@ -1,4 +1,4 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
+Core/Src/IWDT.o: ../Core/Src/IWDT.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -21,17 +21,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
- ../Core/Inc/RCC.h ../Core/Inc/main.h ../Core/Inc/SPI.h \
- ../Core/Inc/MCP2515.h ../Core/Inc/CONFIGURATION_FILES.h \
- ../Core/Inc/MCP2515_DEF.h ../Core/Inc/PROCESS.h ../Core/Inc/MCP2515.h \
- ../Core/Inc/CAN.h ../Core/Inc/RCC.h \
- ../Core/Inc/DECODE_BATTERY_MANAGEMENT_SYSTEM.h ../Core/Inc/SYSTICK.h \
- ../Core/Inc/TASK_TIMER.h ../Core/Inc/UART.h ../Core/Inc/DWIN_DISPLAY.h \
- ../Core/Inc/DWIN_DEFINES.h \
- ../Core/Inc/DECODE_BATTERY_MANAGEMENT_SYSTEM.h \
- ../Core/Inc/DECODE_MOTOR_CONTROLLER.h ../Core/Inc/UART.h \
- ../Core/Inc/DWIN_DISPLAY.h ../Core/Inc/CAN.h ../Core/Inc/SYSTICK.h \
- ../Core/Inc/GPIO.h ../Core/Inc/ADC.h ../Core/Inc/DWIN_DEFINES.h \
  ../Core/Inc/IWDT.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
@@ -56,29 +45,4 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
-../Core/Inc/RCC.h:
-../Core/Inc/main.h:
-../Core/Inc/SPI.h:
-../Core/Inc/MCP2515.h:
-../Core/Inc/CONFIGURATION_FILES.h:
-../Core/Inc/MCP2515_DEF.h:
-../Core/Inc/PROCESS.h:
-../Core/Inc/MCP2515.h:
-../Core/Inc/CAN.h:
-../Core/Inc/RCC.h:
-../Core/Inc/DECODE_BATTERY_MANAGEMENT_SYSTEM.h:
-../Core/Inc/SYSTICK.h:
-../Core/Inc/TASK_TIMER.h:
-../Core/Inc/UART.h:
-../Core/Inc/DWIN_DISPLAY.h:
-../Core/Inc/DWIN_DEFINES.h:
-../Core/Inc/DECODE_BATTERY_MANAGEMENT_SYSTEM.h:
-../Core/Inc/DECODE_MOTOR_CONTROLLER.h:
-../Core/Inc/UART.h:
-../Core/Inc/DWIN_DISPLAY.h:
-../Core/Inc/CAN.h:
-../Core/Inc/SYSTICK.h:
-../Core/Inc/GPIO.h:
-../Core/Inc/ADC.h:
-../Core/Inc/DWIN_DEFINES.h:
 ../Core/Inc/IWDT.h:

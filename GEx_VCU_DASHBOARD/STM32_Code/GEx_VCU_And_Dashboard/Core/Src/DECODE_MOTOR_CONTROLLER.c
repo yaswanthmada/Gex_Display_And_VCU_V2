@@ -40,28 +40,28 @@ return value;
 #ifdef MCU_NANJING_QUARK
 const char Mcu_Fault_Names[MCU_FAULT_COUNT][MCU_FAULT_NAME_LENGTH] =
 {
-    "No Fault",
-    "Software Overcurrent",
-    "Motor Overspeed",
-    "DC Bus Overvoltage",                    /* 0x03 */
-    "KEY Power Supply Abnormal",             /* 0x04 */
-    "12V Power Supply Abnormal",             /* 0x05 */
-    "5V Power Supply Abnormal",              /* 0x06 */
-    "Angle Sensor Wire Disconnected",        /* 0x07 */
-    "Hardware Overcurrent",                  /* 0x08 */
-    "Current Closed-Loop Failure",           /* 0x09 */
-    "DC Bus Undervoltage",                   /* 0x0A */
-    "Controller Overtemperature",            /* 0x0B */
-    "Motor Overtemperature",                 /* 0x0C */
-    "Current Sensor Abnormal",               /* 0x0D */
-    "Angle Signal Interference",             /* 0x0E */
-    "Throttle Signal Out of Range",          /* 0x0F */
-    "Throttle Not Reset",                    /* 0x10 */
-    "Motor Stall",                            /* 0x11 */
-    "BMS Fault",                              /* 0x12 */
-    "Communication Disconnected",            /* 0x13 */
-    "Reserved",                               /* 0x14 */
-    "Brake Fault"                             /* 0x15 */
+	    "No Fault",
+	    "SW Overcurrent",
+	    "Motor Overspeed",
+	    "DC Bus Overvolt",
+	    "KEY Supply Error",
+	    "12V Supply Error",
+	    "5V Supply Error",
+	    "Angle Wire Error",
+	    "HW Overcurrent",
+	    "Current Loop Error",
+	    "DC Bus Undervolt",
+	    "Controller Overtemp",
+	    "Motor Overtemp",
+	    "Current Sensor Error",
+	    "Angle Signal Error",
+	    "Throttle Range Error",
+	    "Throttle Not Reset",
+	    "Motor Stall",
+	    "BMS Fault",
+	    "Comm Disconnected",
+	    "Reserved",
+	    "Brake Fault"
 };
 /*******************************************************************************
  * Function Name : Decode_MCU_0x011
@@ -358,16 +358,16 @@ void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
             Mcu_Data->Mcu_Fault = true;
             Mcu_Data->Mcu_Fault_Count = 0;
 
-            for (uint8_t i = 0; i < MCU_FAULT_COUNT; i++)
+            for (uint8_t i = 0; i < MCU_FAULT_COUNT_NANJING_QUARK; i++)
             {
                 Mcu_Data->Mcu_Active_Fault[i][0] = '\0';
             }
-            uint8_t max_fault_names = sizeof(Mcu_Fault_Names) / sizeof(Mcu_Fault_Names[0]);
-            for (uint8_t bit = 0; bit < 32 && bit < MCU_FAULT_COUNT && bit < max_fault_names; bit++)
+            uint16_t max_fault_names = sizeof(Mcu_Fault_Names) / sizeof(Mcu_Fault_Names[0]);
+            for (uint8_t bit = 0; bit < 32 && bit < MCU_FAULT_COUNT_NANJING_QUARK && bit < max_fault_names; bit++)
             {
                 if (trouble_mask & (1UL << bit))
                 {
-                    if (Mcu_Data->Mcu_Fault_Count < MCU_FAULT_COUNT)
+                    if (Mcu_Data->Mcu_Fault_Count < MCU_FAULT_COUNT_NANJING_QUARK)
                     {
                         uint8_t dest_size = sizeof(Mcu_Data->Mcu_Active_Fault[0]);
                         strncpy(Mcu_Data->Mcu_Active_Fault[Mcu_Data->Mcu_Fault_Count], Mcu_Fault_Names[bit], dest_size - 1);

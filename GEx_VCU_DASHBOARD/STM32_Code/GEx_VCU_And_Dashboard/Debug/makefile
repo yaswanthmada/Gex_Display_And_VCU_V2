@@ -64,7 +64,7 @@ main-build: GEx_VCU_And_Dashboard.elf secondary-outputs
 
 # Tool invocations
 GEx_VCU_And_Dashboard.elf GEx_VCU_And_Dashboard.map: $(OBJS) $(USER_OBJS) C:\Users\MadaYaswanth\STM32CubeIDE\workspace_1.19.0\GEx_VCU_And_Dashboard\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "GEx_VCU_And_Dashboard.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\MadaYaswanth\STM32CubeIDE\workspace_1.19.0\GEx_VCU_And_Dashboard\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="GEx_VCU_And_Dashboard.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "GEx_VCU_And_Dashboard.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\MadaYaswanth\STM32CubeIDE\workspace_1.19.0\GEx_VCU_And_Dashboard\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="GEx_VCU_And_Dashboard.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

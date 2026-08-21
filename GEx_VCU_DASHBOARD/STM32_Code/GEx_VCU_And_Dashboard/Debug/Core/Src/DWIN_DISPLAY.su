@@ -1,8 +1,8 @@
-../Core/Src/DWIN_DISPLAY.c:24:13:Send_Cmd	120	static
-../Core/Src/DWIN_DISPLAY.c:50:13:DWIN_Write_VP	24	static
-../Core/Src/DWIN_DISPLAY.c:63:13:Update_Dwin_Display	8	static
-../Core/Src/DWIN_DISPLAY.c:124:13:Update_Display_strucutres	8	static
-../Core/Src/DWIN_DISPLAY.c:133:6:Display_Update_All	8	static
-../Core/Src/DWIN_DISPLAY.c:145:13:Print_Display_Data	8	static
-../Core/Src/DWIN_DISPLAY.c:197:13:Task_Id_For_Dispaly_Print	8	static
-../Core/Src/DWIN_DISPLAY.c:209:6:Enable_Display_Print_Task	8	static
+../Core/Src/DWIN_DISPLAY.c:685:13:Print_Display_Data	32	static
+../Core/Src/DWIN_DISPLAY.c:24:13:Send_Cmd.constprop	32	static
+../Core/Src/DWIN_DISPLAY.c:50:13:DWIN_Write_VP	16	static
+../Core/Src/DWIN_DISPLAY.c:55:13:DWIN_Write_Bool	0	static
+../Core/Src/DWIN_DISPLAY.c:70:13:DWIN_Write_VP32	16	static
+../Core/Src/DWIN_DISPLAY.c:401:6:DWIN_Display_Test	0	static
+../Core/Src/DWIN_DISPLAY.c:672:6:Display_Update_All	16	static
+../Core/Src/DWIN_DISPLAY.c:900:6:Enable_Display_Print_Task	8	static

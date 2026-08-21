@@ -18,7 +18,7 @@ typedef struct
 uint8_t Soc;
 float Battery_Pack_voltage;
 float Battery_Current;
-float Cells[16];
+float Cells[24];
 uint8_t Avg_Temp;
 uint8_t Bms_Fault;
 uint8_t Bms_Fault_Count;
@@ -57,6 +57,7 @@ bool Charge_Ack;
 bool Brake_Fluid;
 bool Right_Ind;
 bool Left_Ind;
+bool Mppt_On_Off;
 }IO_Data_t;
 typedef struct
 {
@@ -73,6 +74,7 @@ typedef struct
     ADC_Data_t Adc_Data;
     IO_Data_t  IO_Data;
     System_Faults_t System_Data;
+    bool Is_Ready;
 }GEx_Display_t;
 /*******************************************************************************
  * Function Name : Display_Update_All

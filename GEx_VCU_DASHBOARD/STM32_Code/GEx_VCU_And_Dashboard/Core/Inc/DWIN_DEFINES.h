@@ -50,56 +50,62 @@
 #define BATTERY_FAULT_12V 0x1005
 #define CHARGER_DETECTION 0x1006
 #define RIGHT_INDICATOR   0x1007
-#define DRIVE_MODE      0X1009
-#define REVERSE_MODE     0X1010
-#define NEUTRAL_MODE     0X1011
-#define ECHO_BOOST 0x1012
-#define READY 0x1013
-#define CAR_ROAD    0X1015
+#define DRIVE_MODE        0X1009
+#define REVERSE_MODE      0X1010
+#define NEUTRAL_MODE      0X1011
+#define ECHO_BOOST        0x1012
+#define READY             0x1013
+#define CAR_ROAD          0X1015
 
 //Will update according to the display VP address
-#define BATTERY_PACK_TEMP 0
-#define BATTERY_PACK_VOL 0
-#define BATTERY_PACK_CUR 0
-#define CELL_1  0
-#define CELL_2 0
-#define CELL_3 0
-#define CELL_4 0
-#define CELL_5 0
-#define CELL_6 0
-#define CELL_7 0
-#define CELL_8 0
-#define CELL_9 0
-#define CELL_10 0
-#define CELL_11 0
-#define CELL_12 0
-#define CELL_13 0
-#define CELL_14 0
-#define CELL_15 0
+#define CELL_1  0x8000
+#define CELL_2 0x8004
+#define CELL_3 0x8008
+#define CELL_4 0x8012
+#define CELL_5 0x8016
+#define CELL_6 0x8020
+#define CELL_7 0x8024
+#define CELL_8 0x8028
+#define CELL_9 0x8032
+#define CELL_10 0x8036
+#define CELL_11 0x8040
+#define CELL_12 0x8044
+#define CELL_13 0x8048
+#define CELL_14 0x8052
+#define CELL_15 0x8056
+#define CELL_16 0x8060
+#define CELL_17 0x8064
+#define CELL_18 0x8068
+#define CELL_19 0x8072
+#define CELL_20 0x8076
+#define CELL_21 0x8080
+#define CELL_22 0x8084
+#define CELL_23 0x8088
+#define CELL_24 0x8092
 
-#define MCU_TEMP 0
-#define MOTOR_TEMP 0
-#define VEHICLE_SPEED 0
+#define VEHICLE_SPEED		0X1500
+#define ODO                 0x1502
+#define TRIP       0x1506
+#define MCU_TEMP   0x1538
+#define MOTOR_TEMP 0x1536
+#define BAT_PACK_TEMP    0x1540
+#define SOC        0X1516
 
-#define SPEED		0X2002
-#define TEMP_VAL    0x2000
+#define BATTERY_PACK_VOL 0x8096
+#define BATTERY_PACK_CUR 0x8108
+#define BATTERY_12VOL    0x8112
+#define MCU_CUR          0x8100
+#define MCU_VOL          0x8104
+#define MCU_FAULT_COUNT  0x1520
+#define BMS_FAULT_COUNT  0x1522
+#define IS_BMS_OK        0x1524
+#define IS_MCU_OK        0x1526
+#define IS_CAN_OK        0x1528
+#define IS_WDTR          0x1530
+#define IS_HARD_FAULT    0x1532
+#define BATTERY_12V_VOL  0x1536
 
-#define SOC    0X1016
-
-
-#define ODO 0
-#define TRIP 0
 #define BMS_FAULT_NAMES_LENGTH 40
 #define MCU_FAULT_NAMES_LENGTH 40
-
-#define CAN_COMM 0
-#define BMS_CAN_COMM 0
-#define MCU_CAN_COMM 0
-
-#define DWIN_RGB(r,g,b) \
-    ((uint16_t)(((uint16_t)((r)&0x1F)<<11)|((uint16_t)((g)&0x3F)<<5)|((uint16_t)((b)&0x1F))))
-
-
-
 
 #endif /* INC_DWIN_DEFINES_H_ */
