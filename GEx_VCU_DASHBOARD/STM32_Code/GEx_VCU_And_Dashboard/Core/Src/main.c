@@ -230,7 +230,6 @@ int main(void)
 	  Update_Adc();
 	  Display_Update_All();
 	  Task_Timer_Run_All();
-	  HAL_Delay(500);
 	  Uart_Printf("Time Taken for While loop Iteration :%d in ms\n",Get_Tick_Ms()-Start_time);
     /* USER CODE END WHILE */
 
