@@ -1,7 +1,7 @@
 Core/Src/PROCESS_MOTOR_CONTROLLER.o: \
  ../Core/Src/PROCESS_MOTOR_CONTROLLER.c \
  ../Core/Inc/PROCESS_MOTOR_CONTROLLER.h ../Core/Inc/CONFIGURATION_FILES.h \
- ../Core/Inc/DECODE_MOTOR_CONTROLLER.h ../Core/Inc/MCP2515.h \
+ ../Core/Inc/DECODE_MOTOR_CONTROLLER.h ../Core/Inc/SYSTICK.h \
  ../Core/Inc/main.h ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h \
  ../Core/Inc/stm32f1xx_hal_conf.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h \
@@ -24,12 +24,13 @@ Core/Src/PROCESS_MOTOR_CONTROLLER.o: \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
- ../Core/Inc/MCP2515_DEF.h ../Core/Inc/SYSTICK.h \
- ../Core/Inc/CONFIGURATION_FILES.h
+ ../Core/Inc/MCP2515.h ../Core/Inc/MCP2515_DEF.h ../Core/Inc/UART.h \
+ ../Core/Inc/TASK_TIMER.h ../Core/Inc/DWIN_DISPLAY.h \
+ ../Core/Inc/DWIN_DEFINES.h ../Core/Inc/CONFIGURATION_FILES.h
 ../Core/Inc/PROCESS_MOTOR_CONTROLLER.h:
 ../Core/Inc/CONFIGURATION_FILES.h:
 ../Core/Inc/DECODE_MOTOR_CONTROLLER.h:
-../Core/Inc/MCP2515.h:
+../Core/Inc/SYSTICK.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -53,6 +54,10 @@ Core/Src/PROCESS_MOTOR_CONTROLLER.o: \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
+../Core/Inc/MCP2515.h:
 ../Core/Inc/MCP2515_DEF.h:
-../Core/Inc/SYSTICK.h:
+../Core/Inc/UART.h:
+../Core/Inc/TASK_TIMER.h:
+../Core/Inc/DWIN_DISPLAY.h:
+../Core/Inc/DWIN_DEFINES.h:
 ../Core/Inc/CONFIGURATION_FILES.h:

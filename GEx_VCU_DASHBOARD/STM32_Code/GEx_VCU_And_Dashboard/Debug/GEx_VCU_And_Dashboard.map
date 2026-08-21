@@ -1100,21 +1100,6 @@ Discarded input sections
  .debug_frame   0x00000000      0x188 ./Core/Src/MCP2515.o
  .ARM.attributes
                 0x00000000       0x2d ./Core/Src/MCP2515.o
- .group         0x00000000        0xc ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .text          0x00000000        0x0 ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .data          0x00000000        0x0 ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .bss           0x00000000        0x0 ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .debug_info    0x00000000       0x22 ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .debug_abbrev  0x00000000       0x12 ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .debug_aranges
-                0x00000000       0x18 ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .debug_macro   0x00000000       0x11 ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .debug_macro   0x00000000      0xad2 ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .debug_line    0x00000000       0x55 ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .debug_str     0x00000000     0x2e7b ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .comment       0x00000000       0x44 ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
- .ARM.attributes
-                0x00000000       0x2d ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
  .group         0x00000000        0xc ./Core/Src/PROCESS.o
  .group         0x00000000        0xc ./Core/Src/PROCESS.o
  .group         0x00000000        0xc ./Core/Src/PROCESS.o
@@ -1260,6 +1245,150 @@ Discarded input sections
  .debug_frame   0x00000000       0x4c ./Core/Src/PROCESS.o
  .ARM.attributes
                 0x00000000       0x2d ./Core/Src/PROCESS.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .group         0x00000000        0xc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .text          0x00000000        0x0 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .data          0x00000000        0x0 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .bss           0x00000000        0x0 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .text.Extract_Raw_signal_Intel.part.0
+                0x00000000       0x4a ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .text.Decode_MCU_0x011
+                0x00000000       0x90 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .text.Decode_MCU_0x012
+                0x00000000       0xa8 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .text.Decode_MCU_0x013
+                0x00000000       0x78 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .text.Decode_MCU_0x014
+                0x00000000       0x38 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_info    0x00000000     0x108a ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_abbrev  0x00000000      0x199 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_loclists
+                0x00000000      0x792 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_aranges
+                0x00000000       0x40 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_rnglists
+                0x00000000      0x19e ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x303 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0xad2 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x22 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x8e ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x51 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x103 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x6a ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x1df ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x22 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x10 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x209 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x2e ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x22 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x1c ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x22 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0xbd ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0xd23 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000     0xe09e ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x6d ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000     0x34a2 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x190 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x5c ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x5bc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x289 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x1cb ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x114 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x1b2 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x27 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x136 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x1bc ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x34 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x3c ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x57 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x87 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x240 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x140 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x83 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x24 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x61 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x43 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x34 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x16 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x3c ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x370 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x16 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x4a ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x34 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x10 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x58 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x8e ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x1c ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x185 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x16 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x29 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x10 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000      0x214 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x16 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x20 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_macro   0x00000000       0x28 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_line    0x00000000      0xd3f ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_str     0x00000000    0x7eb8e ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .comment       0x00000000       0x44 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .debug_frame   0x00000000       0xa0 ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
+ .ARM.attributes
+                0x00000000       0x2d ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
  .group         0x00000000        0xc ./Core/Src/RCC.o
  .group         0x00000000        0xc ./Core/Src/RCC.o
  .group         0x00000000        0xc ./Core/Src/RCC.o
@@ -3851,8 +3980,8 @@ LOAD ./Core/Src/DWIN_DISPLAY.o
 LOAD ./Core/Src/GPIO.o
 LOAD ./Core/Src/IWDT.o
 LOAD ./Core/Src/MCP2515.o
-LOAD ./Core/Src/PRINT_DECODE_BATTERY_MANAGEMENT_SYSTEM.o
 LOAD ./Core/Src/PROCESS.o
+LOAD ./Core/Src/PROCESS_MOTOR_CONTROLLER.o
 LOAD ./Core/Src/RCC.o
 LOAD ./Core/Src/SPI.o
 LOAD ./Core/Src/SYSTICK.o
