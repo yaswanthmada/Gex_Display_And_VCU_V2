@@ -1,5 +1,11 @@
-../Core/Src/CAN.c:22:13:CAN_Filter_Init.constprop	3
-../Core/Src/CAN.c:295:6:Configure_Can_filter_Ids	2
-../Core/Src/CAN.c:316:6:Can_Send_Frame	8
-../Core/Src/CAN.c:326:6:Can_Collect_Frame	7
-../Core/Src/CAN.c:336:6:Controller_Area_Network_Init	5
+../Core/Src/CAN.c:22:13:CAN_Filter_Init	5
+../Core/Src/CAN.c:79:13:CAN1_Set_Bit_Timing	8
+../Core/Src/CAN.c:135:13:CAN1_Init	5
+../Core/Src/CAN.c:180:13:CAN1_Tx_Frame	5
+../Core/Src/CAN.c:223:13:CAN1_Rx_Frame	6
+../Core/Src/CAN.c:260:16:CAN_Get_Free_Tx_Mailbox	4
+../Core/Src/CAN.c:282:16:CAN_Message_Pending	3
+../Core/Src/CAN.c:295:6:Configure_Can_filter_Ids	1
+../Core/Src/CAN.c:316:6:Can_Send_Frame	2
+../Core/Src/CAN.c:326:6:Can_Collect_Frame	2
+../Core/Src/CAN.c:336:6:Controller_Area_Network_Init	1

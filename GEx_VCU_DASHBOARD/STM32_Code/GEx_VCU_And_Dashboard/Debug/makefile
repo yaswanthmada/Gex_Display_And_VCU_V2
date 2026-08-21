@@ -34,37 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := GEx_VCU_And_Dashboard
+BUILD_ARTIFACT_NAME := GITHUB_STM32_VCU_DISPLAY
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-GEx_VCU_And_Dashboard.elf \
+GITHUB_STM32_VCU_DISPLAY.elf \
 
 MAP_FILES += \
-GEx_VCU_And_Dashboard.map \
+GITHUB_STM32_VCU_DISPLAY.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-GEx_VCU_And_Dashboard.list \
-
-OBJCOPY_HEX += \
-GEx_VCU_And_Dashboard.hex \
+GITHUB_STM32_VCU_DISPLAY.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: GEx_VCU_And_Dashboard.elf secondary-outputs
+main-build: GITHUB_STM32_VCU_DISPLAY.elf secondary-outputs
 
 # Tool invocations
-GEx_VCU_And_Dashboard.elf GEx_VCU_And_Dashboard.map: $(OBJS) $(USER_OBJS) C:\Users\MadaYaswanth\STM32CubeIDE\workspace_1.19.0\GEx_VCU_And_Dashboard\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "GEx_VCU_And_Dashboard.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\MadaYaswanth\STM32CubeIDE\workspace_1.19.0\GEx_VCU_And_Dashboard\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="GEx_VCU_And_Dashboard.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+GITHUB_STM32_VCU_DISPLAY.elf GITHUB_STM32_VCU_DISPLAY.map: $(OBJS) $(USER_OBJS) C:\Users\MadaYaswanth\STM32CubeIDE\workspace_1.19.0\GITHUB_STM32_VCU_DISPLAY\STM32F103CBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "GITHUB_STM32_VCU_DISPLAY.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\MadaYaswanth\STM32CubeIDE\workspace_1.19.0\GITHUB_STM32_VCU_DISPLAY\STM32F103CBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="GITHUB_STM32_VCU_DISPLAY.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -73,22 +70,17 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-GEx_VCU_And_Dashboard.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "GEx_VCU_And_Dashboard.list"
-	@echo 'Finished building: $@'
-	@echo ' '
-
-GEx_VCU_And_Dashboard.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "GEx_VCU_And_Dashboard.hex"
+GITHUB_STM32_VCU_DISPLAY.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "GITHUB_STM32_VCU_DISPLAY.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) GEx_VCU_And_Dashboard.elf GEx_VCU_And_Dashboard.hex GEx_VCU_And_Dashboard.list GEx_VCU_And_Dashboard.map default.size.stdout
+	-$(RM) GITHUB_STM32_VCU_DISPLAY.elf GITHUB_STM32_VCU_DISPLAY.list GITHUB_STM32_VCU_DISPLAY.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'

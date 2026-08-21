@@ -4,7 +4,6 @@
 "./Core/Src/DECODE_MOTOR_CONTROLLER.o"
 "./Core/Src/DWIN_DISPLAY.o"
 "./Core/Src/GPIO.o"
-"./Core/Src/IWDT.o"
 "./Core/Src/MCP2515.o"
 "./Core/Src/PROCESS.o"
 "./Core/Src/PROCESS_MOTOR_CONTROLLER.o"

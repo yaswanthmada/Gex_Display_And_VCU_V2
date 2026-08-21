@@ -37,7 +37,6 @@
 #include"ADC.h"
 #include"DWIN_DEFINES.h"
 #include"SYSTICK.h"
-#include"IWDT.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -115,7 +114,7 @@ int main(void)
 		Error_Handler();
      }
      Uart_Printf("[INFO] UART3 Initialized...\r\n");
- /*    if(!Serial_Peripheral_Interface_Init())
+     if(!Serial_Peripheral_Interface_Init())
      {
      	//SPI Inititialization Fails
  	    Uart_Printf("[ERROR] Failed to initialize SPI\r\n");
@@ -190,7 +189,7 @@ int main(void)
      else
      {
          Uart_Printf("[INFO] Enable_Adc_Print_Task enabled \r\n");
-     }*/
+     }
      if(!Enable_Mcu_Print_Task())
      {
          Uart_Printf("[ERROR] Failed to create Enable_Mcu_Print_Task\r\n");
@@ -215,7 +214,6 @@ int main(void)
      {
          Uart_Printf("[INFO] Enable_Display_Print_Task enabled \r\n");
      }
-     IWDG_Init(1000);
      /*---------------------- WATCH_TIMER_NEED_TO_ADD-------------------*/
     /* USER CODE END 2 */
 
@@ -224,14 +222,12 @@ int main(void)
   while (1)
   {
 	  uint32_t Start_time=Get_Tick_Ms();
-	  IWDG_Refresh();
-//	  Request_Bms_Messages();
-//	  Process_Can_Messages();
-//	  Update_Gpio();
-//	  Update_Adc();
+	  Request_Bms_Messages();
+	  Process_Can_Messages();
+	  Update_Gpio();
+	  Update_Adc();
 	  Display_Update_All();
-//	  Task_Timer_Run_All();
-	  HAL_Delay(500);
+	  Task_Timer_Run_All();
 	  Uart_Printf("Time Taken for While loop Iteration :%d in ms\n",Get_Tick_Ms()-Start_time);
     /* USER CODE END WHILE */
 

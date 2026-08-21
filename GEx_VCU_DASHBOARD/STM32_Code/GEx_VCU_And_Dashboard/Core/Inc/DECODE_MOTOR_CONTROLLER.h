@@ -21,8 +21,8 @@
 #define MCU_MSG_0x012_ID  0x012
 #define MCU_MSG_0x013_ID  0x013
 #define MCU_MSG_0x014_ID  0x014
-#define MCU_FAULT_COUNT_NANJING_QUARK       22
-#define MCU_FAULT_NAME_LENGTH  20
+#define MCU_FAULT_COUNT_MCU_NANJING_QUARK        22
+#define MCU_FAULT_NAME_LENGTH  40
 
 
 typedef struct

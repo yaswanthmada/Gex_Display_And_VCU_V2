@@ -38,7 +38,7 @@ return value;
 }
 
 #ifdef MCU_NANJING_QUARK
-const char Mcu_Fault_Names[MCU_FAULT_COUNT][MCU_FAULT_NAME_LENGTH] =
+const char Mcu_Fault_Names[22][MCU_FAULT_NAME_LENGTH] =
 {
 	    "No Fault",
 	    "SW Overcurrent",
@@ -348,7 +348,7 @@ void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
         {
             Mcu_Data->Mcu_Fault = false;
             Mcu_Data->Mcu_Fault_Count = 0;
-            for (uint8_t i = 0; i < MCU_FAULT_COUNT; i++)
+            for (uint8_t i = 0; i < 22; i++)
             {
                 Mcu_Data->Mcu_Active_Fault[i][0] = '\0';
             }
@@ -358,16 +358,16 @@ void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
             Mcu_Data->Mcu_Fault = true;
             Mcu_Data->Mcu_Fault_Count = 0;
 
-            for (uint8_t i = 0; i < MCU_FAULT_COUNT_NANJING_QUARK; i++)
+            for (uint8_t i = 0; i < 22; i++)
             {
                 Mcu_Data->Mcu_Active_Fault[i][0] = '\0';
             }
             uint16_t max_fault_names = sizeof(Mcu_Fault_Names) / sizeof(Mcu_Fault_Names[0]);
-            for (uint8_t bit = 0; bit < 32 && bit < MCU_FAULT_COUNT_NANJING_QUARK && bit < max_fault_names; bit++)
+            for (uint8_t bit = 0; bit < 32 && bit < 22 && bit < max_fault_names; bit++)
             {
                 if (trouble_mask & (1UL << bit))
                 {
-                    if (Mcu_Data->Mcu_Fault_Count < MCU_FAULT_COUNT_NANJING_QUARK)
+                    if (Mcu_Data->Mcu_Fault_Count < MCU_FAULT_COUNT)
                     {
                         uint8_t dest_size = sizeof(Mcu_Data->Mcu_Active_Fault[0]);
                         strncpy(Mcu_Data->Mcu_Active_Fault[Mcu_Data->Mcu_Fault_Count], Mcu_Fault_Names[bit], dest_size - 1);

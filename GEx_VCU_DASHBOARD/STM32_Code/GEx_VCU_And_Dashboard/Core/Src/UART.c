@@ -106,7 +106,7 @@ void Send_On_Display_Uart(uint8_t *frame,uint8_t Size)
 {
 	for(uint8_t i=0;i<Size;i++)
 	{
-		USART3_Send_Char(frame[i]);
+		USART1_Send_Char(frame[i]);
 	}
 }
 void Uart_Printf(const char *format, ...)
