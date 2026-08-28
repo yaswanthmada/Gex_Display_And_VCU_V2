@@ -337,3 +337,7 @@ bool Controller_Area_Network_Init()
 {
 	return CAN1_Init();
 }
+void Check_TJA1050A_Can_Bus_Ok(GEx_Display_t*Can_Bus_System_Data)
+{
+	Can_Bus_System_Data->System_Data.Is_Tja1050A_Can_Ok;
+}

@@ -272,7 +272,7 @@ static void Update_Dwin_Display(void)
 
     DWIN_Write_Bool(
         IS_CAN_OK,
-        GEx_Display.System_Data.Is_Can_Ok);
+        GEx_Display.System_Data.Is_MCP2515_Can_Ok&&GEx_Display.System_Data.Is_MCP2515_Can_Ok);
 
 
     DWIN_Write_Bool(
@@ -431,7 +431,10 @@ static void Update_Dwin_Display(void)
     }
 
 }
-
+void Get_System_Data(GEx_Display_t * System_Data)
+{
+	Get_Hard_Fault_Watch_Dog_Timer_Data(System_Data);
+}
 /*******************************************************************************
  * Function Name : Update_Display_strucutres
  * Description   : Fetches the latest data structures from BMS, MCU, IO, and ADC subsystems.
@@ -445,7 +448,7 @@ static void Update_Display_strucutres()
 	Get_Mcu_Data(&GEx_Display.Mcu_Data);
 	Get_IO_Data(&GEx_Display.IO_Data);
 	Get_Adc_Data(&GEx_Display.Adc_Data);
-//	Get_System_Data(&GEx_Display.System_Data); // need to update once all code done
+	Get_System_Data(&GEx_Display);
 }
 void DWIN_Display_Test(void)
 {
@@ -782,15 +785,15 @@ void DWIN_Display_Test(void)
     		!toggle;
 
 
-    GEx_Display.System_Data.Is_Can_Ok =
+    GEx_Display.System_Data.Is_MCP2515_Can_Ok =
         !toggle;
     GEx_Display.Is_Ready=!toggle;
 
 }
 void Display_Update_All()
 {
-// Update_Display_strucutres();
-	DWIN_Display_Test();
+ Update_Display_strucutres();
+//	DWIN_Display_Test();
  Update_Dwin_Display();
 }
 /*******************************************************************************
@@ -930,7 +933,7 @@ void Print_Display_Data(void)
                 "OK" : "ERROR");
 
     Uart_Printf("General CAN            : %s\r\n",
-                GEx_Display.System_Data.Is_Can_Ok ?
+                (GEx_Display.System_Data.Is_MCP2515_Can_Ok&&GEx_Display.System_Data.Is_Tja1050A_Can_Ok) ?
                 "OK" : "ERROR");
 
     Uart_Printf("Watchdog Reset         : %s\r\n",

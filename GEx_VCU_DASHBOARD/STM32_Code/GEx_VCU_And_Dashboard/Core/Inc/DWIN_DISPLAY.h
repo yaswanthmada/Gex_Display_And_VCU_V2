@@ -62,10 +62,12 @@ bool Mppt_On_Off;
 typedef struct
 {
 bool Is_Watch_Dog_Reset;
+uint16_t Wdt_Count;
 bool Is_System_Hard_Fault;
 bool Is_Bms_Can_Ok;
 bool Is_Mcu_Can_Ok;
-bool Is_Can_Ok;
+bool Is_Tja1050A_Can_Ok;
+bool Is_MCP2515_Can_Ok;
 }System_Faults_t;
 typedef struct
 {
@@ -131,7 +133,12 @@ void Get_IO_Data(IO_Data_t*);
 void Get_Adc_Data(ADC_Data_t*);
 
 
-void Get_System_Data(System_Faults_t*);
+void Get_System_Data(GEx_Display_t*);
+void Check_Bms_Mcu_Can_Data(GEx_Display_t*);
+void Get_Hard_Fault_Watch_Dog_Timer_Data(GEx_Display_t*);
+void Check_TJA1050A_Can_Bus_Ok(GEx_Display_t*);
+void Check_MCP2515_Can_Bus_Ok(GEx_Display_t*);
+
 /*******************************************************************************
  * Function Name : Enable_Display_Print_Task
  * Description   : Public wrapper function to initialize and enable the periodic

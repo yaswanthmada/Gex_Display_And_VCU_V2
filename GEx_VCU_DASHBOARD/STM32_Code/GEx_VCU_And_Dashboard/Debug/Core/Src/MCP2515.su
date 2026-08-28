@@ -3,3 +3,4 @@
 ../Core/Src/MCP2515.c:397:6:Micro_Chip_Product_2515_Init	24	static
 ../Core/Src/MCP2515.c:401:6:MCP2515_Can_Collect_Frame	16	static
 ../Core/Src/MCP2515.c:409:6:Configure_Mcp2515_Can_Ids	48	static
+../Core/Src/MCP2515.c:421:6:Check_MCP2515_Can_Bus_Ok	0	static

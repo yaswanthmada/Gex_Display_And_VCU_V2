@@ -2,3 +2,4 @@
 ../Core/Src/CAN.c:316:6:Can_Send_Frame	15
 ../Core/Src/CAN.c:326:6:Can_Collect_Frame	14
 ../Core/Src/CAN.c:336:6:Controller_Area_Network_Init	5
+../Core/Src/CAN.c:340:6:Check_TJA1050A_Can_Bus_Ok	1

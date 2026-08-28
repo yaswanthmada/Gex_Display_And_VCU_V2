@@ -13,7 +13,7 @@
 #include"RCC.h"
 #include"CONFIGURATION_FILES.h"
 #include"DECODE_BATTERY_MANAGEMENT_SYSTEM.h"
-
+#include"DWIN_DISPLAY.h"
 #define CAN1_500_BAUD_RATE 500U //in Kb
 #define CAN1_250_BAUD_RATE 250U //in Kb
 

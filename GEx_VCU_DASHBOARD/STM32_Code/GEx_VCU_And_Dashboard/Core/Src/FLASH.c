@@ -8,7 +8,7 @@
 
 #include"FLASH.h"
 #include <stddef.h>
-
+static const Wdt_Log_t *Watcch_Dog_Timer_log = (const Wdt_Log_t*)FLASH_LAST_PAGE_ADDR;
 /*******************************************************************************
  * Function Name : Flash_WaitBusy
  * Description   : Blocks CPU execution until the current Flash memory operation
@@ -21,7 +21,6 @@ static inline void Flash_Wait_Busy(void)
 {
     while (FLASH->SR & FLASH_SR_BSY);
 }
-
 /*******************************************************************************
  * Function Name : Flash_Unlock
  * Description   : Unlocks the Flash Control Register (FLASH_CR) by writing the
@@ -100,19 +99,18 @@ void Wdt_Log_Check_And_Process(void)
 {
 	    if (RCC->CSR & RCC_CSR_IWDGRSTF)
 	    {
-	    	Wdt_Log_t *current_log = (Wdt_Log_t*)FLASH_LAST_PAGE_ADDR;
-	        uint16_t new_count = 1;
-	        /* Increment counter if previous valid log exists */
-	        if (current_log->wdt_flag == WDT_MAGIC_KEY)
-	        {
-	            new_count = current_log->reset_count + 1;
-	        }
-	        Flash_Unlock();
-	        Flash_Erase_Page(FLASH_LAST_PAGE_ADDR);
-	        Flash_Write_Half_Word(FLASH_LAST_PAGE_ADDR, WDT_MAGIC_KEY);
-	        Flash_Write_Half_Word(FLASH_LAST_PAGE_ADDR + 2, new_count);
-	        Flash_Lock();
-	        RCC->CSR |= RCC_CSR_RMVF;
+	    	uint16_t new_count = 1U;
+			if (Watcch_Dog_Timer_log->wdt_flag == WDT_MAGIC_KEY)
+			{
+				new_count = Watcch_Dog_Timer_log->reset_count + 1U;
+			}
+
+			Flash_Unlock();
+			Flash_Erase_Page(FLASH_LAST_PAGE_ADDR);
+			Flash_Write_Half_Word(FLASH_LAST_PAGE_ADDR, WDT_MAGIC_KEY);
+			Flash_Write_Half_Word(FLASH_LAST_PAGE_ADDR + 2U, new_count);
+			Flash_Lock();
+			RCC->CSR |= RCC_CSR_RMVF;
 	    }
 }
 
@@ -151,4 +149,20 @@ void WdtLog_ClearFlash(void)
     Flash_Unlock();
     Flash_Erase_Page(FLASH_LAST_PAGE_ADDR);
     Flash_Lock();
+}
+void Get_Hard_Fault_Watch_Dog_Timer_Data(GEx_Display_t* Wdt_Hf_System_Data)
+{
+	if (Wdt_Hf_System_Data != NULL)
+	{
+		if (Watcch_Dog_Timer_log->wdt_flag == WDT_MAGIC_KEY)
+		{
+			Wdt_Hf_System_Data->System_Data.Is_Watch_Dog_Reset = 1U;
+			Wdt_Hf_System_Data->System_Data.Wdt_Count = Watcch_Dog_Timer_log->reset_count;
+		}
+		else
+		{
+			Wdt_Hf_System_Data->System_Data.Is_Watch_Dog_Reset = 0U;
+			Wdt_Hf_System_Data->System_Data.Wdt_Count = 0U;
+		}
+	}
 }

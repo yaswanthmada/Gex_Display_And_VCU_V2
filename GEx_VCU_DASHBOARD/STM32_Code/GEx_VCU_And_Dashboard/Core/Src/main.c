@@ -38,6 +38,7 @@
 #include"DWIN_DEFINES.h"
 #include"SYSTICK.h"
 #include"IWDT.h"
+#include"FLASH.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -215,10 +216,7 @@ int main(void)
      {
          Uart_Printf("[INFO] Enable_Display_Print_Task enabled \r\n");
      }
-     if (RCC->CSR & RCC_CSR_IWDGRSTF)
-	 {
-		 RCC->CSR |= RCC_CSR_RMVF;
-	 }
+     Wdt_Log_Check_And_Process();
      IWDG_Init(1000);
     /* USER CODE END 2 */
 

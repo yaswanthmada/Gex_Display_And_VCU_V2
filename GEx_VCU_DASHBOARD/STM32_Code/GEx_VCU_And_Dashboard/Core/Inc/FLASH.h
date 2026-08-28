@@ -11,8 +11,8 @@
 #include"main.h"
 #include <stdint.h>
 #include <stdbool.h>
-
-#define FLASH_LAST_PAGE_ADDR  0x0801FC00UL
+#include"DWIN_DISPLAY.h"
+#define FLASH_LAST_PAGE_ADDR  0x0801FC00UL //Last page of Flash
 #define WDT_MAGIC_KEY         0xA5A5U
 
 typedef struct

@@ -418,7 +418,10 @@ MCU_MSG_0x014_ID
 	};
 	return MCP2515_Set_Filters(Std_Id,sizeof(Std_Id)/sizeof(Std_Id[0]),NULL,0);
 }
-
+void Check_MCP2515_Can_Bus_Ok(GEx_Display_t*Can_Bus_System_Data)
+{
+	Can_Bus_System_Data->System_Data.Is_MCP2515_Can_Ok;
+}
 
 /*
  Now not using required for future purpose

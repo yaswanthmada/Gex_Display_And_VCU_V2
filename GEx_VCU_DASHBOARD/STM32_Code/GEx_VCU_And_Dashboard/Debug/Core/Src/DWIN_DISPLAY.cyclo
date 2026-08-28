@@ -1,5 +1,6 @@
-../Core/Src/DWIN_DISPLAY.c:803:6:Print_Display_Data	2
+../Core/Src/DWIN_DISPLAY.c:806:6:Print_Display_Data	3
 ../Core/Src/DWIN_DISPLAY.c:119:13:Update_Dwin_Display	8
-../Core/Src/DWIN_DISPLAY.c:450:6:DWIN_Display_Test	20
-../Core/Src/DWIN_DISPLAY.c:790:6:Display_Update_All	1
-../Core/Src/DWIN_DISPLAY.c:976:6:Enable_Display_Print_Task	2
+../Core/Src/DWIN_DISPLAY.c:434:6:Get_System_Data	1
+../Core/Src/DWIN_DISPLAY.c:453:6:DWIN_Display_Test	20
+../Core/Src/DWIN_DISPLAY.c:793:6:Display_Update_All	1
+../Core/Src/DWIN_DISPLAY.c:979:6:Enable_Display_Print_Task	2

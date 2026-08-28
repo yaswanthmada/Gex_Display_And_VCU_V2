@@ -8,6 +8,7 @@
 #ifndef INC_PROCESS_H_
 #define INC_PROCESS_H_
 #include"MCP2515.h"
+#include"SYSTICK.h"
 #include"CAN.h"
 void Process_Can_Messages();
 void Request_Bms_Messages();

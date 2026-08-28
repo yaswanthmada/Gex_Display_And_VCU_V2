@@ -1,3 +1,4 @@
-../Core/Src/FLASH.c:99:6:Wdt_Log_Check_And_Process	10
-../Core/Src/FLASH.c:128:6:Wdt_Log_Read	3
-../Core/Src/FLASH.c:149:6:WdtLog_ClearFlash	4
+../Core/Src/FLASH.c:98:6:Wdt_Log_Check_And_Process	10
+../Core/Src/FLASH.c:126:6:Wdt_Log_Read	3
+../Core/Src/FLASH.c:147:6:WdtLog_ClearFlash	4
+../Core/Src/FLASH.c:153:6:Get_Hard_Fault_Watch_Dog_Timer_Data	3

@@ -1,2 +1,5 @@
-../Core/Src/PROCESS.c:14:6:Process_Can_Messages	3
-../Core/Src/PROCESS.c:26:6:Request_Bms_Messages	2
+../Core/Src/PROCESS.c:15:6:Process_Can_Messages	3
+../Core/Src/PROCESS.c:29:6:Request_Bms_Messages	2
+../Core/Src/PROCESS.c:45:6:Get_BMS_Can_Fault	1
+../Core/Src/PROCESS.c:53:6:Get_MCU_Can_Fault	1
+../Core/Src/PROCESS.c:61:6:Check_Bms_Mcu_Can_Data	1
