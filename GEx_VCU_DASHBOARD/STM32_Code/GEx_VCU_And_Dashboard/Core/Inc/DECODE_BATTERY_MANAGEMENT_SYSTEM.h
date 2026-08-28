@@ -35,7 +35,7 @@
 #define JBD_BMS_ID15 0x10F
 #define JBD_BMS_ID16 0x110
 
-#define BMS_FAULT_NAME_LEN    20
+#define BMS_FAULT_NAME_LEN    40
 #define BMS_FAULT_COUNT_JBD_BMS       16
 
 

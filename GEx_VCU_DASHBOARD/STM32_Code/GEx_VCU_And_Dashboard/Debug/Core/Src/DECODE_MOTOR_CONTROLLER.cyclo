@@ -1,4 +1,3 @@
-../Core/Src/DECODE_MOTOR_CONTROLLER.c:23:17:Extract_Raw_signal_Intel.part.0	3
 ../Core/Src/DECODE_MOTOR_CONTROLLER.c:262:6:Print_Motor_Messages	2
 ../Core/Src/DECODE_MOTOR_CONTROLLER.c:278:6:Process_Motor_Controller_Messages	5
 ../Core/Src/DECODE_MOTOR_CONTROLLER.c:333:6:Enable_Mcu_Print_Task	2

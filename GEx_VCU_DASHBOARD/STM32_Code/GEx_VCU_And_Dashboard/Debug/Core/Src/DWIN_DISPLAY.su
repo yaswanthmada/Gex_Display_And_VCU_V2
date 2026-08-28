@@ -1,8 +1,5 @@
-../Core/Src/DWIN_DISPLAY.c:685:13:Print_Display_Data	32	static
-../Core/Src/DWIN_DISPLAY.c:24:13:Send_Cmd.constprop	32	static
-../Core/Src/DWIN_DISPLAY.c:50:13:DWIN_Write_VP	16	static
-../Core/Src/DWIN_DISPLAY.c:55:13:DWIN_Write_Bool	0	static
-../Core/Src/DWIN_DISPLAY.c:70:13:DWIN_Write_VP32	16	static
-../Core/Src/DWIN_DISPLAY.c:401:6:DWIN_Display_Test	56	static
-../Core/Src/DWIN_DISPLAY.c:672:6:Display_Update_All	16	static
-../Core/Src/DWIN_DISPLAY.c:858:6:Enable_Display_Print_Task	8	static
+../Core/Src/DWIN_DISPLAY.c:803:6:Print_Display_Data	32	static
+../Core/Src/DWIN_DISPLAY.c:119:13:Update_Dwin_Display	232	static
+../Core/Src/DWIN_DISPLAY.c:450:6:DWIN_Display_Test	88	static
+../Core/Src/DWIN_DISPLAY.c:790:6:Display_Update_All	8	static
+../Core/Src/DWIN_DISPLAY.c:976:6:Enable_Display_Print_Task	8	static

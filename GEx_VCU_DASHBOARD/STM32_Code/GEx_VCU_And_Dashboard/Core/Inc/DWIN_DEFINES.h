@@ -105,7 +105,17 @@
 #define IS_HARD_FAULT    0x1532
 #define BATTERY_12V_VOL  0x1536
 
-#define BMS_FAULT_NAMES_LENGTH 40
-#define MCU_FAULT_NAMES_LENGTH 40
+#define DISPLAY_MAX_FAULTS   4
+#define MCU_FAULT_1   0x6000
+#define MCU_FAULT_2   0x6020
+#define MCU_FAULT_3   0x6040
+#define MCU_FAULT_4	  0x6060
+
+#define BMS_FAULT_1   0x6500
+#define BMS_FAULT_2   0x6520
+#define BMS_FAULT_3   0x6540
+#define BMS_FAULT_4   0x6560
+
+
 
 #endif /* INC_DWIN_DEFINES_H_ */

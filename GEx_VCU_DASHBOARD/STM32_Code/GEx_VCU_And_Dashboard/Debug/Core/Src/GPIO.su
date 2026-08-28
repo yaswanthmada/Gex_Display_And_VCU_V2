@@ -1,8 +1,7 @@
-../Core/Src/GPIO.c:158:13:Debounce_Get_State	0	static
-../Core/Src/GPIO.c:438:16:Debounce_Register_Pin	32	static
-../Core/Src/GPIO.c:582:13:Print_Gpio_Data	40	static
-../Core/Src/GPIO.c:197:6:GPIO_Set_Reset_Verify	8	static
-../Core/Src/GPIO.c:618:6:Update_Gpio	32	static
-../Core/Src/GPIO.c:622:6:Get_IO_Data	0	static
-../Core/Src/GPIO.c:631:6:Enable_Gpio_Print_Task	8	static
-../Core/Src/GPIO.c:635:6:General_Purpose_Input_Output_Init	48	static
+../Core/Src/GPIO.c:512:16:Debounce_Register_Pin	40	static
+../Core/Src/GPIO.c:658:13:Print_Gpio_Data	32	static
+../Core/Src/GPIO.c:271:6:GPIO_Set_Reset_Verify	0	static
+../Core/Src/GPIO.c:694:6:Update_Gpio	24	static
+../Core/Src/GPIO.c:698:6:Get_IO_Data	12	static
+../Core/Src/GPIO.c:707:6:Enable_Gpio_Print_Task	8	static
+../Core/Src/GPIO.c:711:6:General_Purpose_Input_Output_Init	48	static

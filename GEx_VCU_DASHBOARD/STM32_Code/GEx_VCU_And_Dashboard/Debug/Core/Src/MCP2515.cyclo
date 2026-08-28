@@ -1,11 +1,5 @@
-../Core/Src/MCP2515.c:20:16:MCP2515_Read_Register	1
-../Core/Src/MCP2515.c:37:23:MCP2515_Get_Mode	1
-../Core/Src/MCP2515.c:85:13:MCP2515_Write_Register	1
-../Core/Src/MCP2515.c:50:13:MCP2515_Bit_Modify	1
-../Core/Src/MCP2515.c:102:13:MCP2515_Set_Mode	3
-../Core/Src/MCP2515.c:272:13:MCP2515_Set_Mask.constprop.isra	1
-../Core/Src/MCP2515.c:227:13:MCP2515_Set_Filter.isra	3
-../Core/Src/MCP2515.c:124:13:MCP2515_Read_Rx_Buffer.isra	3
-../Core/Src/MCP2515.c:397:6:Micro_Chip_Product_2515_Init	3
+../Core/Src/MCP2515.c:124:13:MCP2515_Read_Rx_Buffer.isra	4
+../Core/Src/MCP2515.c:227:13:MCP2515_Set_Filter.isra	7
+../Core/Src/MCP2515.c:397:6:Micro_Chip_Product_2515_Init	6
 ../Core/Src/MCP2515.c:401:6:MCP2515_Can_Collect_Frame	4
-../Core/Src/MCP2515.c:409:6:Configure_Mcp2515_Can_Ids	2
+../Core/Src/MCP2515.c:409:6:Configure_Mcp2515_Can_Ids	18

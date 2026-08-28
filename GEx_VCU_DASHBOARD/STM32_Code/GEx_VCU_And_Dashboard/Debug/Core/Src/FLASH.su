@@ -1,0 +1,3 @@
+../Core/Src/FLASH.c:99:6:Wdt_Log_Check_And_Process	4	static
+../Core/Src/FLASH.c:128:6:Wdt_Log_Read	0	static
+../Core/Src/FLASH.c:149:6:WdtLog_ClearFlash	0	static

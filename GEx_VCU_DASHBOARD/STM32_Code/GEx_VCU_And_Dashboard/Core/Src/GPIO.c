@@ -24,10 +24,21 @@ static const Digital_Output_Pin Digital_Output_Pins[] =
 {
     { MPPT_12V_OP_PORT, MPPT_12V_OP_PIN, GPIO_OUTPUT_PUSHPULL, GPIO_SPEED_50MHZ, GPIO_STATE_HIGH },
 };
+typedef struct
+{
+    bool     Last_State;
+    uint32_t T_Rise_Ms;
+    uint32_t T_Fall_Ms;
+    uint32_t Last_Edge_Tick;
+    uint32_t Period_Ms;
+    uint32_t High_Ms;
+    bool     First_Edge_Done;
+    bool     Is_Blinking;
+} Indicator_Monitor_t;
 
 #define NUM_Digital_Input_Pins (sizeof(Digital_Input_Pins) / sizeof(Digital_Input_Pins[0]))
 #define NUM_DIGITAL_OUTPUT_PINS (sizeof(Digital_Output_Pins) / sizeof(Digital_Output_Pins[0]))
-
+#define INDICATOR_BLINK_TIMEOUT_MS   1200U   /* > one full ~735ms blink period. */
 /***********************************/
 static Gpio_Status Gpio_Pin_Sts;
 static Debounce_Data_t Debounce_Pins[MAX_DEBOUNCED_INPUTS];
@@ -41,6 +52,9 @@ static int Left_Indicatior_Index=-1;
 static int Right_Indicator_Index=-1;
 static int Mppt_Index=-1;
 static int status_print_task_id=-1;
+
+static Indicator_Monitor_t Left_Ind_Mon;
+static Indicator_Monitor_t Right_Ind_Mon;
 /*******************************************************************************
  * Function Name : Input_Pin_Init
  * Description   : Enables the corresponding GPIO port clock and configures a
@@ -164,6 +178,63 @@ static bool Debounce_Get_State(int Pin_index)
     return (bool)Debounce_Pins[Pin_index].Stable_State;
 }
 /*******************************************************************************
+ * Function Name : Indicator_Monitor_Init
+ * Description   : Resets an indicator blink-monitor's edge timestamps and state
+ *                 so it starts clean (avoids a false blink-timeout at boot).
+ * Scope         : Static (Private to this file)
+ * Parameters    : Mon - Pointer to the indicator monitor instance
+ * Return Value  : None
+ ******************************************************************************/
+static void Indicator_Monitor_Init(Indicator_Monitor_t*Indi_State)
+{
+    uint32_t now = Get_Tick_Ms();
+   Indi_State->Last_State       = false;
+   Indi_State->T_Rise_Ms        = now;
+   Indi_State->T_Fall_Ms        = now;
+   Indi_State->Last_Edge_Tick   = now;
+   Indi_State->Period_Ms        = 0;
+   Indi_State->High_Ms          = 0;
+   Indi_State->First_Edge_Done  = false;
+   Indi_State->Is_Blinking      = false;
+}
+
+/*******************************************************************************
+ * Function Name : Indicator_Monitor_Update
+ * Description   : Detects rising/falling edges on a debounced indicator state,
+ *                 tracks period/high-time, and decides blinking vs OFF based on
+ *                 a timeout since the last observed transition.
+ * Scope         : Static (Private to this file)
+ * Parameters    : Mon              - Pointer to the indicator monitor instance
+ *                 Debounced_State  - Current debounced logical state of the pin
+ * Return Value  : None
+ ******************************************************************************/
+static void Indicator_Monitor_Update(Indicator_Monitor_t*Indi_State, bool Debounced_State)
+{
+    uint32_t now = Get_Tick_Ms();
+
+    if (Debounced_State !=Indi_State->Last_State)
+    {
+        if (Debounced_State == true)
+        {
+            /* rising edge: low -> high */
+           Indi_State->Period_Ms = now -Indi_State->T_Rise_Ms;
+           Indi_State->T_Rise_Ms = now;
+           Indi_State->First_Edge_Done = true;
+        }
+        else
+        {
+            /* falling edge: high -> low */
+           Indi_State->High_Ms = now -Indi_State->T_Rise_Ms;
+           Indi_State->T_Fall_Ms = now;
+        }
+
+       Indi_State->Last_Edge_Tick = now;
+       Indi_State->Last_State = Debounced_State;
+    }
+
+   Indi_State->Is_Blinking = ((now -Indi_State->Last_Edge_Tick) <= INDICATOR_BLINK_TIMEOUT_MS);
+}
+/*******************************************************************************
  * Function Name : Gpio_Update_Input_States
  * Description   : Polls debounced digital input states for vehicle hardware signals
  *                 (handbrake, brake fluid, charger, lights, ignition, indicators)
@@ -179,9 +250,12 @@ static void Gpio_Update_Input_States(void)
 	Gpio_Pin_Sts.Brake_Fluid_Sts = !Debounce_Get_State(Brake_Fluid_Index);
 	Gpio_Pin_Sts.Charge_Ack_Sts = !Debounce_Get_State(Charge_Index);
 	Gpio_Pin_Sts.Head_Light_Sts= !Debounce_Get_State(Head_Light_Index);
-	Gpio_Pin_Sts.Left_Indicator_Sts= !Debounce_Get_State(Left_Indicatior_Index);
-	Gpio_Pin_Sts.Right_Indicator_sts = !Debounce_Get_State(Right_Indicator_Index);
 	Gpio_Pin_Sts.Mppt_sts = !Debounce_Get_State(Mppt_Index);
+	Indicator_Monitor_Update(&Left_Ind_Mon,  Debounce_Get_State(Left_Indicatior_Index));
+    Indicator_Monitor_Update(&Right_Ind_Mon, Debounce_Get_State(Right_Indicator_Index));
+    Gpio_Pin_Sts.Left_Indicator_Sts  = Left_Ind_Mon.Is_Blinking;
+    Gpio_Pin_Sts.Right_Indicator_sts = Right_Ind_Mon.Is_Blinking;
+
 }
 /*******************************************************************************
  * Function Name : GPIO_Set_Reset_Verify
@@ -522,6 +596,8 @@ static bool Debounce_Pins_Init()
   Left_Indicatior_Index=Debounce_Register_Pin(LEFT_INDICATOR_PORT,LEFT_INDICATOR_PIN,GPIO_STATE_LOW,DEBOUNCE_FAST_INTERVAL_MS,DEBOUNCE_FAST_Min_Samples);
   Right_Indicator_Index=Debounce_Register_Pin(RIGHT_INDICATOR_PORT,RIGHT_INDICATOR_PIN,GPIO_STATE_LOW,DEBOUNCE_FAST_INTERVAL_MS,DEBOUNCE_FAST_Min_Samples);
   Mppt_Index=Debounce_Register_Pin(MPPT_12V_IP_PORT,MPPT_12V_IP_PIN,GPIO_STATE_LOW,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
+  Indicator_Monitor_Init(&Left_Ind_Mon);
+  Indicator_Monitor_Init(&Right_Ind_Mon);
   if(Hand_Brake_Index<0 || Brake_Fluid_Index<0 || Mppt_Index<0 || Head_Light_Index<0 ||Charge_Index<0 || Left_Indicatior_Index<0 ||Left_Indicatior_Index<0)
   {
 	  return false;

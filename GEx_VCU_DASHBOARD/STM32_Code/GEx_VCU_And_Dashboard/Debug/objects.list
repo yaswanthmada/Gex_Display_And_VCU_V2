@@ -3,6 +3,7 @@
 "./Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.o"
 "./Core/Src/DECODE_MOTOR_CONTROLLER.o"
 "./Core/Src/DWIN_DISPLAY.o"
+"./Core/Src/FLASH.o"
 "./Core/Src/GPIO.o"
 "./Core/Src/IWDT.o"
 "./Core/Src/MCP2515.o"

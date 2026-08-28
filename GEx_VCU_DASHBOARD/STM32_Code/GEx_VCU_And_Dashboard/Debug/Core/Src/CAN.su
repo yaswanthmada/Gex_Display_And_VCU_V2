@@ -1,5 +1,4 @@
-../Core/Src/CAN.c:22:13:CAN_Filter_Init.constprop	20	static
-../Core/Src/CAN.c:295:6:Configure_Can_filter_Ids	48	static
-../Core/Src/CAN.c:316:6:Can_Send_Frame	20	static
-../Core/Src/CAN.c:326:6:Can_Collect_Frame	20	static
-../Core/Src/CAN.c:336:6:Controller_Area_Network_Init	16	static
+../Core/Src/CAN.c:295:6:Configure_Can_filter_Ids	4	static
+../Core/Src/CAN.c:316:6:Can_Send_Frame	12	static
+../Core/Src/CAN.c:326:6:Can_Collect_Frame	16	static
+../Core/Src/CAN.c:336:6:Controller_Area_Network_Init	8	static

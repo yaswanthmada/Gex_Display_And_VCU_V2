@@ -1,9 +1,9 @@
 ../Core/Src/ADC.c:331:13:Print_Adc_Data	1
 ../Core/Src/ADC.c:183:10:ADC_Read_Channel	3
 ../Core/Src/ADC.c:219:10:ADC_Get_Result	2
-../Core/Src/ADC.c:263:6:Battery_Voltage_Update	5
-../Core/Src/ADC.c:310:6:ADC_Update_All_Channels	1
+../Core/Src/ADC.c:263:6:Battery_Voltage_Update	6
+../Core/Src/ADC.c:310:6:ADC_Update_All_Channels	2
 ../Core/Src/ADC.c:394:6:Enable_Adc_Print_Task	2
 ../Core/Src/ADC.c:407:6:Update_Adc	1
 ../Core/Src/ADC.c:421:6:Get_Adc_Data	2
-../Core/Src/ADC.c:443:6:Analog_To_Digital_Converter_Init	8
+../Core/Src/ADC.c:443:6:Analog_To_Digital_Converter_Init	9

@@ -1,8 +1,8 @@
-../Core/Src/UART.c:62:6:USART1_Send_Char	0	static
-../Core/Src/UART.c:76:6:USART3_Send_Char	0	static
-../Core/Src/UART.c:90:6:USART1_Send_String	8	static
-../Core/Src/UART.c:98:6:USART3_Send_String	8	static
-../Core/Src/UART.c:105:6:Send_On_Display_Uart	16	static
+../Core/Src/UART.c:62:6:USART1_Send_Char	4	static
+../Core/Src/UART.c:76:6:USART3_Send_Char	4	static
+../Core/Src/UART.c:90:6:USART1_Send_String	0	static
+../Core/Src/UART.c:98:6:USART3_Send_String	0	static
+../Core/Src/UART.c:105:6:Send_On_Display_Uart	4	static
 ../Core/Src/UART.c:112:6:Uart_Printf	112	static
 ../Core/Src/UART.c:121:6:Universal_Asyn_Rx_Tx_1_Init	8	static
 ../Core/Src/UART.c:125:6:Universal_Asyn_Rx_Tx_3_Init	8	static

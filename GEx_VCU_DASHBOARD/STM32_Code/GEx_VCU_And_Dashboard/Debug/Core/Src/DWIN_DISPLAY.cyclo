@@ -1,8 +1,5 @@
-../Core/Src/DWIN_DISPLAY.c:685:13:Print_Display_Data	2
-../Core/Src/DWIN_DISPLAY.c:24:13:Send_Cmd.constprop	1
-../Core/Src/DWIN_DISPLAY.c:50:13:DWIN_Write_VP	1
-../Core/Src/DWIN_DISPLAY.c:55:13:DWIN_Write_Bool	1
-../Core/Src/DWIN_DISPLAY.c:70:13:DWIN_Write_VP32	1
-../Core/Src/DWIN_DISPLAY.c:401:6:DWIN_Display_Test	8
-../Core/Src/DWIN_DISPLAY.c:672:6:Display_Update_All	2
-../Core/Src/DWIN_DISPLAY.c:858:6:Enable_Display_Print_Task	2
+../Core/Src/DWIN_DISPLAY.c:803:6:Print_Display_Data	2
+../Core/Src/DWIN_DISPLAY.c:119:13:Update_Dwin_Display	8
+../Core/Src/DWIN_DISPLAY.c:450:6:DWIN_Display_Test	20
+../Core/Src/DWIN_DISPLAY.c:790:6:Display_Update_All	1
+../Core/Src/DWIN_DISPLAY.c:976:6:Enable_Display_Print_Task	2

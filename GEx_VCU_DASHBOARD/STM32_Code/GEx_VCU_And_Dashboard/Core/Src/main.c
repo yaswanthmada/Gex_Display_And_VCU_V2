@@ -115,7 +115,7 @@ int main(void)
 		Error_Handler();
      }
      Uart_Printf("[INFO] UART3 Initialized...\r\n");
-  if(!Serial_Peripheral_Interface_Init())
+   if(!Serial_Peripheral_Interface_Init())
      {
      	//SPI Inititialization Fails
  	    Uart_Printf("[ERROR] Failed to initialize SPI\r\n");
@@ -215,6 +215,10 @@ int main(void)
      {
          Uart_Printf("[INFO] Enable_Display_Print_Task enabled \r\n");
      }
+     if (RCC->CSR & RCC_CSR_IWDGRSTF)
+	 {
+		 RCC->CSR |= RCC_CSR_RMVF;
+	 }
      IWDG_Init(1000);
     /* USER CODE END 2 */
 
@@ -231,6 +235,8 @@ int main(void)
 	  Display_Update_All();
 	  Task_Timer_Run_All();
 	  Uart_Printf("Time Taken for While loop Iteration :%d in ms\n",Get_Tick_Ms()-Start_time);
+
+	  HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

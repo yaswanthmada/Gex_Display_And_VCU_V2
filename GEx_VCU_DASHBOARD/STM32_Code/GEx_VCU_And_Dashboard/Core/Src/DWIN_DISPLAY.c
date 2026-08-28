@@ -24,7 +24,7 @@ GEx_Display_t GEx_Display={0} ;
 static void Send_Cmd(uint8_t cmd, uint16_t address,
                      const uint8_t *data, uint8_t data_len)
 {
-    uint8_t frame[20];
+    uint8_t frame[200];
     uint8_t idx = 0;
     frame[idx++] = DWIN_HEADER_1;
     frame[idx++] = DWIN_HEADER_2;
@@ -91,6 +91,21 @@ static void DWIN_Write_VPFloat(uint16_t address, float value)
     union { float f; uint32_t u; } v;
     v.f = value;
     DWIN_Write_VP32(address, v.u);
+}
+/*******************************************************************************
+ * Function Name : DWIN_Set_Text
+ * Description   : Writes a text string to a specified Variable Pointer (VP)
+ *                 address, capped at a maximum length of 200 bytes.
+ * Scope         : Static (Private to this file)
+ * Parameters    : address - Target Variable Pointer address
+ *                 text    - Pointer to null-terminated character string
+ * Return Value  : None
+ ******************************************************************************/
+static void DWIN_Set_Text(uint16_t address, const char *text)
+{
+    uint8_t len = (uint8_t)strlen(text);
+    if (len > 200u) len = 200u;
+    Send_Cmd(CMD_WRITE_VP, address, (const uint8_t *)text, len);
 }
 /*******************************************************************************
  * Function Name : Update_Dwin_Display
@@ -380,6 +395,41 @@ static void Update_Dwin_Display(void)
     		CELL_24,
         GEx_Display.Bms_Data.Cells[23]);
 
+    for (uint8_t i = 0; i < DISPLAY_MAX_FAULTS; i++)
+    {
+        if (i < GEx_Display.Mcu_Data.Mcu_Fault_Count)
+        {
+        	DWIN_Set_Text(
+                MCU_FAULT_1 + (i * 0x20),
+                GEx_Display.Mcu_Data.Mcu_Active_Fault[i]
+            );
+        }
+        else
+        {
+        	DWIN_Set_Text(
+                MCU_FAULT_1 + (i * 0x20),
+                "                     "
+            );
+        }
+    }
+    for (uint8_t i = 0; i < DISPLAY_MAX_FAULTS; i++)
+    {
+        if (i < GEx_Display.Bms_Data.Bms_Fault_Count)
+        {
+        	DWIN_Set_Text(
+                BMS_FAULT_1 + (i * 0x20),
+                GEx_Display.Bms_Data.Bms_Active_Fault[i]
+            );
+        }
+        else
+        {
+        	DWIN_Set_Text(
+                BMS_FAULT_1 + (i * 0x20),
+                "                    "
+            );
+        }
+    }
+
 }
 
 /*******************************************************************************
@@ -394,7 +444,6 @@ static void Update_Display_strucutres()
 	Get_Bms_Data(&GEx_Display.Bms_Data);
 	Get_Mcu_Data(&GEx_Display.Mcu_Data);
 	Get_IO_Data(&GEx_Display.IO_Data);
-	Uart_Printf("ADC start");
 	Get_Adc_Data(&GEx_Display.Adc_Data);
 //	Get_System_Data(&GEx_Display.System_Data); // need to update once all code done
 }
@@ -514,7 +563,81 @@ void DWIN_Display_Test(void)
         mode = 0;
     }
 
+    static uint8_t fault_count = 0;
 
+    fault_count++;
+
+    if (fault_count > 4)
+    {
+        fault_count = 0;
+    }
+
+    GEx_Display.Mcu_Data.Mcu_Fault_Count = fault_count;
+
+    if (fault_count >= 1)
+    {
+        strcpy(GEx_Display.Mcu_Data.Mcu_Active_Fault[0],
+               "MCU Over Temperature");
+    }
+
+    if (fault_count >= 2)
+    {
+        strcpy(GEx_Display.Mcu_Data.Mcu_Active_Fault[1],
+               "MCU Over Voltage");
+    }
+
+    if (fault_count >= 3)
+    {
+        strcpy(GEx_Display.Mcu_Data.Mcu_Active_Fault[2],
+               "MCU Over Current");
+    }
+
+    if (fault_count >= 4)
+    {
+        strcpy(GEx_Display.Mcu_Data.Mcu_Active_Fault[3],
+               "MCU CAN Error");
+    }
+
+
+    for (uint8_t i = fault_count; i < 4; i++)
+    {
+        GEx_Display.Mcu_Data.Mcu_Active_Fault[i][0] = '\0';
+    }
+
+    GEx_Display.Mcu_Data.Mcu_Fault = (fault_count != 0);
+
+    GEx_Display.Bms_Data.Bms_Fault_Count = fault_count;
+
+    if (fault_count >= 1)
+    {
+        strcpy(GEx_Display.Bms_Data.Bms_Active_Fault[0],
+               "BMS Over Voltage");
+    }
+
+    if (fault_count >= 2)
+    {
+        strcpy(GEx_Display.Bms_Data.Bms_Active_Fault[1],
+               "BMS Under Voltage");
+    }
+
+    if (fault_count >= 3)
+    {
+        strcpy(GEx_Display.Bms_Data.Bms_Active_Fault[2],
+               "BMS Over Current");
+    }
+
+    if (fault_count >= 4)
+    {
+        strcpy(GEx_Display.Bms_Data.Bms_Active_Fault[3],
+               "BMS CAN Error");
+    }
+
+    for (uint8_t i = fault_count; i < 4; i++)
+    {
+        GEx_Display.Bms_Data.Bms_Active_Fault[i][0] = '\0';
+    }
+
+    GEx_Display.Bms_Data.Bms_Fault = (fault_count != 0);
     GEx_Display.Bms_Data.Soc =
         soc;
 
@@ -535,8 +658,6 @@ void DWIN_Display_Test(void)
         toggle;
 
 
-    GEx_Display.Bms_Data.Bms_Fault_Count =
-        toggle ? 1 : 0;
 
     for (i = 0; i < 24; i++)
     {
@@ -572,9 +693,6 @@ void DWIN_Display_Test(void)
     GEx_Display.Mcu_Data.Trip_Value =
         trip;
 
-
-    GEx_Display.Mcu_Data.Mcu_Fault_Count =
-        toggle ? 1 : 0;
 
 
     GEx_Display.Mcu_Data.Speed =
@@ -671,8 +789,8 @@ void DWIN_Display_Test(void)
 }
 void Display_Update_All()
 {
- Update_Display_strucutres();
-//	DWIN_Display_Test();
+// Update_Display_strucutres();
+	DWIN_Display_Test();
  Update_Dwin_Display();
 }
 /*******************************************************************************
@@ -682,7 +800,7 @@ void Display_Update_All()
  * Parameters    : None
  * Return Value  : None
  ******************************************************************************/
-static void Print_Display_Data(void)
+void Print_Display_Data(void)
 {
     uint8_t i;
     uint32_t value;
@@ -863,22 +981,6 @@ bool Enable_Display_Print_Task()
  Now Not using future we will use
  */
 
-
-/*******************************************************************************
- * Function Name : DWIN_Set_Text
- * Description   : Writes a text string to a specified Variable Pointer (VP)
- *                 address, capped at a maximum length of 200 bytes.
- * Scope         : Static (Private to this file)
- * Parameters    : address - Target Variable Pointer address
- *                 text    - Pointer to null-terminated character string
- * Return Value  : None
- ******************************************************************************
-static void DWIN_Set_Text(uint16_t address, const char *text)
-{
-    uint8_t len = (uint8_t)strlen(text);
-    if (len > 200u) len = 200u;
-    Send_Cmd(CMD_WRITE_VP, address, (const uint8_t *)text, len);
-}*/
 /*******************************************************************************
  * Function Name : DWIN_ReadVP
  * Description   : Sends a read request command for a specified number of words
