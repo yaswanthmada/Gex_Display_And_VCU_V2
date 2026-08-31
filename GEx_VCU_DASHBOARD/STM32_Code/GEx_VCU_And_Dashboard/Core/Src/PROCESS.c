@@ -40,7 +40,6 @@ void Request_Bms_Messages()
 	   {
 		   i=0;
 	   }
-	   HAL_Delay(100);
 }
 bool Get_BMS_Can_Fault()
 {

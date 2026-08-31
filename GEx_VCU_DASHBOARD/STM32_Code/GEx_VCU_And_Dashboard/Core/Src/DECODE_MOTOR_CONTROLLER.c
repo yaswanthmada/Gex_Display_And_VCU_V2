@@ -313,7 +313,7 @@ static bool Task_Id_For_Mcu_Print(void)
 {
     if (status_print_task_id < 0)
     {
-        status_print_task_id = Task_Timer_Register(3000, Print_Motor_Messages);
+        status_print_task_id = Task_Timer_Register(00, Print_Motor_Messages);
         if (status_print_task_id < 0)
         {
         	return false;
@@ -336,6 +336,7 @@ bool Enable_Mcu_Print_Task()
 }
 void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
 {
+
 #ifdef MCU_NANJING_QUARK
 
     Mcu_Data->Speed = Mcu_Msgs.MCU_MSG_0x011.Motor_Speed;
@@ -346,9 +347,10 @@ void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
     uint32_t trouble_mask = Mcu_Msgs.MCU_MSG_0x011.Trouble_Code;
     if (trouble_mask == 0)
         {
+    	Uart_Printf("if mcu_troulecode\n\r");
             Mcu_Data->Mcu_Fault = false;
             Mcu_Data->Mcu_Fault_Count = 0;
-            for (uint8_t i = 0; i < MCU_FAULT_COUNT; i++)
+            for (uint8_t i = 0; i < MCU_FAULT_COUNT_NANJING_QUARK; i++)
             {
                 Mcu_Data->Mcu_Active_Fault[i][0] = '\0';
             }
@@ -370,7 +372,12 @@ void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
                     if (Mcu_Data->Mcu_Fault_Count < MCU_FAULT_COUNT_NANJING_QUARK)
                     {
                         uint8_t dest_size = sizeof(Mcu_Data->Mcu_Active_Fault[0]);
-                        strncpy(Mcu_Data->Mcu_Active_Fault[Mcu_Data->Mcu_Fault_Count], Mcu_Fault_Names[bit], dest_size - 1);
+                        memcpy(
+                            Mcu_Data->Mcu_Active_Fault[Mcu_Data->Mcu_Fault_Count],
+                            Mcu_Fault_Names[bit],
+                            MCU_FAULT_NAME_LENGTH
+                        );
+
                         Mcu_Data->Mcu_Active_Fault[Mcu_Data->Mcu_Fault_Count][dest_size - 1] = '\0';
                         Mcu_Data->Mcu_Fault_Count++;
                     }
@@ -385,6 +392,5 @@ void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
     {
         Mcu_Data->Brake_Signal=false;
     }
-    Uart_Printf("mcu in end\n\r");
 #endif
 }

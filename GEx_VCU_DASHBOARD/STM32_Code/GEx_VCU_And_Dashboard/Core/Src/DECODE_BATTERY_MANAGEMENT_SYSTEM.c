@@ -13,7 +13,7 @@ static int status_print_task_id=-1;
 #ifdef JBD_BMS
 uint8_t ntc[5];
 uint8_t Avg_Temp=0;
-const char Bms_Fault_Names[16][BMS_FAULT_NAME_LEN] =
+const char Bms_Fault_Names[16][40] =
 {
 	    "Cell Over Volt",
 	    "Cell Under Volt",
@@ -594,7 +594,7 @@ static bool Task_Id_For_Bms_Print(void)
 {
     if (status_print_task_id < 0)
     {
-        status_print_task_id = Task_Timer_Register(3000, Print_Bms_Messages);
+        status_print_task_id = Task_Timer_Register(000, Print_Bms_Messages);
         if (status_print_task_id < 0)
         {
         	return false;
@@ -617,6 +617,10 @@ bool Enable_Bms_Print_Task()
 }
 void Get_Bms_Data(BMS_Data_t* Bms_Data)
 {
+    if (Bms_Data == NULL)
+    {
+        return;
+    }
 #ifdef JBD_BMS
 	Bms_Data->Avg_Temp=Avg_Temp;
 	Bms_Data->Battery_Current=Bms_Frames.JBD_BMS_0x100.Charge_and_Discharge_Current;
@@ -664,7 +668,10 @@ void Get_Bms_Data(BMS_Data_t* Bms_Data)
 	                  if (fault_count < BMS_FAULT_COUNT_JBD_BMS)
 	                  {
 	                      uint8_t dest_size = sizeof(Bms_Data->Bms_Active_Fault[0]);
-	                      strncpy(Bms_Data->Bms_Active_Fault[fault_count], Bms_Fault_Names[i], dest_size - 1);
+	                      memcpy(Bms_Data->Bms_Active_Fault[fault_count],
+	                             Bms_Fault_Names[i],
+	                             sizeof(Bms_Data->Bms_Active_Fault[0]));
+
 	                      Bms_Data->Bms_Active_Fault[fault_count][dest_size - 1] = '\0';
 
 	                      fault_count++;

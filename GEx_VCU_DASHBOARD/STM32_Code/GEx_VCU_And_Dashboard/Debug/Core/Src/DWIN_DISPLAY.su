@@ -1,6 +1,6 @@
-../Core/Src/DWIN_DISPLAY.c:806:6:Print_Display_Data	32	static
-../Core/Src/DWIN_DISPLAY.c:119:13:Update_Dwin_Display	232	static
-../Core/Src/DWIN_DISPLAY.c:434:6:Get_System_Data	0	static
-../Core/Src/DWIN_DISPLAY.c:453:6:DWIN_Display_Test	88	static
-../Core/Src/DWIN_DISPLAY.c:793:6:Display_Update_All	8	static
-../Core/Src/DWIN_DISPLAY.c:979:6:Enable_Display_Print_Task	8	static
+../Core/Src/DWIN_DISPLAY.c:824:6:Print_Display_Data	32	static
+../Core/Src/DWIN_DISPLAY.c:120:13:Update_Dwin_Display	232	static
+../Core/Src/DWIN_DISPLAY.c:449:6:Get_System_Data	8	static
+../Core/Src/DWIN_DISPLAY.c:471:6:DWIN_Display_Test	88	static
+../Core/Src/DWIN_DISPLAY.c:811:6:Display_Update_All	8	static
+../Core/Src/DWIN_DISPLAY.c:1006:6:Enable_Display_Print_Task	8	static

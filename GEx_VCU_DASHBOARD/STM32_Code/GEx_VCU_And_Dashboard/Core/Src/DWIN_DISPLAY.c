@@ -8,6 +8,7 @@
 
 #include"DWIN_DISPLAY.h"
 static int status_print_task_id=-1;
+static int16_t  Page_Offset  = 0;
 GEx_Display_t GEx_Display={0} ;
 // static int16_t page_offset  = 0; Now not using , required when want to change from one screen to another
 /*******************************************************************************
@@ -431,9 +432,26 @@ static void Update_Dwin_Display(void)
     }
 
 }
+/*******************************************************************************
+ * Function Name : DWIN_Set_Page
+ * Description   : Switches the active display page to the requested page ID,
+ *                 adjusted by the global page offset.
+ * Scope         : Static (Private to this file)
+ * Parameters    : pageID - Target page number to switch to
+ * Return Value  : None
+ ******************************************************************************/
+static void DWIN_Set_Page(uint16_t Page_Id)
+{
+    uint16_t P_Id = (uint16_t)((int16_t)Page_Id + Page_Offset);
+    uint8_t Data[4] = { 0x5Au, 0x01u, (uint8_t)(P_Id >> 8), (uint8_t)(P_Id & 0xFFu) };
+    Send_Cmd(CMD_WRITE_VP, ADDR_PAGE_SWITCH, Data, 4u);
+}
 void Get_System_Data(GEx_Display_t * System_Data)
 {
 	Get_Hard_Fault_Watch_Dog_Timer_Data(System_Data);
+	Check_TJA1050A_Can_Bus_Ok(System_Data);
+	Check_MCP2515_Can_Bus_Ok(System_Data);
+	Check_Bms_Mcu_Can_Data(System_Data);
 }
 /*******************************************************************************
  * Function Name : Update_Display_strucutres
@@ -832,8 +850,6 @@ void Print_Display_Data(void)
                 GEx_Display.IO_Data.Mppt_On_Off ? "ON" : "OFF");
 
 
-    /* -------------------- VEHICLE -------------------- */
-
     Uart_Printf("\r\n---------------- VEHICLE ----------------------------\r\n");
 
     Uart_Printf("Ready                  : %s\r\n",
@@ -859,9 +875,6 @@ void Print_Display_Data(void)
 
     Uart_Printf("Eco/Boost              : %s\r\n",
                 GEx_Display.Mcu_Data.Echo_Boost ? "ON" : "OFF");
-
-
-    /* -------------------- BMS -------------------- */
 
     Uart_Printf("\r\n---------------- BMS -------------------------------\r\n");
 
@@ -932,14 +945,28 @@ void Print_Display_Data(void)
                 GEx_Display.System_Data.Is_Mcu_Can_Ok ?
                 "OK" : "ERROR");
 
-    Uart_Printf("General CAN            : %s\r\n",
-                (GEx_Display.System_Data.Is_MCP2515_Can_Ok&&GEx_Display.System_Data.Is_Tja1050A_Can_Ok) ?
-                "OK" : "ERROR");
-
+    if (GEx_Display.System_Data.Is_MCP2515_Can_Ok && GEx_Display.System_Data.Is_Tja1050A_Can_Ok)
+    {
+        Uart_Printf("General CAN            : OK\r\n");
+    }
+    else if (!GEx_Display.System_Data.Is_MCP2515_Can_Ok && !GEx_Display.System_Data.Is_Tja1050A_Can_Ok)
+    {
+        Uart_Printf("General CAN            : MCP2551_CAN_ERROR + TJA1050A_CAN_ERROR\r\n");
+    }
+    else if (!GEx_Display.System_Data.Is_MCP2515_Can_Ok)
+    {
+        Uart_Printf("General CAN            : MCP2551_CAN_ERROR\r\n");
+    }
+    else
+    {
+        Uart_Printf("General CAN            : TJA1050A_CAN_ERROR\r\n");
+    }
     Uart_Printf("Watchdog Reset         : %s\r\n",
                 GEx_Display.System_Data.Is_Watch_Dog_Reset ?
                 "YES" : "NO");
-
+    Uart_Printf("Watchdog Count         : %u\r\n",
+                GEx_Display.System_Data.Wdt_Count ?
+                "YES" : "NO");
     Uart_Printf("System Hard Fault      : %s\r\n",
                 GEx_Display.System_Data.Is_System_Hard_Fault ?
                 "YES" : "NO");
@@ -968,7 +995,7 @@ static bool Task_Id_For_Dispaly_Print(void)
 {
     if (status_print_task_id < 0)
     {
-        status_print_task_id = Task_Timer_Register(3000, Print_Display_Data);
+        status_print_task_id = Task_Timer_Register(00, Print_Display_Data);
         if (status_print_task_id < 0)
         {
         	return false;

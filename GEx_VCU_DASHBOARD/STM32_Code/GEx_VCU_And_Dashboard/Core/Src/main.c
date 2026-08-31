@@ -217,7 +217,8 @@ int main(void)
          Uart_Printf("[INFO] Enable_Display_Print_Task enabled \r\n");
      }
      Wdt_Log_Check_And_Process();
-     IWDG_Init(1000);
+     IWDG_Init(2000);
+     Uart_Printf("[INFO] Entering in to Super Loop \r\n");
     /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -234,7 +235,6 @@ int main(void)
 	  Task_Timer_Run_All();
 	  Uart_Printf("Time Taken for While loop Iteration :%d in ms\n",Get_Tick_Ms()-Start_time);
 
-	  HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

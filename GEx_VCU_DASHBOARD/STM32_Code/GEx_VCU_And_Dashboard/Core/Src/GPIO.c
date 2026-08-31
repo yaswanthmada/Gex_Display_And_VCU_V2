@@ -246,11 +246,11 @@ static void Indicator_Monitor_Update(Indicator_Monitor_t*Indi_State, bool Deboun
  ******************************************************************************/
 static void Gpio_Update_Input_States(void)
 {
-	Gpio_Pin_Sts.Hand_Brake_Sts = Debounce_Get_State(Hand_Brake_Index);
+	Gpio_Pin_Sts.Hand_Brake_Sts = !Debounce_Get_State(Hand_Brake_Index);
 	Gpio_Pin_Sts.Brake_Fluid_Sts = !Debounce_Get_State(Brake_Fluid_Index);
-	Gpio_Pin_Sts.Charge_Ack_Sts = !Debounce_Get_State(Charge_Index);
-	Gpio_Pin_Sts.Head_Light_Sts= !Debounce_Get_State(Head_Light_Index);
-	Gpio_Pin_Sts.Mppt_sts = !Debounce_Get_State(Mppt_Index);
+	Gpio_Pin_Sts.Charge_Ack_Sts = Debounce_Get_State(Charge_Index);
+	Gpio_Pin_Sts.Head_Light_Sts= Debounce_Get_State(Head_Light_Index);
+	Gpio_Pin_Sts.Mppt_Ip_Sts = Debounce_Get_State(Mppt_Index);
 	Indicator_Monitor_Update(&Left_Ind_Mon,  Debounce_Get_State(Left_Indicatior_Index));
     Indicator_Monitor_Update(&Right_Ind_Mon, Debounce_Get_State(Right_Indicator_Index));
     Gpio_Pin_Sts.Left_Indicator_Sts  = Left_Ind_Mon.Is_Blinking;
@@ -300,19 +300,19 @@ static void Gpio_Update_Output_Pins()
 
 	switch(Gpio_Pin_Sts.Mppt_Ip_Sts)
 	{
-	case 0:
-	{
-		if(GPIO_Set_Reset_Verify(MPPT_12V_OP_PORT,MPPT_12V_OP_PIN,GPIO_PIN_RESET))
-		{
-			Gpio_Pin_Sts.Mppt_Op_Bp_Sts=false;
-		}
-	}
-	break;
 	case 1:
 	{
 		if(GPIO_Set_Reset_Verify(MPPT_12V_OP_PORT,MPPT_12V_OP_PIN,GPIO_PIN_SET))
 		{
 			Gpio_Pin_Sts.Mppt_Op_Bp_Sts=true;
+		}
+	}
+	break;
+	case 0:
+	{
+		if(GPIO_Set_Reset_Verify(MPPT_12V_OP_PORT,MPPT_12V_OP_PIN,GPIO_PIN_RESET))
+		{
+			Gpio_Pin_Sts.Mppt_Op_Bp_Sts=false;
 		}
 	}
 	break;
@@ -589,13 +589,13 @@ static bool Debounce_Pins_Init()
   {
 	  return false;
   }
-  Hand_Brake_Index=Debounce_Register_Pin(HAND_BRAKE_PORT,HAND_BRAKE_PIN,GPIO_INPUT_PULL_UP,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
-  Brake_Fluid_Index=Debounce_Register_Pin(BRAKE_FLUID_PORT,BRAKE_FLUID_PIN,GPIO_INPUT_PULL_UP,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
-  Head_Light_Index=Debounce_Register_Pin(HEAD_LIGHT_PORT,HEAD_LIGHT_PIN,GPIO_STATE_LOW,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
-  Charge_Index=Debounce_Register_Pin(CHARGE_ACK_PORT,CHARGE_ACK_PIN,GPIO_STATE_LOW,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
-  Left_Indicatior_Index=Debounce_Register_Pin(LEFT_INDICATOR_PORT,LEFT_INDICATOR_PIN,GPIO_STATE_LOW,DEBOUNCE_FAST_INTERVAL_MS,DEBOUNCE_FAST_Min_Samples);
-  Right_Indicator_Index=Debounce_Register_Pin(RIGHT_INDICATOR_PORT,RIGHT_INDICATOR_PIN,GPIO_STATE_LOW,DEBOUNCE_FAST_INTERVAL_MS,DEBOUNCE_FAST_Min_Samples);
-  Mppt_Index=Debounce_Register_Pin(MPPT_12V_IP_PORT,MPPT_12V_IP_PIN,GPIO_STATE_LOW,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
+  Hand_Brake_Index=Debounce_Register_Pin(HAND_BRAKE_PORT,/*HAND_BRAKE_PIN*/GPIO_PIN_4,GPIO_INPUT_PULL_UP,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
+  Brake_Fluid_Index=Debounce_Register_Pin(BRAKE_FLUID_PORT,/*BRAKE_FLUID_PIN*/GPIO_PIN_7,GPIO_INPUT_PULL_UP,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
+  Head_Light_Index=Debounce_Register_Pin(HEAD_LIGHT_PORT,/*HEAD_LIGHT_PIN*/GPIO_PIN_0,GPIO_STATE_LOW,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
+  Charge_Index=Debounce_Register_Pin(CHARGE_ACK_PORT,/*CHARGE_ACK_PIN*/GPIO_PIN_13,GPIO_STATE_LOW,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
+  Left_Indicatior_Index=Debounce_Register_Pin(LEFT_INDICATOR_PORT,/*LEFT_INDICATOR_PIN*/GPIO_PIN_1,GPIO_STATE_LOW,DEBOUNCE_FAST_INTERVAL_MS,DEBOUNCE_FAST_Min_Samples);
+  Right_Indicator_Index=Debounce_Register_Pin(RIGHT_INDICATOR_PORT,/*RIGHT_INDICATOR_PIN*/GPIO_PIN_2,GPIO_STATE_LOW,DEBOUNCE_FAST_INTERVAL_MS,DEBOUNCE_FAST_Min_Samples);
+  Mppt_Index=Debounce_Register_Pin(MPPT_12V_IP_PORT,/*MPPT_12V_IP_PIN*/GPIO_PIN_3,GPIO_STATE_LOW,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
   Indicator_Monitor_Init(&Left_Ind_Mon);
   Indicator_Monitor_Init(&Right_Ind_Mon);
   if(Hand_Brake_Index<0 || Brake_Fluid_Index<0 || Mppt_Index<0 || Head_Light_Index<0 ||Charge_Index<0 || Left_Indicatior_Index<0 ||Left_Indicatior_Index<0)
@@ -620,6 +620,45 @@ static void Update_Gpio_Pins()
 	Gpio_Update_Output_Pins();
 }
 /*******************************************************************************
+ * Function Name : Print_Pin_IDR
+ * Description   : Reads and prints the raw, unfiltered IDR bit for a specific
+ *                 GPIO pin over UART, along with its port/pin identity.
+ * Scope         : Static (Private to this file)
+ * Parameters    : Name  - Human-readable label for the pin (for the printout)
+ *                 GPIOx - Pointer to GPIO port register base
+ *                 Pin   - Pin position index (0 to 15)
+ * Return Value  : None
+ ******************************************************************************/
+static void Print_Pin_IDR(const char* Name, GPIO_TypeDef* GPIOx, uint16_t Pin)
+{
+    uint8_t Raw = Gpio_Read_Pin(GPIOx, Pin);
+    Uart_Printf("%-16s: Port=0x%08lX Pin=%2d  IDR=%d\r\n",
+                Name, (uint32_t)GPIOx, Pin, Raw);
+}
+/*******************************************************************************
+ * Function Name : Print_All_Input_IDR
+ * Description   : Iterates through Digital_Input_Pins[] and prints the raw IDR
+ *                 bit for every registered digital input pin over UART.
+ * Scope         : Static (Private to this file)
+ * Parameters    : None
+ * Return Value  : None
+ ******************************************************************************/
+static void Print_All_Input_IDR(void)
+{
+    static const char* Pin_Names[] =
+    {
+        "Hand Brake", "Brake Fluid", "Head Light", "Charge Ack",
+        "Left Indicator", "Right Indicator", "MPPT 12V IP"
+    };
+
+    Uart_Printf("\r\n=== Raw IDR values ===\r\n");
+    for (size_t i = 0; i < NUM_Digital_Input_Pins; i++)
+    {
+        Print_Pin_IDR(Pin_Names[i], Digital_Input_Pins[i].Port, Digital_Input_Pins[i].Pin);
+    }
+    Uart_Printf("=======================\r\n");
+}
+/*******************************************************************************
  * Function Name : Debounce_Print_Status
  * Description   : Formats and outputs diagnostic information over UART for all
  *                 registered debounced pins, including register addresses,
@@ -640,7 +679,7 @@ static void Debounce_Print_Status(void)
         {
             bool raw_state = Debounce_Get_Raw_State(i);
             Uart_Printf("Pin %d: Port=0x%08lX, Pin=0x%04X, Raw=%d, Stable=%d, Debouncing=%d, Samples=%d\r\n",
-                            i, (uint32_t)Pin->Port, Pin->Pin, raw_state, Pin->Stable_State,
+                            i, (uint32_t)Pin->Port, Pin->Pin,raw_state, Pin->Stable_State,
                             Pin->Debouncing, Pin->Sample_Count);
         }
     }
@@ -658,10 +697,11 @@ static void Debounce_Print_Status(void)
 static void Print_Gpio_Data(void)
 {
 	Debounce_Print_Status();
+	Print_All_Input_IDR();
 	Uart_Printf("=============Input_Output_Data=====================\r\n");
-	Uart_Printf("Hand Brake      : %s\r\n", !Gpio_Pin_Sts.Hand_Brake_Sts      ? "ENGAGED"  : "RELEASED");
+	Uart_Printf("Hand Brake      : %s\r\n", Gpio_Pin_Sts.Hand_Brake_Sts      ? "ENGAGED"  : "RELEASED");
 	Uart_Printf("BP_RELAY      : %s\r\n", Gpio_Pin_Sts.Mppt_Op_Bp_Sts     ? "ON"  : "OFF");
-	Uart_Printf("Brake Fluid     : %s\r\n", !Gpio_Pin_Sts.Brake_Fluid_Sts     ? "LOW"      : "NORMAL");
+	Uart_Printf("Brake Fluid     : %s\r\n", Gpio_Pin_Sts.Brake_Fluid_Sts     ? "LOW"      : "NORMAL");
 	Uart_Printf("MPPT_IP        : %s\r\n", Gpio_Pin_Sts.Mppt_Ip_Sts         ? "ON"       : "OFF");
 	Uart_Printf("Head Light      : %s\r\n", Gpio_Pin_Sts.Head_Light_Sts       ? "ON"       : "OFF");
 	Uart_Printf("Charge Ack      : %s\r\n", Gpio_Pin_Sts.Charge_Ack_Sts       ? "ACTIVE"   : "INACTIVE");
@@ -669,6 +709,7 @@ static void Print_Gpio_Data(void)
 	Uart_Printf("Right Indicator : %s\r\n", Gpio_Pin_Sts.Right_Indicator_sts  ? "ON"       : "OFF");
 	Uart_Printf("====================================================\r\n");
 }
+
 /*******************************************************************************
  * Function Name : Task_Id_For_Gpio_Print
  * Description   : Registers a periodic software timer task to print vehicle
@@ -682,7 +723,7 @@ static bool Task_Id_For_Gpio_Print(void)
 {
     if (status_print_task_id < 0)
     {
-        status_print_task_id = Task_Timer_Register(3000, Print_Gpio_Data);
+        status_print_task_id = Task_Timer_Register(00, Print_Gpio_Data);
         if (status_print_task_id < 0)
         {
         	return false;

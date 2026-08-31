@@ -1,7 +1,7 @@
 ../Core/Src/GPIO.c:512:16:Debounce_Register_Pin	4
-../Core/Src/GPIO.c:658:13:Print_Gpio_Data	17
+../Core/Src/GPIO.c:697:13:Print_Gpio_Data	18
 ../Core/Src/GPIO.c:271:6:GPIO_Set_Reset_Verify	5
-../Core/Src/GPIO.c:694:6:Update_Gpio	41
-../Core/Src/GPIO.c:698:6:Get_IO_Data	1
-../Core/Src/GPIO.c:707:6:Enable_Gpio_Print_Task	2
-../Core/Src/GPIO.c:711:6:General_Purpose_Input_Output_Init	13
+../Core/Src/GPIO.c:735:6:Update_Gpio	41
+../Core/Src/GPIO.c:739:6:Get_IO_Data	1
+../Core/Src/GPIO.c:748:6:Enable_Gpio_Print_Task	2
+../Core/Src/GPIO.c:752:6:General_Purpose_Input_Output_Init	13

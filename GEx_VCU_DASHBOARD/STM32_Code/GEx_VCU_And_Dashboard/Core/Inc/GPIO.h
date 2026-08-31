@@ -32,7 +32,7 @@
 #define HAND_BRAKE_PORT     GPIOB
 #define BRAKE_FLUID_PORT	GPIOA
 #define HEAD_LIGHT_PORT		GPIOA
-#define CHARGE_ACK_PORT		GPIOA
+#define CHARGE_ACK_PORT		GPIOC
 #define LEFT_INDICATOR_PORT	 GPIOA
 #define RIGHT_INDICATOR_PORT GPIOA
 #define MPPT_12V_IP_PORT       GPIOA
@@ -110,8 +110,6 @@ typedef struct
 	bool Charge_Ack_Sts;
 	bool Left_Indicator_Sts;
 	bool Right_Indicator_sts;
-	bool Mppt_sts;
-
 }Gpio_Status;
 /*******************************************************************************
  * Function Name : General_Purpose_Input_Output_Init

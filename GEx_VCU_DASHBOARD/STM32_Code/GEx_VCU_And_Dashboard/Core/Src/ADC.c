@@ -270,7 +270,7 @@ void Battery_Voltage_Update(void)
     Pin_Voltage =
         ((float)Raw_Adc / (float)ADC_MAX_VALUE) *
         (ADC_VREF_MV / 1000.0f);
-    Battery_Voltage =Pin_Voltage * BATTERY_DIVIDER_RATIO;
+    Battery_Voltage =Pin_Voltage / BATTERY_DIVIDER_RATIO;;
     Current_Time = Get_Tick_Ms();
     Battery_Status.Raw_Adc = Raw_Adc;
     Battery_Status.Pin_Voltage = Pin_Voltage;
@@ -370,7 +370,7 @@ static bool Task_Id_For_Adc_Print(void)
     {
         status_print_task_id =
             Task_Timer_Register(
-                3000U,
+                0U,
                 Print_Adc_Data
             );
 
