@@ -429,7 +429,7 @@ void Get_Adc_Data(ADC_Data_t *Adc_Data)
         Battery_Status.Input_Voltage;
 
     Adc_Data->Battery_Low_12V =
-        Battery_Status.fault;
+        !Battery_Status.fault;
 }
 /*******************************************************************************
  * Function Name : Analog_To_Digital_Converter_Init

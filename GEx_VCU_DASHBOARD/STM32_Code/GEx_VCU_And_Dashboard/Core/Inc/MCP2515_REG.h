@@ -91,6 +91,11 @@
 #define MCP_BIT_TXREQ           0x08
 #define MCP_MASK_TXPRI          0x03
 
+#define MCP_BIT_RXEP            0x08
+#define MCP_BIT_TXEP            0x10
+#define MCP_BIT_TXBO            0x20
+#define MCP_BIT_RX0OVR          0x40
+#define MCP_BIT_RX1OVR          0x80
 /* Receive Control (RXBnCTRL) */
 #define MCP_MASK_RXB0_RXM       0x60
 #define MCP_BIT_RX0_BUKT        0x04

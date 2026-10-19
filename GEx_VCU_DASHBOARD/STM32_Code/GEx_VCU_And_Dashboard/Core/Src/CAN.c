@@ -193,6 +193,10 @@ static void CAN1_Tx_Frame(const CAN_Message_t *frame,uint8_t mail_box )
 	CAN1->sTxMailBox[mail_box].TDTR |= (frame->dlc<<0);
 	CAN1->sTxMailBox[mail_box].TDLR = 0x00000000;
 	CAN1->sTxMailBox[mail_box].TDHR = 0x00000000;
+if (frame->isRTR)
+	{
+		CAN1->sTxMailBox[mail_box].TIR |= (1 << 1);
+	}
 	if(!frame->isRTR)
 	{
 		 for(uint8_t i=0;i<frame->dlc;i++)
@@ -299,8 +303,6 @@ void Configure_Can_filter_Ids()
 			JBD_BMS_ID0 ,
             JBD_BMS_ID1 ,
             JBD_BMS_ID2 ,
-            JBD_BMS_ID3 ,
-            JBD_BMS_ID4 ,
             JBD_BMS_ID5 ,
             JBD_BMS_ID6 ,
             JBD_BMS_ID7 ,
@@ -309,9 +311,35 @@ void Configure_Can_filter_Ids()
             JBD_BMS_ID10 ,
             JBD_BMS_ID11 ,
             JBD_BMS_ID12 ,
+            JBD_BMS_ID13,
+             JBD_BMS_ID14
 #endif
 	};
 	CAN_Filter_Init(Std_Id,sizeof(Std_Id)/sizeof(Std_Id[0]),NULL,0);
+}
+/*******************************************************************************
+ * Function Name : Check_TJA1050A_Can_Bus_Ok
+ * Description   : Reads the STM32 bxCAN peripheral's Error Status Register (ESR)
+ *                 to check for bus-off, error-passive, or excessive error count
+ *                 conditions on the TJA1050A-driven CAN bus.
+ * Scope         : Global
+ * Parameters    : None
+ * Return Value  : bool (true = CAN bus OK, false = CAN bus fault detected)
+ ******************************************************************************/
+bool Check_Can_Bus_Ok(void)
+{
+    uint32_t esr = CAN1->ESR;
+
+    bool bus_off       = (esr & CAN_ESR_BOFF) != 0;   /* Bus-off state */
+    bool error_passive  = (esr & CAN_ESR_EPVF) != 0;   /* Error passive */
+    bool error_warning  = (esr & CAN_ESR_EWGF) != 0;   /* Error warning (96+ errors) */
+
+    if (bus_off || error_passive || error_warning)
+    {
+        return false;
+    }
+
+    return true;
 }
 bool Can_Send_Frame(CAN_Message_t *Frame)
 {
@@ -339,5 +367,5 @@ bool Controller_Area_Network_Init()
 }
 void Check_TJA1050A_Can_Bus_Ok(GEx_Display_t*Can_Bus_System_Data)
 {
-	Can_Bus_System_Data->System_Data.Is_Tja1050A_Can_Ok;
+	Can_Bus_System_Data->System_Data.Is_Tja1050A_Can_Ok=Check_Can_Bus_Ok();
 }

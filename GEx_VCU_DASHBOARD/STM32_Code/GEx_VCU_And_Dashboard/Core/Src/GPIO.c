@@ -19,6 +19,8 @@ static const Digital_Input_Pin Digital_Input_Pins[] =
     { LEFT_INDICATOR_PORT,  LEFT_INDICATOR_PIN,  GPIO_STATE_LOW     },
     { RIGHT_INDICATOR_PORT, RIGHT_INDICATOR_PIN, GPIO_STATE_LOW     },
     { MPPT_12V_IP_PORT,     MPPT_12V_IP_PIN,      GPIO_STATE_LOW },
+	{ODO_TRIP_PORT,ODO_TRIP_PIN,GPIO_INPUT_PULL_UP},
+	{PAGE_SWITCH_PORT,PAGE_SWITCH_PIN,GPIO_INPUT_PULL_UP}
 };
 static const Digital_Output_Pin Digital_Output_Pins[] =
 {
@@ -38,7 +40,16 @@ typedef struct
 
 #define NUM_Digital_Input_Pins (sizeof(Digital_Input_Pins) / sizeof(Digital_Input_Pins[0]))
 #define NUM_DIGITAL_OUTPUT_PINS (sizeof(Digital_Output_Pins) / sizeof(Digital_Output_Pins[0]))
-#define INDICATOR_BLINK_TIMEOUT_MS   1200U   /* > one full ~735ms blink period. */
+#define INDICATOR_BLINK_TIMEOUT_MS   900U   /* > one full ~735ms blink period. */
+#define INDICATOR_BLINK_RATE_MS      400U    /* 500ms on, 500ms off = 1Hz blink */
+
+#define PAGE_COUNT                3U
+#define PAGE_SWITCH_PRESSED_LEVEL 0U
+static uint8_t page         = 1U;
+static bool    last_pressed = false;
+static bool    first_call   = true;
+static bool    changed_flag = false;
+
 /***********************************/
 static Gpio_Status Gpio_Pin_Sts;
 static Debounce_Data_t Debounce_Pins[MAX_DEBOUNCED_INPUTS];
@@ -52,9 +63,80 @@ static int Left_Indicatior_Index=-1;
 static int Right_Indicator_Index=-1;
 static int Mppt_Index=-1;
 static int status_print_task_id=-1;
+static int Trip_Index=-1;
+static int Page_Switch_Index=-1;
 
 static Indicator_Monitor_t Left_Ind_Mon;
 static Indicator_Monitor_t Right_Ind_Mon;
+
+static bool     Blink_Phase_On = false;
+static uint32_t Last_Blink_Toggle_Tick = 0;
+static bool     Mppt_Output_State = false;   /* actual commanded relay state */
+static bool     Mppt_Debounce_State = false; /* value being debounced */
+static uint32_t Mppt_Debounce_Tick = 0;       /* timestamp of last change */
+/*******************************************************************************
+ * Function Name : Update_Blink_Phase                               [CHANGED]
+ * Description   : Runs the 1 Hz blink phase ONLY while an indicator is active.
+ *                 - Indicator just turned ON : phase starts at ON immediately.
+ *                 - Indicator still ON       : phase toggles every 500 ms.
+ *                 - Indicator OFF            : phase stopped and held OFF.
+ * Scope         : Global
+ * Parameters    : Indicator_Active - true if the left or right indicator is ON
+ * Return Value  : None
+ ******************************************************************************/
+void Update_Blink_Phase(bool Indicator_Active)
+{
+    static bool Prev_Active = false;
+    uint32_t now = Get_Tick_Ms();
+
+    if (!Indicator_Active)
+    {
+        Blink_Phase_On = false;
+    }
+    else if (!Prev_Active)
+    {
+        Blink_Phase_On = true;
+        Last_Blink_Toggle_Tick = now;
+    }
+    else if ((now - Last_Blink_Toggle_Tick) >= INDICATOR_BLINK_RATE_MS)
+    {
+        Blink_Phase_On = !Blink_Phase_On;
+        Last_Blink_Toggle_Tick = now;
+    }
+
+    Prev_Active = Indicator_Active;
+}
+bool Get_Blink_Phase(void)
+{
+    return Blink_Phase_On;
+}
+void Page_Change_Check(uint8_t Switch_Level)
+{
+    bool pressed = (Switch_Level == PAGE_SWITCH_PRESSED_LEVEL);
+
+    if (first_call)
+    {
+        first_call   = false;
+        last_pressed = pressed;
+        return;
+    }
+    if (pressed && !last_pressed)
+    {
+        page++;
+        if (page > PAGE_COUNT)
+        {
+            page = 1U;
+        }
+        changed_flag = true;
+    }
+
+    last_pressed = pressed;
+
+    if ((page < 1U) || (page > PAGE_COUNT))
+    {
+        page = 1U;
+    }
+}
 /*******************************************************************************
  * Function Name : Input_Pin_Init
  * Description   : Enables the corresponding GPIO port clock and configures a
@@ -191,7 +273,7 @@ static void Indicator_Monitor_Init(Indicator_Monitor_t*Indi_State)
    Indi_State->Last_State       = false;
    Indi_State->T_Rise_Ms        = now;
    Indi_State->T_Fall_Ms        = now;
-   Indi_State->Last_Edge_Tick   = now;
+   Indi_State->Last_Edge_Tick   = now - INDICATOR_BLINK_TIMEOUT_MS - 1U;;
    Indi_State->Period_Ms        = 0;
    Indi_State->High_Ms          = 0;
    Indi_State->First_Edge_Done  = false;
@@ -200,39 +282,42 @@ static void Indicator_Monitor_Init(Indicator_Monitor_t*Indi_State)
 
 /*******************************************************************************
  * Function Name : Indicator_Monitor_Update
- * Description   : Detects rising/falling edges on a debounced indicator state,
- *                 tracks period/high-time, and decides blinking vs OFF based on
- *                 a timeout since the last observed transition.
+ * Description   : Detects rising/falling edges on the debounced indicator pin,
+ *                 records period and high time, and sets Is_Blinking to true if
+ *                 an edge happened within INDICATOR_BLINK_TIMEOUT_MS.
+ *                   - pin blinking (~730 ms)  -> edges keep coming -> Is_Blinking = true
+ *                   - pin LOW or HIGH steady  -> no edges          -> Is_Blinking = false
+ *                 (steady HIGH is handled separately through Last_State)
  * Scope         : Static (Private to this file)
- * Parameters    : Mon              - Pointer to the indicator monitor instance
+ * Parameters    : Indi_State       - Pointer to the indicator monitor instance
  *                 Debounced_State  - Current debounced logical state of the pin
  * Return Value  : None
  ******************************************************************************/
-static void Indicator_Monitor_Update(Indicator_Monitor_t*Indi_State, bool Debounced_State)
+static void Indicator_Monitor_Update(Indicator_Monitor_t* Indi_State, bool Debounced_State)
 {
     uint32_t now = Get_Tick_Ms();
 
-    if (Debounced_State !=Indi_State->Last_State)
+    if (Debounced_State != Indi_State->Last_State)
     {
         if (Debounced_State == true)
         {
             /* rising edge: low -> high */
-           Indi_State->Period_Ms = now -Indi_State->T_Rise_Ms;
-           Indi_State->T_Rise_Ms = now;
-           Indi_State->First_Edge_Done = true;
+            Indi_State->Period_Ms = now - Indi_State->T_Rise_Ms;
+            Indi_State->T_Rise_Ms = now;
+            Indi_State->First_Edge_Done = true;
         }
         else
         {
             /* falling edge: high -> low */
-           Indi_State->High_Ms = now -Indi_State->T_Rise_Ms;
-           Indi_State->T_Fall_Ms = now;
+            Indi_State->High_Ms = now - Indi_State->T_Rise_Ms;
+            Indi_State->T_Fall_Ms = now;
         }
 
-       Indi_State->Last_Edge_Tick = now;
-       Indi_State->Last_State = Debounced_State;
+        Indi_State->Last_Edge_Tick = now;
+        Indi_State->Last_State = Debounced_State;
     }
 
-   Indi_State->Is_Blinking = ((now -Indi_State->Last_Edge_Tick) <= INDICATOR_BLINK_TIMEOUT_MS);
+    Indi_State->Is_Blinking = ((now - Indi_State->Last_Edge_Tick) <= INDICATOR_BLINK_TIMEOUT_MS);
 }
 /*******************************************************************************
  * Function Name : Gpio_Update_Input_States
@@ -251,11 +336,21 @@ static void Gpio_Update_Input_States(void)
 	Gpio_Pin_Sts.Charge_Ack_Sts = Debounce_Get_State(Charge_Index);
 	Gpio_Pin_Sts.Head_Light_Sts= Debounce_Get_State(Head_Light_Index);
 	Gpio_Pin_Sts.Mppt_Ip_Sts = Debounce_Get_State(Mppt_Index);
-	Indicator_Monitor_Update(&Left_Ind_Mon,  Debounce_Get_State(Left_Indicatior_Index));
-    Indicator_Monitor_Update(&Right_Ind_Mon, Debounce_Get_State(Right_Indicator_Index));
-    Gpio_Pin_Sts.Left_Indicator_Sts  = Left_Ind_Mon.Is_Blinking;
-    Gpio_Pin_Sts.Right_Indicator_sts = Right_Ind_Mon.Is_Blinking;
+	Gpio_Pin_Sts.Trip_Switch_Sts=Debounce_Get_State(Trip_Index);
+	Gpio_Pin_Sts.Page_Switch_Count=Debounce_Get_State(Page_Switch_Index);
 
+	/* ---- Indicators ---- */
+	Indicator_Monitor_Update(&Left_Ind_Mon,  Debounce_Get_State(Left_Indicatior_Index));
+	Indicator_Monitor_Update(&Right_Ind_Mon, Debounce_Get_State(Right_Indicator_Index));
+
+	/* CHANGED: ON if blinking OR continuously HIGH, OFF if LOW */
+	Gpio_Pin_Sts.Left_Indicator_Sts  = Left_Ind_Mon.Is_Blinking  || Left_Ind_Mon.Last_State;
+	Gpio_Pin_Sts.Right_Indicator_sts = Right_Ind_Mon.Is_Blinking || Right_Ind_Mon.Last_State;
+
+	/* CHANGED: blink phase runs only while an indicator is ON, held OFF otherwise */
+	Update_Blink_Phase(Gpio_Pin_Sts.Left_Indicator_Sts || Gpio_Pin_Sts.Right_Indicator_sts);
+	Gpio_Pin_Sts.Blink_On_Off = Get_Blink_Phase();
+	Page_Change_Check(Gpio_Pin_Sts.Page_Switch_Count);
 }
 /*******************************************************************************
  * Function Name : GPIO_Set_Reset_Verify
@@ -288,35 +383,63 @@ bool GPIO_Set_Reset_Verify(GPIO_TypeDef *GPIOx, uint16_t Pin_Pos, uint8_t State)
 }
 /*******************************************************************************
  * Function Name : Gpio_Update_Output_Pins
- * Description   : Controls output pin states based on charging acknowledgment status,
- *                 toggling the pedal brake hardware signal and updating the global
- *                 pedal brake status flag upon hardware state verification.
+ * Description   : Controls the MPPT-to-pack charge relay based on SOC hysteresis,
+ *                 BMS fault status, and MPPT input presence, with a minimum
+ *                 hold-time before switching to prevent relay chatter.
  * Scope         : Static (Private to this file)
  * Parameters    : None
  * Return Value  : None
  ******************************************************************************/
 static void Gpio_Update_Output_Pins()
 {
+    uint32_t now = Get_Tick_Ms();
 
-	switch(Gpio_Pin_Sts.Mppt_Ip_Sts)
-	{
-	case 1:
-	{
-		if(GPIO_Set_Reset_Verify(MPPT_12V_OP_PORT,MPPT_12V_OP_PIN,GPIO_PIN_SET))
-		{
-			Gpio_Pin_Sts.Mppt_Op_Bp_Sts=true;
-		}
-	}
-	break;
-	case 0:
-	{
-		if(GPIO_Set_Reset_Verify(MPPT_12V_OP_PORT,MPPT_12V_OP_PIN,GPIO_PIN_RESET))
-		{
-			Gpio_Pin_Sts.Mppt_Op_Bp_Sts=false;
-		}
-	}
-	break;
-	}
+    if (GEx_Display.Bms_Data.Bms_Fault)
+    {
+        Mppt_Output_State = false;
+        Mppt_Debounce_State = false;
+        Mppt_Debounce_Tick = now;
+    }
+    else
+    {
+        bool Candidate;
+
+        if (Mppt_Output_State)
+        {
+            Candidate = (GEx_Display.Bms_Data.Soc < MPPT_DISABLE_SOC_MIN)
+                       && Gpio_Pin_Sts.Mppt_Ip_Sts;
+        }
+        else
+        {
+            Candidate = (GEx_Display.Bms_Data.Soc < MPPT_ENABLE_SOC_MAX)
+                       && Gpio_Pin_Sts.Mppt_Ip_Sts;
+        }
+
+        if (Candidate != Mppt_Debounce_State)
+        {
+            Mppt_Debounce_State = Candidate;
+            Mppt_Debounce_Tick = now;
+        }
+        else if ((now - Mppt_Debounce_Tick) >= MPPT_RELAY_HOLD_TIME_MS)
+        {
+            Mppt_Output_State = Mppt_Debounce_State;
+        }
+    }
+
+    if (Mppt_Output_State)
+    {
+        if (GPIO_Set_Reset_Verify(MPPT_12V_OP_PORT, MPPT_12V_OP_PIN, GPIO_PIN_SET))
+        {
+            Gpio_Pin_Sts.Mppt_Op_Bp_Sts = true;
+        }
+    }
+    else
+    {
+        if (GPIO_Set_Reset_Verify(MPPT_12V_OP_PORT, MPPT_12V_OP_PIN, GPIO_PIN_RESET))
+        {
+            Gpio_Pin_Sts.Mppt_Op_Bp_Sts = false;
+        }
+    }
 }
 /*******************************************************************************
  * Function Name : Gpio_Set_Pin
@@ -589,16 +712,21 @@ static bool Debounce_Pins_Init()
   {
 	  return false;
   }
-  Hand_Brake_Index=Debounce_Register_Pin(HAND_BRAKE_PORT,/*HAND_BRAKE_PIN*/GPIO_PIN_4,GPIO_INPUT_PULL_UP,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
-  Brake_Fluid_Index=Debounce_Register_Pin(BRAKE_FLUID_PORT,/*BRAKE_FLUID_PIN*/GPIO_PIN_7,GPIO_INPUT_PULL_UP,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
-  Head_Light_Index=Debounce_Register_Pin(HEAD_LIGHT_PORT,/*HEAD_LIGHT_PIN*/GPIO_PIN_0,GPIO_STATE_LOW,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
-  Charge_Index=Debounce_Register_Pin(CHARGE_ACK_PORT,/*CHARGE_ACK_PIN*/GPIO_PIN_13,GPIO_STATE_LOW,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
+  Hand_Brake_Index=Debounce_Register_Pin(HAND_BRAKE_PORT,/*HAND_BRAKE_PIN*/GPIO_PIN_4,GPIO_INPUT_PULL_UP,DEBOUNCE_STD_INTERVAL_MS,DEBOUNCE_STD_Min_Samples);
+  Brake_Fluid_Index=Debounce_Register_Pin(BRAKE_FLUID_PORT,/*BRAKE_FLUID_PIN*/GPIO_PIN_7,GPIO_INPUT_PULL_UP,DEBOUNCE_STD_INTERVAL_MS,DEBOUNCE_STD_Min_Samples);
+
+  Head_Light_Index=Debounce_Register_Pin(HEAD_LIGHT_PORT,/*HEAD_LIGHT_PIN*/GPIO_PIN_0,GPIO_STATE_LOW,DEBOUNCE_STD_INTERVAL_MS,DEBOUNCE_STD_Min_Samples);
+  Charge_Index=Debounce_Register_Pin(CHARGE_ACK_PORT,/*CHARGE_ACK_PIN*/GPIO_PIN_13,GPIO_STATE_LOW,DEBOUNCE_STD_INTERVAL_MS,DEBOUNCE_STD_Min_Samples);
   Left_Indicatior_Index=Debounce_Register_Pin(LEFT_INDICATOR_PORT,/*LEFT_INDICATOR_PIN*/GPIO_PIN_1,GPIO_STATE_LOW,DEBOUNCE_FAST_INTERVAL_MS,DEBOUNCE_FAST_Min_Samples);
   Right_Indicator_Index=Debounce_Register_Pin(RIGHT_INDICATOR_PORT,/*RIGHT_INDICATOR_PIN*/GPIO_PIN_2,GPIO_STATE_LOW,DEBOUNCE_FAST_INTERVAL_MS,DEBOUNCE_FAST_Min_Samples);
-  Mppt_Index=Debounce_Register_Pin(MPPT_12V_IP_PORT,/*MPPT_12V_IP_PIN*/GPIO_PIN_3,GPIO_STATE_LOW,DEBOUNCE_SLOW_INTERVAL_MS,DEBOUNCE_SLOW_Min_Samples);
+  Mppt_Index=Debounce_Register_Pin(MPPT_12V_IP_PORT,/*MPPT_12V_IP_PIN*/GPIO_PIN_3,GPIO_STATE_LOW,DEBOUNCE_STD_INTERVAL_MS,DEBOUNCE_STD_Min_Samples);
+
+         Trip_Index=Debounce_Register_Pin(ODO_TRIP_PORT,GPIO_PIN_4,GPIO_INPUT_PULL_UP,DEBOUNCE_STD_INTERVAL_MS,DEBOUNCE_STD_Min_Samples);
+  Page_Switch_Index=Debounce_Register_Pin(PAGE_SWITCH_PORT,GPIO_PIN_8,GPIO_INPUT_PULL_UP,DEBOUNCE_STD_INTERVAL_MS,DEBOUNCE_STD_Min_Samples);
+
   Indicator_Monitor_Init(&Left_Ind_Mon);
   Indicator_Monitor_Init(&Right_Ind_Mon);
-  if(Hand_Brake_Index<0 || Brake_Fluid_Index<0 || Mppt_Index<0 || Head_Light_Index<0 ||Charge_Index<0 || Left_Indicatior_Index<0 ||Left_Indicatior_Index<0)
+  if(Hand_Brake_Index<0 || Brake_Fluid_Index<0 || Mppt_Index<0 || Head_Light_Index<0 ||Charge_Index<0 || Right_Indicator_Index<0 ||Left_Indicatior_Index<0)
   {
 	  return false;
   }
@@ -618,6 +746,7 @@ static void Update_Gpio_Pins()
 	Debounce_Update_All();
 	Gpio_Update_Input_States();
 	Gpio_Update_Output_Pins();
+//	Update_Blink_Phase();
 }
 /*******************************************************************************
  * Function Name : Print_Pin_IDR
@@ -643,16 +772,44 @@ static void Print_Pin_IDR(const char* Name, GPIO_TypeDef* GPIOx, uint16_t Pin)
  * Parameters    : None
  * Return Value  : None
  ******************************************************************************/
+//static void Print_All_Input_IDR(void)
+//{
+//    static const char* Pin_Names[] =
+//    {
+//        "Hand Brake", "Brake Fluid", "Head Light", "Charge Ack",
+//        "Left Indicator", "Right Indicator", "MPPT 12V IP"
+//		"ODO Trip",
+//		"Page Switch"
+//    };
+//
+//    Uart_Printf("\r\n=== Raw IDR values ===\r\n");
+//    for (size_t i = 0; i < NUM_Digital_Input_Pins; i++)
+//    {
+//        Print_Pin_IDR(Pin_Names[i], Digital_Input_Pins[i].Port, Digital_Input_Pins[i].Pin);
+//    }
+//    Uart_Printf("=======================\r\n");
+//}
 static void Print_All_Input_IDR(void)
 {
-    static const char* Pin_Names[] =
+    static const char *Pin_Names[] =
     {
-        "Hand Brake", "Brake Fluid", "Head Light", "Charge Ack",
-        "Left Indicator", "Right Indicator", "MPPT 12V IP"
+        "Hand Brake",       /* 0 */
+        "Brake Fluid",      /* 1 */
+        "Head Light",       /* 2 */
+        "Charge Ack",       /* 3 */
+        "Left Indicator",   /* 4 */
+        "Right Indicator",  /* 5 */
+        "MPPT 12V IP",      /* 6 */
+        "ODO Trip",         /* 7 */
+        "Page Switch"       /* 8 */
     };
 
+    // This guarantees 'i' can NEVER go out of bounds
+    size_t pin_names_count = sizeof(Pin_Names) / sizeof(Pin_Names[0]);
+    size_t limit = (NUM_Digital_Input_Pins < pin_names_count) ? NUM_Digital_Input_Pins : pin_names_count;
+
     Uart_Printf("\r\n=== Raw IDR values ===\r\n");
-    for (size_t i = 0; i < NUM_Digital_Input_Pins; i++)
+    for (size_t i = 0; i < limit; i++)
     {
         Print_Pin_IDR(Pin_Names[i], Digital_Input_Pins[i].Port, Digital_Input_Pins[i].Pin);
     }
@@ -686,6 +843,59 @@ static void Debounce_Print_Status(void)
     Uart_Printf("==============================\r\n");
 }
 /*******************************************************************************
+ * Function Name : Print_Indicator_Status                           [NEW]
+ * Description   : Prints raw pin, debounced state, edge timing and the final
+ *                 ON/OFF decision for one indicator over UART.
+ * Scope         : Static (Private to this file)
+ * Parameters    : Name      - Label for the printout ("LEFT" / "RIGHT")
+ *                 GPIOx     - Pointer to GPIO port register base
+ *                 Pin_Pos   - Pin position index (0 to 15)
+ *                 Deb_Index - Debounce index of this indicator
+ *                 Mon       - Pointer to the indicator monitor instance
+ * Return Value  : None
+ ******************************************************************************/
+static void Print_Indicator_Status(const char* Name, GPIO_TypeDef* GPIOx, uint16_t Pin_Pos,
+                                   int Deb_Index, Indicator_Monitor_t* Mon)
+{
+    uint32_t now = Get_Tick_Ms();
+
+    Uart_Printf("--- %s Indicator ---\r\n", Name);
+    Uart_Printf("  Raw IDR         : %d\r\n", Gpio_Read_Pin(GPIOx, Pin_Pos));
+    Uart_Printf("  Debounced       : %d\r\n", Debounce_Get_State(Deb_Index));
+    Uart_Printf("  Period          : %lu ms\r\n", (unsigned long)Mon->Period_Ms);
+    Uart_Printf("  High time       : %lu ms\r\n", (unsigned long)Mon->High_Ms);
+    Uart_Printf("  Since last edge : %lu ms (timeout %u ms)\r\n",
+                (unsigned long)(now - Mon->Last_Edge_Tick), (unsigned)INDICATOR_BLINK_TIMEOUT_MS);
+
+    if (Mon->Is_Blinking)
+    {
+        Uart_Printf("  Status          : ON (blinking)\r\n");
+    }
+    else if (Mon->Last_State)
+    {
+        Uart_Printf("  Status          : ON (continuous HIGH)\r\n");
+    }
+    else
+    {
+        Uart_Printf("  Status          : OFF\r\n");
+    }
+}
+/*******************************************************************************
+ * Function Name : Print_Indicator_Data                             [NEW]
+ * Description   : Prints both indicators and the blink phase as one block.
+ * Scope         : Static (Private to this file)
+ * Parameters    : None
+ * Return Value  : None
+ ******************************************************************************/
+static void Print_Indicator_Data(void)
+{
+    Uart_Printf("\r\n=========== INDICATOR DATA ===========\r\n");
+    Print_Indicator_Status("LEFT",  LEFT_INDICATOR_PORT,  LEFT_INDICATOR_PIN,  Left_Indicatior_Index,  &Left_Ind_Mon);
+    Print_Indicator_Status("RIGHT", RIGHT_INDICATOR_PORT, RIGHT_INDICATOR_PIN, Right_Indicator_Index, &Right_Ind_Mon);
+    Uart_Printf("Blink phase     : %s\r\n", Get_Blink_Phase() ? "ON" : "OFF");
+    Uart_Printf("======================================\r\n");
+}
+/*******************************************************************************
  * Function Name : Print_Gpio_Data
  * Description   : Formats and prints human-readable status strings over UART
  *                 reflecting the system's vehicle inputs (brakes, ignition,
@@ -698,6 +908,7 @@ static void Print_Gpio_Data(void)
 {
 	Debounce_Print_Status();
 	Print_All_Input_IDR();
+//	Print_Indicator_Data();
 	Uart_Printf("=============Input_Output_Data=====================\r\n");
 	Uart_Printf("Hand Brake      : %s\r\n", Gpio_Pin_Sts.Hand_Brake_Sts      ? "ENGAGED"  : "RELEASED");
 	Uart_Printf("BP_RELAY      : %s\r\n", Gpio_Pin_Sts.Mppt_Op_Bp_Sts     ? "ON"  : "OFF");
@@ -731,19 +942,21 @@ static bool Task_Id_For_Gpio_Print(void)
     }
     return true;
 }
-
 void Update_Gpio()
 {
 	Update_Gpio_Pins();
 }
 void Get_IO_Data(IO_Data_t* IO_Data)
 {
-	IO_Data->Brake_Fluid=Gpio_Pin_Sts.Brake_Fluid_Sts;
-	IO_Data->Charge_Ack=Gpio_Pin_Sts.Charge_Ack_Sts;
-	IO_Data->Hand_Brake=Gpio_Pin_Sts.Hand_Brake_Sts;
-	IO_Data->Head_Light=Gpio_Pin_Sts.Head_Light_Sts;
-	IO_Data->Left_Ind=Gpio_Pin_Sts.Left_Indicator_Sts;
-	IO_Data->Right_Ind=Gpio_Pin_Sts.Right_Indicator_sts;
+	IO_Data->Brake_Fluid=!Gpio_Pin_Sts.Brake_Fluid_Sts;
+	IO_Data->Charge_Ack=!Gpio_Pin_Sts.Charge_Ack_Sts;
+	IO_Data->Hand_Brake=!Gpio_Pin_Sts.Hand_Brake_Sts;
+	IO_Data->Head_Light=!Gpio_Pin_Sts.Head_Light_Sts;
+	IO_Data->Left_Ind=!Gpio_Pin_Sts.Left_Indicator_Sts;
+	IO_Data->Right_Ind=!Gpio_Pin_Sts.Right_Indicator_sts;
+	IO_Data->Blink_Phase_On_Off=!Gpio_Pin_Sts.Blink_On_Off;
+	IO_Data->Mppt_On_Off=!Gpio_Pin_Sts.Mppt_Op_Bp_Sts;
+	IO_Data->Page_Count=page;
 }
 bool Enable_Gpio_Print_Task()
 {
@@ -764,6 +977,24 @@ bool General_Purpose_Input_Output_Init()
 	   return false;
    }
    return true;
+}
+bool  Get_trip_On_off()
+{
+  return Gpio_Pin_Sts.Trip_Switch_Sts;
+}
+
+uint8_t Get_Page(void)
+{
+    return page;
+}
+
+/* Returns true once after each page change, then false until the next one.
+ * Use it to redraw the screen only when the page really changed.            */
+bool Page_Has_Changed(void)
+{
+    bool c       = changed_flag;
+    changed_flag = false;
+    return c;
 }
 /* Not Using Now
 bool Get_Hand_Brake_Sts(void)

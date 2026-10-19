@@ -12,4 +12,5 @@ bool Universal_Asyn_Rx_Tx_1_Init();
 bool Universal_Asyn_Rx_Tx_3_Init();
 void Uart_Printf(const char *format, ...);
 void Send_On_Display_Uart(uint8_t *frame,uint8_t Size);
+void USART1_Send_String(const char *str);
 #endif /* INC_UART_H_ */

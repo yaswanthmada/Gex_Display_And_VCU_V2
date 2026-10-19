@@ -1,6 +1,7 @@
-../Core/Src/DWIN_DISPLAY.c:824:6:Print_Display_Data	5
-../Core/Src/DWIN_DISPLAY.c:120:13:Update_Dwin_Display	8
-../Core/Src/DWIN_DISPLAY.c:449:6:Get_System_Data	1
-../Core/Src/DWIN_DISPLAY.c:471:6:DWIN_Display_Test	20
-../Core/Src/DWIN_DISPLAY.c:811:6:Display_Update_All	1
-../Core/Src/DWIN_DISPLAY.c:1006:6:Enable_Display_Print_Task	2
+../Core/Src/DWIN_DISPLAY.c:972:6:Print_Display_Data	2
+../Core/Src/DWIN_DISPLAY.c:134:13:Update_Dwin_Display	14
+../Core/Src/DWIN_DISPLAY.c:532:6:Get_System_Data	1
+../Core/Src/DWIN_DISPLAY.c:556:7:getRandomFloat	1
+../Core/Src/DWIN_DISPLAY.c:559:6:DWIN_Display_Test	22
+../Core/Src/DWIN_DISPLAY.c:920:6:Display_Update_All	6
+../Core/Src/DWIN_DISPLAY.c:1060:6:Enable_Display_Print_Task	2

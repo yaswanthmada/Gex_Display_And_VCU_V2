@@ -246,8 +246,8 @@ static void Decode_CAN_0x10B(const uint8_t *Data,JBD_BMS_0x10B_t *Message)
 	Message->Last_Received_Time= Message->Current_Received_Time;
     Message->Current_Received_Time=HAL_GetTick();
     Message->CELL13 = (float)((Data[0] << 8) | Data[1])/1000.f;
-    Message->CELL14 = ((Data[2] << 8) | Data[3])/1000.f;
-    Message->CELL15 = ((Data[4] << 8) | Data[5])/1000.f;
+    Message->CELL14 = (float)((Data[2] << 8) | Data[3])/1000.f;
+    Message->CELL15 = (float)((Data[4] << 8) | Data[5])/1000.f;
 }
 /*******************************************************************************
  * Function Name : Decode_CAN_0x10C
@@ -264,6 +264,43 @@ static void Decode_CAN_0x10C(const uint8_t *Data,JBD_BMS_0x10C_t *Message)
 	Message->Last_Received_Time= Message->Current_Received_Time;
     Message->Current_Received_Time=HAL_GetTick();
     Message->CELL16 = (float)((Data[0] << 8) | Data[1])/1000.f;
+    Message->CELL17 = (float)((Data[2] << 8) | Data[3])/1000.f;
+    Message->CELL18 = (float)((Data[4] << 8) | Data[5])/1000.f;
+}
+/*******************************************************************************
+ * Function Name : Decode_CAN_0x10C
+ * Description   : Decodes BMS CAN message 0x10C and updates the voltage value
+ *                 of battery cell 16 along with the message reception
+ *                 timestamps.
+ * Scope         : Static (Private to this file)
+ * Parameters    : Data - Pointer to the received CAN data bytes
+ *                 Message - Pointer to the 0x10C BMS message structure
+ * Return Value  : None
+ ******************************************************************************/
+static void Decode_CAN_0x10D(const uint8_t *Data,JBD_BMS_0x10D_t *Message)
+{
+	Message->Last_Received_Time= Message->Current_Received_Time;
+    Message->Current_Received_Time=HAL_GetTick();
+    Message->CELL19 = (float)((Data[0] << 8) | Data[1])/1000.f;
+    Message->CELL20 = (float)((Data[2] << 8) | Data[3])/1000.f;
+    Message->CELL21 = (float)((Data[4] << 8) | Data[5])/1000.f;
+}/*******************************************************************************
+ * Function Name : Decode_CAN_0x10C
+ * Description   : Decodes BMS CAN message 0x10C and updates the voltage value
+ *                 of battery cell 16 along with the message reception
+ *                 timestamps.
+ * Scope         : Static (Private to this file)
+ * Parameters    : Data - Pointer to the received CAN data bytes
+ *                 Message - Pointer to the 0x10C BMS message structure
+ * Return Value  : None
+ ******************************************************************************/
+static void Decode_CAN_0x10E(const uint8_t *Data,JBD_BMS_0x10E_t *Message)
+{
+	Message->Last_Received_Time= Message->Current_Received_Time;
+    Message->Current_Received_Time=HAL_GetTick();
+    Message->CELL22 = (float)((Data[0] << 8) | Data[1])/1000.f;
+    Message->CELL23 = (float)((Data[2] << 8) | Data[3])/1000.f;
+    Message->CELL24 = (float)((Data[4] << 8) | Data[5])/1000.f;
 }
 /*******************************************************************************
  * Function Name : Print_Jbd_Bms_0x100_t
@@ -276,17 +313,12 @@ static void Decode_CAN_0x10C(const uint8_t *Data,JBD_BMS_0x10C_t *Message)
  ******************************************************************************/
 static void Print_Jbd_Bms_0x100_t(JBD_BMS_0x100_t * Message)
 {
-	Uart_Printf("------------ID=0X100-------------\n"
-			"Last_RX :%d  Current_Rx :%d \n"
-			"Voltage :%d\n"
-			"Current :%d\n"
-			"RSOC :%d\n"
-			"------------------------------------\n"
-			,Message->Last_Received_Time
-			,Message->Current_Received_Time
-			,(int)Message->Total_Voltage
-			,(int)Message->Charge_and_Discharge_Current
-			,(int)Message->Remaining_Capacity);
+	Uart_Printf("------------ID=0X100-------------\n");
+	    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+	    Uart_Printf("Voltage :%f\n", Message->Total_Voltage);
+	    Uart_Printf("Current :%f\n", Message->Charge_and_Discharge_Current);
+	    Uart_Printf("RSOC :%f\n", Message->Remaining_Capacity);
+	    Uart_Printf("------------------------------------\n");
 	}
 /*******************************************************************************
  * Function Name : Print_Jbd_Bms_0x105_t
@@ -299,18 +331,12 @@ static void Print_Jbd_Bms_0x100_t(JBD_BMS_0x100_t * Message)
  ******************************************************************************/
 static void Print_Jbd_Bms_0x105_t(JBD_BMS_0x105_t *Message)
 {
-	Uart_Printf("------------ID=0X105-------------\n"
-			"Last_RX :%d  Current_Rx :%d \n"
-			"NTC1 :%d\n"
-			"NTC2 :%d\n"
-			"NTC3 :%d\n"
-			"------------------------------------\n"
-			,Message->Last_Received_Time
-			,Message->Current_Received_Time
-			,(int)Message->NTC1
-			,(int)Message->NTC2
-			,(int)Message->NTC3);
-
+	Uart_Printf("------------ID=0X105-------------\n");
+	    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+	    Uart_Printf("NTC1 :%.2f\n", Message->NTC1);
+	    Uart_Printf("NTC2 :%.2f\n", Message->NTC2);
+	    Uart_Printf("NTC3 :%.2f\n", Message->NTC3);
+	    Uart_Printf("------------------------------------\n");
 	}
 /*******************************************************************************
  * Function Name : Print_Jbd_Bms_0x106_t
@@ -323,17 +349,12 @@ static void Print_Jbd_Bms_0x105_t(JBD_BMS_0x105_t *Message)
  ******************************************************************************/
 static void Print_Jbd_Bms_0x106_t(JBD_BMS_0x106_t *Message)
 {
-	Uart_Printf("------------ID=0X106-------------\n"
-			"Last_RX :%d  Current_Rx :%d \n"
-			"NTC4 :%d\n"
-			"NTC5 :%d\n"
-			"NTC6 :%d\n"
-			"------------------------------------\n"
-			,Message->Last_Received_Time
-			,Message->Current_Received_Time
-			,(int)Message->NTC4
-			,(int)Message->NTC5
-			,(int)Message->NTC6);
+	Uart_Printf("------------ID=0X106-------------\n");
+	    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+	    Uart_Printf("NTC4 :%.2f\n", Message->NTC4);
+	    Uart_Printf("NTC5 :%.2f\n", Message->NTC5);
+	    Uart_Printf("NTC6 :%.2f\n", Message->NTC6);
+	    Uart_Printf("------------------------------------\n");
 
 	}
 /*******************************************************************************
@@ -347,18 +368,12 @@ static void Print_Jbd_Bms_0x106_t(JBD_BMS_0x106_t *Message)
  ******************************************************************************/
 static void Print_Jbd_Bms_0x107_t(JBD_BMS_0x107_t *Message)
 {
-	Uart_Printf("------------ID=0X107-------------\n"
-			"Last_RX :%d  Current_Rx :%d \n"
-			"CELL1 :%d\n"
-			"CELL2 :%d\n"
-			"CELL3 :%d\n"
-			"------------------------------------\n"
-			,Message->Last_Received_Time
-			,Message->Current_Received_Time
-			,(int)Message->CELL1
-			,(int)Message->CELL2
-			,(int)Message->CELL3);
-
+	Uart_Printf("\n------------ID=0X107-------------\n");
+	    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+	    Uart_Printf("CELL1 :%.2f\n", Message->CELL1);
+	    Uart_Printf("CELL2 :%.2f\n", Message->CELL2);
+	    Uart_Printf("CELL3 :%.2f\n", Message->CELL3);
+	    Uart_Printf("------------------------------------\n");
 	}
 /*******************************************************************************
  * Function Name : Print_Jbd_Bms_0x108_t
@@ -371,17 +386,12 @@ static void Print_Jbd_Bms_0x107_t(JBD_BMS_0x107_t *Message)
  ******************************************************************************/
 static void Print_Jbd_Bms_0x108_t(JBD_BMS_0x108_t *Message)
 {
-	Uart_Printf("------------ID=0X108-------------\n"
-			"Last_RX :%d  Current_Rx :%d \n"
-			"CELL4 :%d\n"
-			"CELL5 :%d\n"
-			"CELL6 :%d\n"
-			"------------------------------------\n"
-			,Message->Last_Received_Time
-			,Message->Current_Received_Time
-			,(int)Message->CELL4
-			,(int)Message->CELL5
-			,(int)Message->CELL6);
+	Uart_Printf("\n------------ID=0X108-------------\n");
+	    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+	    Uart_Printf("CELL4 :%.2f\n", Message->CELL4);
+	    Uart_Printf("CELL5 :%.2f\n", Message->CELL5);
+	    Uart_Printf("CELL6 :%.2f\n", Message->CELL6);
+	    Uart_Printf("------------------------------------\n");
 	}
 /*******************************************************************************
  * Function Name : Print_Jbd_Bms_0x109_t
@@ -394,17 +404,12 @@ static void Print_Jbd_Bms_0x108_t(JBD_BMS_0x108_t *Message)
  ******************************************************************************/
 static void Print_Jbd_Bms_0x109_t(JBD_BMS_0x109_t *Message)
 {
-	Uart_Printf("------------ID=0X109-------------\n"
-			"Last_RX :%d  Current_Rx :%d \n"
-			"CELL7 :%d\n"
-			"CELL8 :%d\n"
-			"CELL9 :%d\n"
-			"------------------------------------\n"
-			,Message->Last_Received_Time
-			,Message->Current_Received_Time
-			,(int)Message->CELL7
-			,(int)Message->CELL8
-			,(int)Message->CELL9);
+	Uart_Printf("------------ID=0X109-------------\n");
+	    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+	    Uart_Printf("CELL7 :%.2f\n", Message->CELL7);
+	    Uart_Printf("CELL8 :%.2f\n", Message->CELL8);
+	    Uart_Printf("CELL9 :%.2f\n", Message->CELL9);
+	    Uart_Printf("------------------------------------\n");
 
 	}
 /*******************************************************************************
@@ -418,17 +423,12 @@ static void Print_Jbd_Bms_0x109_t(JBD_BMS_0x109_t *Message)
  ******************************************************************************/
 static void Print_Jbd_Bms_0x10A_t(JBD_BMS_0x10A_t *Message)
 {
-	Uart_Printf("------------ID=0X10A-------------\n"
-			"Last_RX :%d  Current_Rx :%d \n"
-			"CELL10 :%d\n"
-			"CELL11:%d\n"
-			"CELL12 :%d\n"
-			"------------------------------------\n"
-			,Message->Last_Received_Time
-			,Message->Current_Received_Time
-			,(int)Message->CELL10
-			,(int)Message->CELL11
-			,(int)Message->CELL12);
+	Uart_Printf("\n------------ID=0X10A-------------\n");
+	    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+	    Uart_Printf("CELL10 :%.2f\n", Message->CELL10);
+	    Uart_Printf("CELL11 :%.2f\n", Message->CELL11);
+	    Uart_Printf("CELL12 :%.2f\n", Message->CELL12);
+	    Uart_Printf("------------------------------------\n");
 
 	}
 /*******************************************************************************
@@ -442,40 +442,70 @@ static void Print_Jbd_Bms_0x10A_t(JBD_BMS_0x10A_t *Message)
  ******************************************************************************/
 static void Print_Jbd_Bms_0x10B_t(JBD_BMS_0x10B_t *Message)
 {
-	Uart_Printf("------------ID=0X10B-------------\n"
-			"Last_RX :%d  Current_Rx :%d \n"
-			"CELL13 :%d\n"
-			"CELL14 :%d\n"
-			"CELL15 :%d\n"
-			"------------------------------------\n"
-			,Message->Last_Received_Time
-			,Message->Current_Received_Time
-			,(int)Message->CELL13
-			,(int)Message->CELL14
-			,(int)Message->CELL15);
+	Uart_Printf("\n------------ID=0X10B-------------\n");
+	    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+	    Uart_Printf("CELL13 :%.2f\n", Message->CELL13);
+	    Uart_Printf("CELL14 :%.2f\n", Message->CELL14);
+	    Uart_Printf("CELL15 :%.2f\n", Message->CELL15);
+	    Uart_Printf("------------------------------------\n");
 
 	}
 /*******************************************************************************
- * Function Name : Print_Jbd_Bms_0x10C_t
- * Description   : Prints the decoded BMS CAN 0x10C message information,
- *                 including reception timestamps and cell 16 voltage over
- *                 UART.
- * Scope         : Static (Private to this file)
- * Parameters    : Message - Pointer to the decoded 0x10C BMS message structure
- * Return Value  : None
+- Function Name : Print_Jbd_Bms_0x10C_t
+- Description   : Prints the decoded BMS CAN 0x10C message information,
+-                 including reception timestamps and cell 16 to cell 18
+-                 voltage values, over UART using separate print calls.
+- Scope         : Static (Private to this file)
+- Parameters    : Message - Pointer to the decoded 0x10C BMS message structure
+- Return Value  : None
  ******************************************************************************/
 static void Print_Jbd_Bms_0x10C_t(JBD_BMS_0x10C_t *Message)
 {
-	Uart_Printf("------------ID=0X10C-------------\n"
-			"Last_RX :%d  Current_Rx :%d \n"
-			"CELL16 :%d mV\n"
-			"------------------------------------\n"
-			,Message->Last_Received_Time
-			,Message->Current_Received_Time
-			,(int)Message->CELL16);
+    Uart_Printf("\n------------ID=0X10C-------------\n");
+    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+    Uart_Printf("CELL16 :%.2f\n", Message->CELL16);
+    Uart_Printf("CELL17 :%.2f\n", Message->CELL17);
+    Uart_Printf("CELL18 :%.2f\n", Message->CELL18);
+    Uart_Printf("------------------------------------\n");
+}
 
-	}
+/*******************************************************************************
+- Function Name : Print_Jbd_Bms_0x10D_t
+- Description   : Prints the decoded BMS CAN 0x10D message information,
+-                 including reception timestamps and cell 19 to cell 21
+-                 voltage values, over UART using separate print calls.
+- Scope         : Static (Private to this file)
+- Parameters    : Message - Pointer to the decoded 0x10D BMS message structure
+- Return Value  : None
+ ******************************************************************************/
+static void Print_Jbd_Bms_0x10D_t(JBD_BMS_0x10D_t *Message)
+{
+    Uart_Printf("\n------------ID=0X10D-------------\n");
+    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+    Uart_Printf("CELL19 :%.2f\n", Message->CELL19);
+    Uart_Printf("CELL20 :%.2f\n", Message->CELL20);
+    Uart_Printf("CELL21 :%.2f\n", Message->CELL21);
+    Uart_Printf("------------------------------------\n");
+}
 
+/*******************************************************************************
+- Function Name : Print_Jbd_Bms_0x10E_t
+- Description   : Prints the decoded BMS CAN 0x10E message information,
+-                 including reception timestamps and cell 22 to cell 24
+-                 voltage values, over UART using separate print calls.
+- Scope         : Static (Private to this file)
+- Parameters    : Message - Pointer to the decoded 0x10E BMS message structure
+- Return Value  : None
+ ******************************************************************************/
+static void Print_Jbd_Bms_0x10E_t(JBD_BMS_0x10E_t *Message)
+{
+    Uart_Printf("\n------------ID=0X10E-------------\n");
+    Uart_Printf("Last_RX :%d  Current_Rx :%d \n", Message->Last_Received_Time, Message->Current_Received_Time);
+    Uart_Printf("CELL22 :%.2f\n", Message->CELL22);
+    Uart_Printf("CELL23 :%.2f\n", Message->CELL23);
+    Uart_Printf("CELL24 :%.2f\n", Message->CELL24);
+    Uart_Printf("------------------------------------\n");
+}
 #endif
 /*******************************************************************************
  * Function Name : Print_Bms_Messages
@@ -500,6 +530,8 @@ static void Print_Bms_Messages()
 		Print_Jbd_Bms_0x10A_t(&Bms_Frames.JBD_BMS_0x10A);
 		Print_Jbd_Bms_0x10B_t(&Bms_Frames.JBD_BMS_0x10B);
 		Print_Jbd_Bms_0x10C_t(&Bms_Frames.JBD_BMS_0x10C);
+		Print_Jbd_Bms_0x10D_t(&Bms_Frames.JBD_BMS_0x10D);
+		Print_Jbd_Bms_0x10E_t(&Bms_Frames.JBD_BMS_0x10E);
 
 	}
 	else
@@ -575,6 +607,14 @@ bool Process_Bms_Messages(CAN_Message_t *frame)
 		 Bms_Frames.bms_comm_ok=true;
 		 Decode_CAN_0x10C(frame->data,&Bms_Frames.JBD_BMS_0x10C);
 	     return true;
+	 case JBD_BMS_ID13:
+		 Bms_Frames.bms_comm_ok=true;
+		 Decode_CAN_0x10D(frame->data,&Bms_Frames.JBD_BMS_0x10D);
+	     return true;
+	 case JBD_BMS_ID14:
+		 Bms_Frames.bms_comm_ok=true;
+		 Decode_CAN_0x10E(frame->data,&Bms_Frames.JBD_BMS_0x10E);
+	     return true;
 #endif
 	 default :break;
 	 }
@@ -602,6 +642,63 @@ static bool Task_Id_For_Bms_Print(void)
     }
     return true;
 }
+/* ======================================================================
+ * range_soc_simple.c
+ * Simple EV range from SoC only.
+ *
+ * Input : SoC (0.0 to 100.0 %) and a flag saying if the SoC is valid.
+ * Output: range in km.
+ *
+ *   battery total energy (Wh) = Ah x Volts
+ *   energy left (Wh)          = total x SoC - reserve
+ *   range (km)                = energy left / WH_PER_KM
+ *
+ * It is an estimate. It does not change with driving style, load or weather.
+ * ====================================================================== */
+
+/* Total energy of the battery in Wh.  100 Ah x 1 = 100 Ah ; 3.2 V x 23 = 73.6 V ;
+ * 100 Ah x 73.6 V = 7360 Wh                                                      */
+static float BatteryTotal_Wh(void)
+{
+    float total_ah = CELL_CAPACITY_AH * (float)CELLS_IN_PARALLEL;
+    float volts    = CELL_VOLTAGE_V   * (float)CELLS_IN_SERIES;
+    return total_ah * volts;
+}
+
+/* Energy left in Wh, after taking away the reserve */
+float BatteryLeft_Wh(float soc_percent)
+{
+    float total   = BatteryTotal_Wh();
+    float reserve = total * RESERVE_PERCENT / 100.0f;
+    float left    = (total * soc_percent / 100.0f) - reserve;
+
+    return (left > 0.0f) ? left : 0.0f;
+}
+
+/* Range in km as a float, for example 70.6 */
+float Range_FromSoc_km(float soc_percent, uint8_t soc_is_valid)
+{
+    float wh_per_km = WH_PER_KM;
+
+    if ((soc_is_valid == 0u) || (soc_percent < 0.0f) || (soc_percent > 100.0f)) {
+        return 0.0f;                        /* show dashes in this case */
+    }
+    if (wh_per_km < MIN_WH_PER_KM) {
+        wh_per_km = MIN_WH_PER_KM;
+    }
+    return BatteryLeft_Wh(soc_percent) / wh_per_km;
+}
+
+/* Range for the display in 0.1 km units: 706 means 70.6 km. Rounded DOWN. */
+uint16_t Range_FromSoc_x10(float soc_percent, uint8_t soc_is_valid)
+{
+    float r = Range_FromSoc_km(soc_percent, soc_is_valid) * 10.0f;
+
+    if (r > 9999.0f) {
+        r = 9999.0f;
+    }
+    return (uint16_t)r;                     /* cutting the decimals rounds down */
+}
 /*******************************************************************************
  * Function Name : Enable_Bms_Print_Task
  * Description   : Enables the periodic BMS message printing task by registering
@@ -621,6 +718,7 @@ void Get_Bms_Data(BMS_Data_t* Bms_Data)
     {
         return;
     }
+    Bms_Data->Range=0;
 #ifdef JBD_BMS
 	Bms_Data->Avg_Temp=Avg_Temp;
 	Bms_Data->Battery_Current=Bms_Frames.JBD_BMS_0x100.Charge_and_Discharge_Current;
@@ -649,6 +747,21 @@ void Get_Bms_Data(BMS_Data_t* Bms_Data)
    Bms_Data->Cells[12]=Bms_Frames.JBD_BMS_0x10B.CELL13;
    Bms_Data->Cells[13]=Bms_Frames.JBD_BMS_0x10B.CELL14;
    Bms_Data->Cells[14]=Bms_Frames.JBD_BMS_0x10B.CELL15;
+
+
+   Bms_Data->Cells[15]=Bms_Frames.JBD_BMS_0x10C.CELL16;
+   Bms_Data->Cells[16]=Bms_Frames.JBD_BMS_0x10C.CELL17;
+   Bms_Data->Cells[17]=Bms_Frames.JBD_BMS_0x10C.CELL18;
+   Bms_Data->Cells[18]=Bms_Frames.JBD_BMS_0x10D.CELL19;
+   Bms_Data->Cells[19]=Bms_Frames.JBD_BMS_0x10D.CELL20;
+   Bms_Data->Cells[20]=Bms_Frames.JBD_BMS_0x10D.CELL21;
+   Bms_Data->Cells[21]=Bms_Frames.JBD_BMS_0x10E.CELL22;
+   Bms_Data->Cells[22]=Bms_Frames.JBD_BMS_0x10E.CELL23;
+   Bms_Data->Cells[23]=Bms_Frames.JBD_BMS_0x10E.CELL24;
+
+
+
+
    uint8_t fault_count = 0;
    if(Bms_Frames.JBD_BMS_0x102.Protection_Status>0)
    {

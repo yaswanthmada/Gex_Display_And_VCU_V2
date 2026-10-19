@@ -8,6 +8,8 @@
 
 
 #include"DECODE_MOTOR_CONTROLLER.h"
+#include <math.h>
+#include"PROCESS.h"
 Mcu_Msgs_t Mcu_Msgs={0};
 static int status_print_task_id=-1;
 /*******************************************************************************
@@ -35,6 +37,10 @@ if (len <= 0 || len > 64) return 0;
  }
 return value;
 
+}
+float Calculate_Vehicle_Speed(float rpm, float wheel_dia_mm)
+{
+    return rpm * wheel_dia_mm * 0.000188495559f; // Returns speed in km/h
 }
 
 #ifdef MCU_NANJING_QUARK
@@ -271,6 +277,7 @@ void Print_Motor_Messages(void)
     }
     else
     {
+    	Uart_Printf("\n\r========================================\n\r");
     	Uart_Printf("[INFO] :Motor Messages Not Received \n");
     }
 #endif
@@ -334,20 +341,69 @@ bool Enable_Mcu_Print_Task()
 {
 	return Task_Id_For_Mcu_Print();
 }
+
+
+
+#define PI 3.14159265f
+
+float Get_Speed_Kmh(float rpm, float wheel_dia_mm, float gear_ratio)
+{
+    float wheel_rpm;
+    float circumference_m;
+
+    if (gear_ratio <= 0.0f)
+    {
+        return 0.0f;
+    }
+    if (rpm < 0.0f)
+    {
+        rpm = -rpm;
+    }
+
+    wheel_rpm       = rpm / gear_ratio;
+    circumference_m = 3.14159f * wheel_dia_mm / 1000.0f;
+
+    return wheel_rpm * circumference_m * 60.0f / 1000.0f;
+}
+
+void Update_Odo_Trip()
+{
+	Update_Odometer(Get_Speed_Kmh((float)Mcu_Msgs.MCU_MSG_0x011.Motor_Speed,580.0,15.0f));
+	Check_Trip_Reset_Hold(Get_trip_On_off() );
+
+}
 void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
 {
+	float vehicle_speed_kmh = Get_Speed_Kmh((float)Mcu_Msgs.MCU_MSG_0x011.Motor_Speed,580.0,15.0);
+	Mcu_Data->Speed = (uint8_t)vehicle_speed_kmh;
+	Mcu_Data->Odo_Meter=(float)Get_Odometer_Km();
+	Mcu_Data->Trip_Value=(float)Get_Trip_Km();
+	Uart_Printf("Rpm : %f\n",(float)Mcu_Msgs.MCU_MSG_0x011.Motor_Speed);
+	Uart_Printf("display speed:%u",Mcu_Data->Speed );
+	Uart_Printf("speed : %f\n",vehicle_speed_kmh);
 
 #ifdef MCU_NANJING_QUARK
-
-    Mcu_Data->Speed = Mcu_Msgs.MCU_MSG_0x011.Motor_Speed;
     Mcu_Data->Mcu_Pack_voltage = Mcu_Msgs.MCU_MSG_0x012.Dc_Voltage;
     Mcu_Data->Mcu_Current = Mcu_Msgs.MCU_MSG_0x012.Dc_Current;
     Mcu_Data->Motor_Temp = Mcu_Msgs.MCU_MSG_0x013.Motor_Temp;
     Mcu_Data->Mcu_Pcb_Temp = Mcu_Msgs.MCU_MSG_0x013.Controller_Temp;
+    if(Mcu_Msgs.MCU_MSG_0x011.Gear_Position==NANJING_QUARK_FORWARD)
+    {
+    	Mcu_Data->Vehicle_Mode=1;
+    }
+    else if(Mcu_Msgs.MCU_MSG_0x011.Gear_Position==NANJING_QUARK_REVERSE)
+    {
+    	Mcu_Data->Vehicle_Mode=2;
+    	Mcu_Data->Speed =0;
+    }
+    else
+    {
+    	Mcu_Data->Vehicle_Mode=0;
+    }
+
     uint32_t trouble_mask = Mcu_Msgs.MCU_MSG_0x011.Trouble_Code;
     if (trouble_mask == 0)
         {
-    	Uart_Printf("if mcu_troulecode\n\r");
             Mcu_Data->Mcu_Fault = false;
             Mcu_Data->Mcu_Fault_Count = 0;
             for (uint8_t i = 0; i < MCU_FAULT_COUNT_NANJING_QUARK; i++)
@@ -391,6 +447,10 @@ void Get_Mcu_Data(MCU_Data_t *Mcu_Data)
     else
     {
         Mcu_Data->Brake_Signal=false;
+    }
+    if(Get_MCU_Can_Fault())
+    {
+    	Mcu_Data->Vehicle_Mode=0;
     }
 #endif
 }

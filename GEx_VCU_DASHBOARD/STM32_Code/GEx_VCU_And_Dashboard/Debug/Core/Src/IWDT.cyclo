@@ -1,2 +1,6 @@
-../Core/Src/IWDT.c:25:6:IWDG_Init	3
-../Core/Src/IWDT.c:65:6:IWDG_Refresh	1
+../Core/Src/IWDT.c:26:6:IWDG_Init	3
+../Core/Src/IWDT.c:66:6:IWDG_Refresh	1
+../Core/Src/IWDT.c:82:6:Wdt_Log_Check_And_Process	3
+../Core/Src/IWDT.c:110:6:Wdt_Log_Read	3
+../Core/Src/IWDT.c:131:6:WdtLog_ClearFlash	1
+../Core/Src/IWDT.c:137:6:Get_Hard_Fault_Watch_Dog_Timer_Data	3

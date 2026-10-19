@@ -23,7 +23,7 @@ Core/Src/GPIO.o: ../Core/Src/GPIO.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Core/Inc/GPIO.h ../Core/Inc/SYSTICK.h ../Core/Inc/main.h \
  ../Core/Inc/TASK_TIMER.h ../Core/Inc/UART.h ../Core/Inc/DWIN_DISPLAY.h \
- ../Core/Inc/DWIN_DEFINES.h
+ ../Core/Inc/DWIN_DEFINES.h ../Core/Inc/CONFIGURATION_FILES.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -54,3 +54,4 @@ Core/Src/GPIO.o: ../Core/Src/GPIO.c ../Core/Inc/main.h \
 ../Core/Inc/UART.h:
 ../Core/Inc/DWIN_DISPLAY.h:
 ../Core/Inc/DWIN_DEFINES.h:
+../Core/Inc/CONFIGURATION_FILES.h:

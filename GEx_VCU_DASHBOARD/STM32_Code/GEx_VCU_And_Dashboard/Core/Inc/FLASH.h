@@ -12,46 +12,51 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include"DWIN_DISPLAY.h"
-#define FLASH_LAST_PAGE_ADDR  0x0801FC00UL //Last page of Flash
-#define WDT_MAGIC_KEY         0xA5A5U
-
-typedef struct
-{
-    uint16_t wdt_flag;    /* Magic Key (0xA5A5 = Watchdog Reset Logged) */
-    uint16_t reset_count; /* Cumulative watchdog reset count             */
-} Wdt_Log_t;
 
 /*******************************************************************************
- * Function Name : WdtLog_CheckAndProcess
- * Description   : Checks RCC status registers for Independent (IWDG) or
- *                 Window (WWDG) watchdog reset flags upon startup. If a
- *                 watchdog reset is detected, it logs/increments the event
- *                 in Flash Page 127 (0x0801FC00) and clears the RCC flags.
+ * Function Name : Flash_WriteHalfWord
+ * Description   : Writes a 16-bit half-word to a specified Flash memory address.
+ * Scope         : Global (Public API)
+ * Parameters    : address - Destination half-word aligned Flash address
+ *                 data    - 16-bit data value to program
+ * Return Value  : None
+ ******************************************************************************/
+void Flash_Write_Half_Word(uint32_t address, uint16_t data);
+
+/*******************************************************************************
+ * Function Name : Flash_ErasePage
+ * Description   : Performs a 1 KB page erase on the specified Flash page address.
+ * Scope         : Global (Public API)
+ * Parameters    : page_addr - Starting base address of the Flash page to erase
+ * Return Value  : None
+ ******************************************************************************/
+void Flash_Erase_Page(uint32_t page_addr);
+
+/*******************************************************************************
+ * Function Name : Flash_Lock
+ * Description   : Sets the LOCK bit in the Flash Control Register (FLASH_CR)
+ *                 to prevent accidental memory modification.
  * Scope         : Global (Public API)
  * Parameters    : None
  * Return Value  : None
  ******************************************************************************/
-void Wdt_Log_Check_And_Process(void);
-
+void Flash_Lock(void);
 /*******************************************************************************
- * Function Name : WdtLog_Read
- * Description   : Reads the stored watchdog reset log structure directly
- *                 from Flash memory and validates the magic key.
- * Scope         : Global (Public API)
- * Parameters    : log_out - Pointer to WdtLog_t structure to store output data
- * Return Value  : true    - Valid watchdog log found (0xA5A5 key present)
- *                 false   - Log invalid, null pointer, or flash erased
- ******************************************************************************/
-bool Wdt_Log_Read(Wdt_Log_t *log_out);
-
-/*******************************************************************************
- * Function Name : WdtLog_ClearFlash
- * Description   : Unlocks and erases Page 127 of Flash memory, resetting the
- *                 stored watchdog log and cumulative reset counter.
+ * Function Name : Flash_Unlock
+ * Description   : Unlocks the Flash Control Register (FLASH_CR) by writing the
+ *                 two-step magic sequence to FLASH_KEYR if currently locked.
  * Scope         : Global (Public API)
  * Parameters    : None
  * Return Value  : None
  ******************************************************************************/
-void Wdt_Log_Clear_Flash(void);
-
+void Flash_Unlock(void);
+/*******************************************************************************
+ * Function Name : Flash_WaitBusy
+ * Description   : Blocks CPU execution until the current Flash memory operation
+ *                 (Erase or Program) completes by polling the BSY flag.
+ * Scope         : Global (Public API)
+ * Parameters    : None
+ * Return Value  : None
+ ******************************************************************************/
+void Flash_Wait_Busy(void);
 #endif /* INC_FLASH_H_ */

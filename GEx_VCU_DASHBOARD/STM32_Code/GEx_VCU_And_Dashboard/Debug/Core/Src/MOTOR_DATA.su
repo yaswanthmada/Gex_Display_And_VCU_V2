@@ -1,0 +1,8 @@
+../Core/Src/MOTOR_DATA.c:260:13:Save_Odometer_To_Storage	56	static
+../Core/Src/MOTOR_DATA.c:142:13:Scan_Page	88	static
+../Core/Src/MOTOR_DATA.c:310:6:Odometer_Init	80	static
+../Core/Src/MOTOR_DATA.c:358:6:Update_Odometer	32	static
+../Core/Src/MOTOR_DATA.c:402:6:Reset_Trip_Odometer	8	static
+../Core/Src/MOTOR_DATA.c:410:6:Check_Trip_Reset_Hold	16	static
+../Core/Src/MOTOR_DATA.c:452:8:Get_Odometer_Km	0	static
+../Core/Src/MOTOR_DATA.c:464:8:Get_Trip_Km	0	static

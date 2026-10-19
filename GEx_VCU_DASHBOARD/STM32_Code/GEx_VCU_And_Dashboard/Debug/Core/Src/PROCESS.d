@@ -26,7 +26,8 @@ Core/Src/PROCESS.o: ../Core/Src/PROCESS.c ../Core/Inc/PROCESS.h \
  ../Core/Inc/SYSTICK.h ../Core/Inc/CAN.h ../Core/Inc/RCC.h \
  ../Core/Inc/DECODE_BATTERY_MANAGEMENT_SYSTEM.h ../Core/Inc/TASK_TIMER.h \
  ../Core/Inc/UART.h ../Core/Inc/DWIN_DISPLAY.h ../Core/Inc/DWIN_DEFINES.h \
- ../Core/Inc/DECODE_MOTOR_CONTROLLER.h \
+ ../Core/Inc/UART.h ../Core/Inc/DECODE_MOTOR_CONTROLLER.h \
+ ../Core/Inc/MOTOR_DATA.h ../Core/Inc/GPIO.h \
  ../Core/Inc/DECODE_BATTERY_MANAGEMENT_SYSTEM.h
 ../Core/Inc/PROCESS.h:
 ../Core/Inc/MCP2515.h:
@@ -63,5 +64,8 @@ Core/Src/PROCESS.o: ../Core/Src/PROCESS.c ../Core/Inc/PROCESS.h \
 ../Core/Inc/UART.h:
 ../Core/Inc/DWIN_DISPLAY.h:
 ../Core/Inc/DWIN_DEFINES.h:
+../Core/Inc/UART.h:
 ../Core/Inc/DECODE_MOTOR_CONTROLLER.h:
+../Core/Inc/MOTOR_DATA.h:
+../Core/Inc/GPIO.h:
 ../Core/Inc/DECODE_BATTERY_MANAGEMENT_SYSTEM.h:

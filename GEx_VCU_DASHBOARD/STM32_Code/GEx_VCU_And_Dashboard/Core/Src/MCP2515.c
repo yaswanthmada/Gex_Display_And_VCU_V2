@@ -418,9 +418,34 @@ MCU_MSG_0x014_ID
 	};
 	return MCP2515_Set_Filters(Std_Id,sizeof(Std_Id)/sizeof(Std_Id[0]),NULL,0);
 }
+
+/*******************************************************************************
+ * Function Name : Check_MCP2515_Can_Bus_Ok
+ * Description   : Reads the MCP2515's EFLG register to check for bus-off,
+ *                 error-passive, or receive buffer overflow conditions.
+ * Scope         : private
+ * Parameters    : None
+ * Return Value  : bool (true = CAN bus OK, false = CAN bus fault detected)
+ ******************************************************************************/
+static bool Check_Can_Bus_Ok(void)
+{
+    uint8_t eflg = MCP2515_Read_Register(MCP_REG_EFLG);
+    bool tx_bus_off   = (eflg & MCP_BIT_TXBO)   != 0;
+    bool tx_err_pass  = (eflg & MCP_BIT_TXEP)   != 0;
+    bool rx_err_pass  = (eflg & MCP_BIT_RXEP)   != 0;
+    bool rx0_overflow = (eflg & MCP_BIT_RX0OVR) != 0;
+    bool rx1_overflow = (eflg & MCP_BIT_RX1OVR) != 0;
+
+    if (tx_bus_off || tx_err_pass || rx_err_pass || rx0_overflow || rx1_overflow)
+    {
+        return false;
+    }
+
+    return true;
+}
 void Check_MCP2515_Can_Bus_Ok(GEx_Display_t*Can_Bus_System_Data)
 {
-	Can_Bus_System_Data->System_Data.Is_MCP2515_Can_Ok;
+	Can_Bus_System_Data->System_Data.Is_MCP2515_Can_Ok=Check_Can_Bus_Ok();
 }
 
 /*

@@ -14,7 +14,14 @@
 #include"UART.h"
 #include"TASK_TIMER.h"
 #include"DWIN_DISPLAY.h"
+#include"MOTOR_DATA.h"
 #include<string.h>
+#include"GPIO.h"
+
+#define WHEEL_DIAMETER_MM        254.0f
+#define MOTOR_TO_WHEEL_RATIO      1.0f
+#define PI                        3.14159265f
+
 #ifdef MCU_NANJING_QUARK
 
 #define MCU_MSG_0x011_ID  0x011
@@ -24,6 +31,9 @@
 #define MCU_FAULT_COUNT_NANJING_QUARK       22
 #define MCU_FAULT_NAME_LENGTH  40
 
+#define NANJING_QUARK_NEUTRAL 0
+#define NANJING_QUARK_REVERSE  2
+#define NANJING_QUARK_FORWARD 1
 
 typedef struct
 {
@@ -89,5 +99,5 @@ typedef struct
 
 void Process_Motor_Controller_Messages(CAN_Message_t *rxMsg);
 bool Enable_Mcu_Print_Task();
-
+void Update_Odo_Trip();
 #endif /* INC_DECODE_MOTOR_CONTROLLER_H_ */

@@ -39,6 +39,7 @@
 #include"SYSTICK.h"
 #include"IWDT.h"
 #include"FLASH.h"
+#include"MOTOR_DATA.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -109,6 +110,7 @@ int main(void)
  	    Error_Handler();
      }
      Uart_Printf("[INFO] UART1 Initialized...\r\n");
+#ifdef RY_UART3
      if(!Universal_Asyn_Rx_Tx_3_Init())
      {
      	//uart3 Inititialization Fails
@@ -116,6 +118,9 @@ int main(void)
 		Error_Handler();
      }
      Uart_Printf("[INFO] UART3 Initialized...\r\n");
+#endif
+
+#ifdef RY_SPI
    if(!Serial_Peripheral_Interface_Init())
      {
      	//SPI Inititialization Fails
@@ -123,6 +128,9 @@ int main(void)
  	    Error_Handler();
      }
     Uart_Printf("[INFO] SPI Initialized...\r\n");
+#endif
+
+#ifdef RY_MCP2515
      if (!Micro_Chip_Product_2515_Init())
      {
      	//MCP2515 Inititialization Fails
@@ -138,6 +146,9 @@ int main(void)
      {
    	  Uart_Printf("[INFO] Configure_Mcp2515_Can_Ids OK\r\n");
      }
+#endif
+
+#ifdef RY_SYSTICK_TIMER
      if(!Core_Timer_Init())
      {
      	//systick Inititialization Fails
@@ -145,6 +156,9 @@ int main(void)
    	    Error_Handler();
        }
       Uart_Printf("[INFO] systick Initialized...\r\n");
+#endif
+
+#ifdef RY_CAN
      if(!Controller_Area_Network_Init())
      {
      	//CAN Inititialization Fails
@@ -153,6 +167,9 @@ int main(void)
      }
      Uart_Printf("[INFO] CAN Started at 500kbps\r\n");
      Configure_Can_filter_Ids();
+#endif
+
+#ifdef RY_GPIO
      Uart_Printf("[INFO] Initializing GPIOs...\r\n");
      if(!General_Purpose_Input_Output_Init())
      {
@@ -160,6 +177,9 @@ int main(void)
  	    Error_Handler();
      }
      Uart_Printf("[INFO] GPIOs Initialized...\r\n");
+#endif
+
+#ifdef RY_ADC
      if(!Analog_To_Digital_Converter_Init())
      {
      	//ADC Inititialization  Fails
@@ -167,6 +187,9 @@ int main(void)
 		Error_Handler();
      }
      Uart_Printf("[INFO] ADCs Initialized...\r\n");
+#endif
+
+#ifdef RY_TASK_TIMER
      if(!Enable_Task_Timer_Init())
      {
      	//Task Inititialization Fails
@@ -176,6 +199,9 @@ int main(void)
      {
     	  Uart_Printf("[INFO] Task timer initialized\r\n");
      }
+#endif
+
+#ifdef RY_GPIO_PRINT1
      if(!Enable_Gpio_Print_Task())
      {
          Uart_Printf("[ERROR] Failed to create MCU Control task\r\n");
@@ -184,6 +210,9 @@ int main(void)
      {
          Uart_Printf("[INFO] Enable_Gpio_Print_Task enabled \r\n");
      }
+#endif
+
+#ifdef RY_ADC_PRINT
      if(!Enable_Adc_Print_Task())
      {
          Uart_Printf("[ERROR] Failed to create Enable_Adc_Print_Task\r\n");
@@ -192,6 +221,9 @@ int main(void)
      {
          Uart_Printf("[INFO] Enable_Adc_Print_Task enabled \r\n");
      }
+#endif
+
+#ifdef RY_MCU_PRINT1
      if(!Enable_Mcu_Print_Task())
      {
          Uart_Printf("[ERROR] Failed to create Enable_Mcu_Print_Task\r\n");
@@ -200,6 +232,9 @@ int main(void)
      {
          Uart_Printf("[INFO] Enable_Mcu_Print_Task enabled\r\n");
      }
+#endif
+
+#ifdef RY_BMS_PRINT
      if(!Enable_Bms_Print_Task())
      {
          Uart_Printf("[ERROR] Failed to create Enable_Bms_Print_Task\r\n");
@@ -208,6 +243,9 @@ int main(void)
      {
          Uart_Printf("[INFO] Enable_Bms_Print_Task enabled \r\n");
      }
+#endif
+
+#ifdef RY_DISPLAY_PRINT1
      if(!Enable_Display_Print_Task())
      {
          Uart_Printf("[ERROR] Failed to create Enable_Display_Print_Task\r\n");
@@ -216,8 +254,13 @@ int main(void)
      {
          Uart_Printf("[INFO] Enable_Display_Print_Task enabled \r\n");
      }
+#endif
+     Odometer_Init();
+#ifdef RY_WDTR
      Wdt_Log_Check_And_Process();
      IWDG_Init(2000);
+#endif
+
      Uart_Printf("[INFO] Entering in to Super Loop \r\n");
     /* USER CODE END 2 */
 
@@ -225,15 +268,29 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  uint32_t Start_time=Get_Tick_Ms();
+#ifdef RY_WDTR
 	  IWDG_Refresh();
+#endif
+      Update_Odo_Trip();
+#ifdef RY_REQUEST_BMS_MESSAGES
 	  Request_Bms_Messages();
+#endif
+#ifdef RY_PROCESS_CAN_MESSAGES
 	  Process_Can_Messages();
+#endif
+#ifdef RY_UPDATE_GPIO
 	  Update_Gpio();
+#endif
+#ifdef RY_UPDATE_ADC
 	  Update_Adc();
+#endif
+
+#ifdef RY_UPDATE_DISPLAY
 	  Display_Update_All();
+#endif
+#ifdef RY_RUN_TASK_TIMER
 	  Task_Timer_Run_All();
-	  Uart_Printf("Time Taken for While loop Iteration :%d in ms\n",Get_Tick_Ms()-Start_time);
+#endif
 
     /* USER CODE END WHILE */
 

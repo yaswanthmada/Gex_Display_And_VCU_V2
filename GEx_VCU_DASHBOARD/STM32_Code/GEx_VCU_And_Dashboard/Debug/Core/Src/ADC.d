@@ -22,7 +22,8 @@ Core/Src/ADC.o: ../Core/Src/ADC.c ../Core/Inc/ADC.h ../Core/Inc/RCC.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Core/Inc/SYSTICK.h ../Core/Inc/TASK_TIMER.h ../Core/Inc/UART.h \
- ../Core/Inc/DWIN_DISPLAY.h ../Core/Inc/DWIN_DEFINES.h
+ ../Core/Inc/DWIN_DISPLAY.h ../Core/Inc/DWIN_DEFINES.h \
+ ../Core/Inc/CONFIGURATION_FILES.h
 ../Core/Inc/ADC.h:
 ../Core/Inc/RCC.h:
 ../Core/Inc/main.h:
@@ -53,3 +54,4 @@ Core/Src/ADC.o: ../Core/Src/ADC.c ../Core/Inc/ADC.h ../Core/Inc/RCC.h \
 ../Core/Inc/UART.h:
 ../Core/Inc/DWIN_DISPLAY.h:
 ../Core/Inc/DWIN_DEFINES.h:
+../Core/Inc/CONFIGURATION_FILES.h:

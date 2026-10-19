@@ -38,6 +38,16 @@
 #define BMS_FAULT_NAME_LEN    40
 #define BMS_FAULT_COUNT_JBD_BMS       16
 
+#define CELLS_IN_SERIES      23u      /* cells in a row. Sets the voltage        */
+#define CELLS_IN_PARALLEL    1u       /* rows side by side. Sets the Ah          */
+#define CELL_CAPACITY_AH     100.0f   /* Ah of ONE cell. 100 is only an EXAMPLE (use the real value,
+                                         lower it if the cells are old)          */
+#define CELL_VOLTAGE_V       3.2f     /* normal voltage of one LiFePO4 cell      */
+
+#define WH_PER_KM            100.0f   /* energy used for 1 km. Higher = safer    */
+#define RESERVE_PERCENT      4.0f     /* part of the battery never counted       */
+
+#define MIN_WH_PER_KM        20.0f    /* stops divide by zero                    */
 
 typedef struct
 {

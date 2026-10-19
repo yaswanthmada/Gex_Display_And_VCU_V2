@@ -1,4 +1,5 @@
-../Core/Src/FLASH.c:98:6:Wdt_Log_Check_And_Process	4	static
-../Core/Src/FLASH.c:126:6:Wdt_Log_Read	0	static
-../Core/Src/FLASH.c:147:6:WdtLog_ClearFlash	0	static
-../Core/Src/FLASH.c:153:6:Get_Hard_Fault_Watch_Dog_Timer_Data	0	static
+../Core/Src/FLASH.c:11:13:Flash_Wait_Busy	0	static
+../Core/Src/FLASH.c:15:6:Flash_Unlock	0	static
+../Core/Src/FLASH.c:23:6:Flash_Lock	0	static
+../Core/Src/FLASH.c:27:6:Flash_Erase_Page	0	static
+../Core/Src/FLASH.c:37:6:Flash_Write_Half_Word	4	static

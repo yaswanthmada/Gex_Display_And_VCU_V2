@@ -21,7 +21,10 @@ Core/Src/IWDT.o: ../Core/Src/IWDT.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
- ../Core/Inc/IWDT.h
+ ../Core/Inc/IWDT.h ../Core/Inc/FLASH.h ../Core/Inc/main.h \
+ ../Core/Inc/DWIN_DISPLAY.h ../Core/Inc/DWIN_DEFINES.h ../Core/Inc/UART.h \
+ ../Core/Inc/TASK_TIMER.h ../Core/Inc/SYSTICK.h \
+ ../Core/Inc/CONFIGURATION_FILES.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -46,3 +49,11 @@ Core/Src/IWDT.o: ../Core/Src/IWDT.c ../Core/Inc/main.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h:
 ../Core/Inc/IWDT.h:
+../Core/Inc/FLASH.h:
+../Core/Inc/main.h:
+../Core/Inc/DWIN_DISPLAY.h:
+../Core/Inc/DWIN_DEFINES.h:
+../Core/Inc/UART.h:
+../Core/Inc/TASK_TIMER.h:
+../Core/Inc/SYSTICK.h:
+../Core/Inc/CONFIGURATION_FILES.h:

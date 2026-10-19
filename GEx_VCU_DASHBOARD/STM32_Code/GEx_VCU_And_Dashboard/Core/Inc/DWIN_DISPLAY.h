@@ -13,12 +13,15 @@
 #include"main.h"
 #include<string.h>
 #include"TASK_TIMER.h"
+#include"CONFIGURATION_FILES.h"
+#include <stdlib.h>
 typedef struct
 {
 uint8_t Soc;
 float Battery_Pack_voltage;
 float Battery_Current;
 float Cells[24];
+float Range;
 uint8_t Avg_Temp;
 uint8_t Bms_Fault;
 uint8_t Bms_Fault_Count;
@@ -31,16 +34,18 @@ typedef struct
 	uint8_t Motor_Temp;
 	uint8_t Mcu_Pcb_Temp;
 	uint8_t Mcu_Fault;
-	uint32_t Odo_Meter;
-	uint32_t Trip_Value;
+	float Odo_Meter;
+	float Trip_Value;
 	uint8_t Mcu_Fault_Count;
-	uint8_t Speed;
+	uint8_t Speed; //value given by MCU
+	uint8_t Speed_1;//calculated according to motor rpm ,gear ratio, diameter of wheel
 	uint8_t Vehicle_Mode;
 	char Mcu_Active_Fault[22][40];
 	bool Brake_Signal;
 	bool Forward;
 	bool Reverse;
 	bool Neutral;
+	bool Park;
 	bool Echo_Boost;
 
 }MCU_Data_t;
@@ -58,6 +63,8 @@ bool Brake_Fluid;
 bool Right_Ind;
 bool Left_Ind;
 bool Mppt_On_Off;
+bool Blink_Phase_On_Off;
+uint8_t Page_Count;
 }IO_Data_t;
 typedef struct
 {
@@ -78,6 +85,15 @@ typedef struct
     System_Faults_t System_Data;
     bool Is_Ready;
 }GEx_Display_t;
+extern GEx_Display_t GEx_Display;
+typedef enum
+{
+    DWIN_PAGE1_STATE,
+    DWIN_SET_PAGE2_STATE,
+    DWIN_UPDATE_STATE
+
+} DWIN_State_t;
+
 /*******************************************************************************
  * Function Name : Display_Update_All
  * Description   : High-level routine that first refreshes display data structures

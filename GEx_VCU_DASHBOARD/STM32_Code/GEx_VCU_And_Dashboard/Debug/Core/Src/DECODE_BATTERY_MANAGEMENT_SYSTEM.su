@@ -1,5 +1,8 @@
-../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:489:13:Print_Bms_Messages	32	static
+../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:519:13:Print_Bms_Messages	8	static
 ../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:81:6:Decode_CAN_0x103	16	static
-../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:522:6:Process_Bms_Messages	16	static
-../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:614:6:Enable_Bms_Print_Task	8	static
-../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:618:6:Get_Bms_Data	24	static
+../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:554:6:Process_Bms_Messages	16	static
+../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:669:7:BatteryLeft_Wh	8	static
+../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:679:7:Range_FromSoc_km	8	static
+../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:693:10:Range_FromSoc_x10	16	static
+../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:711:6:Enable_Bms_Print_Task	8	static
+../Core/Src/DECODE_BATTERY_MANAGEMENT_SYSTEM.c:715:6:Get_Bms_Data	24	static

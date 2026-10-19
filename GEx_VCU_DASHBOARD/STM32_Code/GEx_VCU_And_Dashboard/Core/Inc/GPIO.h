@@ -36,15 +36,19 @@
 #define LEFT_INDICATOR_PORT	 GPIOA
 #define RIGHT_INDICATOR_PORT GPIOA
 #define MPPT_12V_IP_PORT       GPIOA
+#define ODO_TRIP_PORT  GPIOA
+#define PAGE_SWITCH_PORT GPIOA
 
-#define HAND_BRAKE_PIN    4
+
+#define HAND_BRAKE_PIN       4
 #define BRAKE_FLUID_PIN  7
 #define HEAD_LIGHT_PIN    0
 #define CHARGE_ACK_PIN    13
 #define LEFT_INDICATOR_PIN   1
 #define RIGHT_INDICATOR_PIN  2
 #define MPPT_12V_IP_PIN       3
-
+#define ODO_TRIP_PIN 4
+#define PAGE_SWITCH_PIN 8
 
 //Output pin Ports
 #define MPPT_12V_OP_PORT  GPIOA
@@ -52,7 +56,7 @@
 
 
 /* Maximum number of debounced inputs */
-#define MAX_DEBOUNCED_INPUTS     8
+#define MAX_DEBOUNCED_INPUTS     12
 
 /* Fast debounce (9ms total): 3ms sample interval, 3 samples */
 #define DEBOUNCE_FAST_INTERVAL_MS    3
@@ -69,6 +73,11 @@
 #define DEBOUNCE_DELAY_MS         10    /* 10ms total debounce delay */
 #define DEBOUNCE_Min_Samples      3     /* Minimum 3 consistent samples */
 #define DEBOUNCE_SAMPLE_INTERVAL  3     /* Sample every 3ms */
+
+
+#define MPPT_ENABLE_SOC_MAX      95U      /* re-enable charging below this SOC */
+#define MPPT_DISABLE_SOC_MIN     100U     /* disable charging at/above this SOC */
+#define MPPT_RELAY_HOLD_TIME_MS  3000U    /* condition must persist this long before switching */
 
 typedef struct
 {
@@ -110,6 +119,10 @@ typedef struct
 	bool Charge_Ack_Sts;
 	bool Left_Indicator_Sts;
 	bool Right_Indicator_sts;
+	bool Blink_On_Off;
+	bool Odo_Trip_Sts;
+	bool Trip_Switch_Sts;
+	bool Page_Switch_Count;
 }Gpio_Status;
 /*******************************************************************************
  * Function Name : General_Purpose_Input_Output_Init
@@ -141,4 +154,6 @@ void Update_Gpio();
  ******************************************************************************/
 bool Enable_Gpio_Print_Task();
 
+bool Get_Blink_Phase(void);
+bool Get_trip_On_off();
 #endif /* INC_GPIO_H_ */
